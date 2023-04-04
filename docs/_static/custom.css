@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&&family=Open+Sans:ital,wght@0,400;0,600;1,400;1,600&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap');
+
+html {
+    --pst-font-family-base: 'Open Sans', var(--pst-font-family-base-system);
+    --pst-font-family-heading: 'Lato', var(--pst-font-family-base-system);
+    --pst-font-family-monospace: 'IBM Plex Mono', var(--pst-font-family-monospace-system);
+
+}
+
+
+html[data-theme="light"] {
+    --pst-color-primary: #103243; /* blue code link */
+    --pst-color-warning: #4d77cf; /* orange code highlight */
+    --pst-color-inline-code: #103243; /* pink code */
+    --pst-color-surface: transparent; /* code box fill */
+    --pst-color-on-surface: transparent; /* code box border */
+}
+
+pre, code {
+    font-size: 90%;
+    line-height: 150%;
+}
+
+pre {
+    background-color: #f8f8f8;
+    border: 0px;
+    box-shadow: none;
+    padding: 20px;
+}
+
+h1 {
+    color: #013243; /* warm black */
+    font-weight: 500;
+    letter-spacing: -.04em;
+    margin-bottom: 2rem;
+    /*font-size: 3rem;*/
+}
+  
+h2 {
+    color: #4d77cf; /* han blue */
+    letter-spacing: -.03em;
+}
+  
+h3 {
+    color: #013243; /* warm black */
+    letter-spacing: -.03em;
+}
+ 
+img {
+    margin-bottom: 1.125rem;
+}
+
+img.logo__image {
+    max-height: 30px;
+    margin-bottom: 0;
+}
+
+p.logo__title {
+    font-size: 1.25em;
+    margin-left: 0.25rem;
+    margin-bottom: 0.125rem;
+}
+
+:target:before {
+    content:"";
+    display:block;
+    background-color: #fff;
+    width:100%;
+    height:25px; 
+    margin:-25px 0 0; 
+} 
+
+/* disable cmd + K keyboard shortcut graphic normally displayed
+inside search form */
+span.search-button__kbd-shortcut {
+    display: none;
+}
+
+code.literal {
+    border: 0px;
+    padding: 0;
+}
