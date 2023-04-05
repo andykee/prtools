@@ -63,7 +63,7 @@ html_theme_options = {
     "github_url": "https://github.com/andykee/prtools",
     "navbar_end": ["navbar-icon-links"],  # ["theme-switcher", "version-switcher", "navbar-icon-links"]
     "navbar_persistent": [],
-    "footer_items": ["copyright"]
+    "footer_start": ["copyright"]
 }
 
 # ["search-field.html", "sidebar-nav-bs.html", "sidebar-ethical-ads.html"]

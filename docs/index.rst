@@ -1,3 +1,5 @@
+:html_theme.sidebar_secondary.remove:
+
 :mod:`prtools` --- Utility functions for image-based phase retrieval
 ====================================================================
 
