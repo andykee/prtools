@@ -6,7 +6,7 @@ import os
 import sys
 import datetime
 
-sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../'))
 path = os.path.abspath(os.path.dirname(__file__))
 
 
