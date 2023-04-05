@@ -26,7 +26,8 @@ copyright = f'{datetime.date.today().year} Andy Kee'
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.autosummary',
               'sphinx.ext.napoleon',
-              'sphinx.ext.viewcode'
+              'sphinx.ext.viewcode',
+              'sphinx_remove_toctrees',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
