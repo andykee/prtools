@@ -5,7 +5,6 @@
 import os
 import sys
 import datetime
-import re
 
 sys.path.insert(0, os.path.abspath('.'))
 path = os.path.abspath(os.path.dirname(__file__))
@@ -19,9 +18,6 @@ author = 'Andy Kee'
 copyright = f'{datetime.date.today().year} Andy Kee'
 
 
-#with open(os.path.normpath(os.path.join(path, '..', 'prtools', '__init__.py'))) as f:
-#    version = release = re.search('__version__ = "(.*?)"', f.read()).group(1)
-
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
@@ -30,7 +26,6 @@ copyright = f'{datetime.date.today().year} Andy Kee'
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.autosummary',
               'sphinx.ext.napoleon',
-              'matplotlib.sphinxext.plot_directive',
               'sphinx.ext.viewcode'
 ]
 
@@ -95,35 +90,3 @@ autodoc_default_options = {
 
 autosummary_generate = True
 
-# -- Plot config -------------------------------------------------------------
-dpi = 144
-
-plot_rcparams = {}  # noqa
-plot_rcparams['font.size'] = 12*72/dpi  # 12 pt
-plot_rcparams['axes.titlesize'] = 14*72/dpi  # 14 pt
-plot_rcparams['axes.labelsize'] = 12*72/dpi  # 12 pt
-plot_rcparams['axes.linewidth'] = 0.5
-plot_rcparams['lines.linewidth'] = 1
-plot_rcparams['lines.markersize'] = 2
-plot_rcparams['xtick.major.width'] = 0.5
-plot_rcparams['xtick.major.size'] = 2
-plot_rcparams['ytick.major.width'] = 0.5
-plot_rcparams['ytick.major.size'] = 2
-plot_rcparams['grid.linewidth'] = 0.5
-plot_rcparams['xtick.labelsize'] = 12*72/dpi  # 12 pt
-plot_rcparams['ytick.labelsize'] = 12*72/dpi  # 12 pt
-plot_rcparams['legend.fontsize'] = 12*72/dpi  # 12 pt
-plot_rcparams['figure.figsize'] = (2.5, 2.5)
-plot_rcparams['figure.subplot.wspace'] = 0.2
-plot_rcparams['figure.subplot.hspace'] = 0.2
-plot_rcparams['savefig.bbox'] = 'tight'
-plot_rcparams['savefig.transparent'] = True
-
-plot_apply_rcparams = True
-plot_html_show_source_link = False
-plot_html_show_formats = False
-plot_formats = [('png', dpi*2)]
-plot_pre_code = """
-import numpy as np
-np.random.seed(12345)
-"""
