@@ -61,6 +61,11 @@ p.logo__title {
     margin-bottom: 0.125rem;
 }
 
+dt:target,span.highlighted {
+    background-color: var(--pst-color-background);
+}
+
+/*
 :target:before {
     content:"";
     display:block;
@@ -69,12 +74,12 @@ p.logo__title {
     height:25px; 
     margin:-25px 0 0; 
 } 
-
+*/
 /* disable cmd + K keyboard shortcut graphic normally displayed
-inside search form */
+inside search form
 span.search-button__kbd-shortcut {
     display: none;
-}
+}*/
 
 code.literal {
     border: 0px;

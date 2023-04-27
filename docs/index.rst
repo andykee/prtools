@@ -1,5 +1,3 @@
-:html_theme.sidebar_secondary.remove:
-
 :mod:`prtools` --- Utility functions for image-based phase retrieval
 ====================================================================
 
@@ -13,10 +11,13 @@ helpful when performing image-based phase retrieval including:
 
 .. currentmodule:: prtools
 
-**Array manipulation:**
-
+Array manipulation
+------------------
 .. autosummary::
+   :toctree: generated
+   :caption: Array manipulation
    :nosignatures:
+   
 
    centroid
    pad
@@ -28,37 +29,37 @@ helpful when performing image-based phase retrieval including:
    shift
    register
 
-**Statistical functions:**
-
+Statistical functions
+---------------------
 .. autosummary::
+   :toctree: generated
+   :caption: Statistical functions
    :nosignatures:
+   
 
    encircled_energy
    rms
    pv
    strehl
 
-**Zernike polynomials:**
-
+Zernike polynomials
+-------------------
 .. autosummary::
+   :toctree: generated
+   :caption: Zernike polynomials
    :nosignatures:
-
+   
    zernike
    zernike_fit
    zernike_remove
    zernike_compose
    zernike_basis
 
-**Shapes:**
-
-.. note::
-
-   The shape functions support both Cartesian (``xy``) and matrix (``ij``)
-   indexing conventions for specifying the shift parameter via the 
-   ``indexing`` parameter. The default is Cartesian (``indexing='xy'``) for 
-   all functions.
-
+Shapes
+------
 .. autosummary::
+   :toctree: generated
+   :caption: Shapes
    :nosignatures:
 
    circle
@@ -69,46 +70,19 @@ helpful when performing image-based phase retrieval including:
    sin2
    waffle2
 
-**Misc utilities:**
+.. note::
 
+   The shape functions support both Cartesian (``xy``) and matrix (``ij``)
+   indexing conventions for specifying the shift parameter via the 
+   ``indexing`` parameter. The default is Cartesian (``indexing='xy'``) for 
+   all functions.
+
+Misc utilities
+--------------
 .. autosummary::
+   :toctree: generated
+   :caption: Misc utilities
    :nosignatures:
 
    min_sampling
    pixelscale_nyquist
-
-
-.. raw:: html
-
-   <h2>prtools functions</h2>
-
-.. autofunction:: boundary
-.. autofunction:: centroid
-.. autofunction:: circle
-.. autofunction:: circlemask
-.. autofunction:: encircled_energy
-.. autofunction:: gauss2
-.. autofunction:: hexagon
-.. autofunction:: medfix2
-.. autofunction:: min_sampling
-.. autofunction:: normalize_power
-.. autofunction:: pad
-.. autofunction:: pixelscale_nyquist
-.. autofunction:: pv
-.. autofunction:: rectangle
-.. autofunction:: rms
-.. autofunction:: shift
-.. autofunction:: sin2
-.. autofunction:: strehl
-.. autofunction:: rebin
-.. autofunction:: register
-.. autofunction:: rescale
-.. autofunction:: waffle2
-.. autofunction:: zernike
-.. autofunction:: zernike_basis
-.. autofunction:: zernike_compose
-.. autofunction:: zernike_fit
-.. autofunction:: zernike_remove
-
-
-

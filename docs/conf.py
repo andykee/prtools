@@ -61,19 +61,22 @@ html_theme_options = {
         "text": "prtools"
     },
     "github_url": "https://github.com/andykee/prtools",
-    "navbar_end": ["navbar-icon-links"],  # ["theme-switcher", "version-switcher", "navbar-icon-links"]
-    "navbar_persistent": [],
-    "footer_start": ["copyright"]
+    "navbar_start": ["navbar-logo"],
+    "navbar_center": ["navbar-nav"],
+    "navbar_end": ["navbar-icon-links"],
+    "navbar_persistent": ["search-button"],
+    "article_header_start": [],
+    "secondary_sidebar_items": [],
+    "footer_start": ["copyright"],
+    "footer_end": [],
+    "show_prev_next": False,
+    
 }
 
-# ["search-field.html", "sidebar-nav-bs.html", "sidebar-ethical-ads.html"]
 html_sidebars = {
-    "**": ["search-field.html", "sidebar-ethical-ads.html"]
+  "index": ["search-field.html"],
+  "generated/*": ["search-field.html", "sidebar-nav.html"]
 }
-
-#html_theme_options = {
-#    "navbar_end": ["navbar-icon-links.html",],
-#}
 
 html_show_sourcelink = False
 
@@ -81,7 +84,7 @@ html_scaled_image_link = False
 
 # if true, the current module name will be prepended to all description
 # unit titles (such as .. function::).
-add_module_names = True
+add_module_names = False
 
 autodoc_default_options = {
     'member-order': 'alphabetical',
@@ -91,3 +94,4 @@ autodoc_default_options = {
 
 autosummary_generate = True
 
+remove_from_toctrees = ["generated/*"]
