@@ -1,4 +1,4 @@
-pydata-sphinx-theme==0.13
+pydata-sphinx-theme==0.13.3
 sphinx
 sphinx_remove_toctrees
 numpy
