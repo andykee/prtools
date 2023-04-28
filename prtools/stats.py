@@ -96,11 +96,44 @@ def encircled_energy(a, energy=0.8, center=None):
 
 
 def pv(a, axis=None):
+    """Compute peak-to-valley or max(a) - min(a)
+    
+    Parameters
+    ----------
+    a : array_like
+        Input array
+    axis: None or int, optional
+        Axis or axes along which the peak-to-valley is computed. The 
+        default is to compute the peak-to-valley of the flattened 
+        array.
+
+    Returns
+    -------
+    pv : ndarray
+        A new array containing the P-V along the requested axes.
+    """
     a = np.asarray(a)
     return np.amax(a, axis=axis) - np.min(a, axis=axis)
 
 
 def rms(a, axis=None):
+    """Compute the root-mean-square of the nonzero entries
+
+    Parameters
+    ----------
+    a : array_like
+        Input array
+    axis: None or int, optional
+        Axis or axes along which the standard deviation is computed. The 
+        default is to compute the standard deviation of the flattened 
+        array.
+
+    Returns
+    -------
+    rms : ndarray
+        A new array containing the RMS along the requested axes.
+
+    """
     a = np.asarray(a)
     return np.std(a[np.nonzero(a)], axis=axis)
 
@@ -119,5 +152,5 @@ def rms(a, axis=None):
 # N.b., no free lunch; it removes any notion of "DC accuracy" but requires 
 # good knowledge of the F/# (really, aperture shape) and wavelength so you can 
 # compute the diffraction limited MTF.
-def strehl(a):
-    pass
+#def strehl(a):
+#    pass

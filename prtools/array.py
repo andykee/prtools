@@ -238,7 +238,7 @@ def rescale(img, scale, shape=None, mask=None, order=3, mode='nearest',
 
     return out
 
-def normalize_power(array, power=1):
+def normpow(array, power=1):
     r"""Normalizie the power in an array.
 
     The total power in an array is given by
@@ -253,7 +253,7 @@ def normalize_power(array, power=1):
 
         c = \sqrt{\frac{p}{\sum{\left|\mbox{array}\right|^2}}}
 
-    The array returned by a will be scaled by the normalization coefficient so
+    The array returned will be scaled by the normalization coefficient so
     that its power is equal to :math:`p`.
 
     Parameters

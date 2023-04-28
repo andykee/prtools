@@ -25,7 +25,7 @@ Array manipulation
    rebin
    rescale
    medfix2
-   normalize_power
+   normpow
    shift
    register
 
@@ -40,7 +40,6 @@ Statistical functions
    encircled_energy
    rms
    pv
-   strehl
 
 Zernike polynomials
 -------------------
