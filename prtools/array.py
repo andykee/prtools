@@ -1,15 +1,20 @@
+import warnings
+
 import numpy as np
 from numpy.lib.stride_tricks import as_strided
 from scipy.ndimage import map_coordinates
 
 
-def centroid(a):
+def centroid(a, where=None):
     """Compute array centroid location.
 
     Parameters
     ----------
     a : array_like
         Input array.
+    where: array_like of bool, optional
+        Elements to include in the centroid calculation. If None (default),
+        all finite and non-NaN values are used.
 
     Returns
     -------
@@ -18,12 +23,23 @@ def centroid(a):
 
     """
     a = np.asarray(a)
-    a = a/np.sum(a)
+
+    if where is None:
+        where = np.isfinite(a)
+    else:
+        where = np.asarray(where, dtype=bool)
+
+    if np.isnan(a[where]).any():
+        warnings.warn('Unmasked NaN in input', RuntimeWarning,
+                      stacklevel=2)
+    
+    anorm = a[where]/np.sum(a[where])
+
     nr, nc = a.shape
     rr, cc = np.mgrid[0:nr, 0:nc]
 
-    r = np.dot(rr.ravel(), a.ravel())
-    c = np.dot(cc.ravel(), a.ravel())
+    r = np.dot(rr[where].ravel(), anorm.ravel())
+    c = np.dot(cc[where].ravel(), anorm.ravel())
 
     return r, c
 
