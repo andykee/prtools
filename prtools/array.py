@@ -445,7 +445,7 @@ def register(arr, ref, oversample, return_error=False):
     return shift
 
 
-def medfix2(input, mask, kernel=(3,3)):
+def medfix2(input, mask, kernel=(3,3), nanwarn=False):
     """Fix masked entries in a 2-dimensional array via median filtering.
 
     Parameters
@@ -453,17 +453,27 @@ def medfix2(input, mask, kernel=(3,3)):
     input : array_like
         A 2-dimensional input array
     mask : array_like
-        A 2-dimensional
+        A 2-dimensional mask with the same shape as input. Entries which
+        evaluate to True are considered masked and will be repaired.
     kernel : array_like, optional
         A scalar or list of length 2 specifying the filter window in 
         each dimension. Elements of *kernel* should be odd. If *kernel*
         is a scalar, it is used for each dimension. Default is (3,3).
+    nanwarn : bool, optional
+        If True, a RuntimeWarning will be raised if NaNs are present
+        in the output. Default is False.
+
     Returns
     -------
     out : ndarray
         An array the same size as input where the masked entries are 
         replaced with median filtered values.
-    
+   
+    Notes
+    -----
+    Masked areas larger than the kernel size will introduce NaNs into
+    the output.
+
     """
     # force a copy by calling array instead of asarray
     input = np.array(input, dtype=float)
@@ -491,7 +501,13 @@ def medfix2(input, mask, kernel=(3,3)):
     input_pad = input_pad.reshape((input_pad.shape[0], input_pad.shape[1], np.prod(kernel)))
 
     mask_idx = np.where(mask)
+    
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', category=RuntimeWarning)
+        input[mask_idx] = np.nanmedian(input_pad[mask_idx[0], mask_idx[1], :], axis=1)
 
-    input[mask_idx] = np.nanmedian(input_pad[mask_idx[0], mask_idx[1], :], axis=1)
+    if np.isnan(input).any():
+        warnings.warn('Result contains NaNs', RuntimeWarning,
+                      stack_level=2)
 
     return input
