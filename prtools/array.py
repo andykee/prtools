@@ -445,7 +445,7 @@ def register(arr, ref, oversample, return_error=False):
     return shift
 
 
-def medfix2(input, mask, kernel=(3,3), nanwarn=False):
+def medfix(input, mask, kernel=(3,3), nanwarn=False):
     """Fix masked entries in a 2-dimensional array via median filtering.
 
     Parameters
@@ -508,6 +508,6 @@ def medfix2(input, mask, kernel=(3,3), nanwarn=False):
 
     if np.isnan(input).any():
         warnings.warn('Result contains NaNs', RuntimeWarning,
-                      stack_level=2)
+                      stacklevel=2)
 
     return input

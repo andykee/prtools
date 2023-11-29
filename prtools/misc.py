@@ -2,8 +2,52 @@ import numpy as np
 
 import prtools
 
-# function to convert between defocus and z-translation
-# pv_z4 = dz/(8*fnum**2)
+
+def calcpsf(amp, opd, wavelength, sampling, shape, oversample=2, 
+            shift=(0,0), offset=(0,0), weight=1, flatten=True):
+    
+    sampling = np.broadcast_to(sampling, (2,))
+    shape = np.broadcast_to(shape, (2,))
+    wavelength = np.atleast_1d(wavelength)
+    weight = np.broadcast_to(weight, wavelength.shape)
+    shift = np.asarray(shift)
+
+    shape_out = (shape[0]*oversample, shape[1]*oversample)
+
+    out = []
+    for wl, wt in zip(wavelength, weight):
+        alpha = sampling/(wl*oversample)
+        p = amp * np.exp(2*np.pi*1j/wl*opd)
+        P = prtools.dft2(p, alpha, shape_out, shift*oversample, offset)
+        P = np.abs(P)**2
+        out.append(P * wt)
+    
+    if flatten:
+        out = np.sum(out, axis=0)
+    else:
+        out = np.asarray(out)
+    
+    return out
+
+
+def translation_defocus(f_number, dz):
+    """Compute the peak-to-valley defocus imparted by a given translation
+    along the optical axis
+    
+    Parameters
+    ----------
+    f_number : float
+        Beam F/#
+    dz : float
+        Translation along optical axis
+
+    Returns
+    -------
+    float
+
+    """
+    return dz/(8*f_number**2)
+
 
 # function to convert between pv and rms defocus
 
@@ -28,6 +72,48 @@ def radial_avg(a, center=None):
 
     return tbin/nr
 
+
+def fft_shape(dx, du, z, wavelength, oversample):
+    """Compute FFT pad shape to satisfy requested sampling condition
+    
+    Parameters
+    ----------
+    dx : float or tuple of floats
+        Physical sampling of pupil plane. If a single value is supplied,
+        the pupil is assumed to be uniformly sampled in both row and column.
+    du : float or tuple of floats
+        Physical sampling of image plane. If a single value is supplied,
+        the image is assumed to be uniformly sampled in both row and column.
+    z : float
+        Propagation distance
+    wavelength : float
+        Propagation wavelength
+    oversample : float
+        Number of times to oversample the output plane
+    
+    Returns
+    -------
+    shape : tuple of ints
+        Required pad shape
+    wavelength : float
+        True wavelength represented by padded shape
+
+    """
+    # Compute pad shape to satisfy requested sampling. Propagation wavelength
+    # is recomputed to account for integer padding of input plane
+    alpha = _dft_alpha(dx, du, z, wavelength, oversample)
+    fft_shape = np.round(np.reciprocal(alpha)).astype(int)       
+    prop_wavelength = np.min((fft_shape/oversample * dx * du)/z)
+    return fft_shape, prop_wavelength
+
+
+def _dft_alpha(dx, du, wavelength, z, oversample):
+    dx = np.broadcast_to(dx, (2,))
+    du = np.broadcast_to(du, (2,))
+    return ((dx[0]*du[0])/(wavelength*z*oversample),
+            (dx[1]*du[1])/(wavelength*z*oversample))
+
+
 def min_sampling(wave, z, du, npix, min_q):
     return (np.min(wave) * z)/(min_q * du * npix)
 
@@ -39,15 +125,13 @@ def pixelscale_nyquist(wave, f_number):
     Parameters
     ----------
     wave : float
-        Wavelength in meters
-
+        Wavelength
     f_number : float
         Optical system F/#
 
     Returns
     -------
     float
-        Sampling in meters
 
     """
     return f_number * wave / 2

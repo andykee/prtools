@@ -4,7 +4,8 @@ licensed. Their licenses are provided below.
 Name: Lentil
 Files: prtools/array.py (centroid, pad, boundary, rebin, rescale, 
                          normalize_power, shift, register)
-       prtools/shaoes.py (circle, circlemask, hexagon, rectangle,
+       prtools/fourier.py (*)
+       prtools/shapes.py (circle, circlemask, hexagon, rectangle,
                           gauss2, _mesh)
        prtools/zernike.py (*)
 License: 3-clause BSD

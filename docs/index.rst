@@ -18,26 +18,24 @@ Array manipulation
    :caption: Array manipulation
    :nosignatures:
    
-
    centroid
    pad
    boundary
    rebin
    rescale
-   medfix2
+   medfix
    normpow
    shift
    register
 
-Statistical functions
----------------------
+Array metrics
+-------------
 .. autosummary::
    :toctree: generated
-   :caption: Statistical functions
+   :caption: Array metrics
    :nosignatures:
    
-
-   encircled_energy
+   ee
    rms
    pv
 
@@ -65,9 +63,9 @@ Shapes
    circlemask
    rectangle
    hexagon
-   gauss2
-   sin2
-   waffle2
+   gauss
+   sin
+   waffle
 
 .. note::
 
@@ -83,5 +81,18 @@ Misc utilities
    :caption: Misc utilities
    :nosignatures:
 
-   min_sampling
+   calcpsf
    pixelscale_nyquist
+   min_sampling
+   fft_shape
+   translation_defocus
+   
+Fourier transforms
+------------------
+.. autosummary::
+   :toctree: generated
+   :caption: Fourier transforms
+   :nosignatures:
+
+   dft2
+   idft2

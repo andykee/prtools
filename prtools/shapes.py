@@ -135,7 +135,7 @@ def ellipse():
     pass
 
 
-def gauss2(shape, sigma, shift=(0,0), indexing='xy'):
+def gauss(shape, sigma, shift=(0,0), indexing='xy'):
     """Generate a 2D Gaussian function.
 
     Parameters
@@ -162,7 +162,7 @@ def gauss2(shape, sigma, shift=(0,0), indexing='xy'):
     return G
 
 
-def sin2(shape, cycles, shift=(0,0), rotate=0, indexing='xy'):
+def sin(shape, cycles, shift=(0,0), rotate=0, indexing='xy'):
     """Generate a 2D sine function.
     
     Parameters
@@ -205,7 +205,7 @@ def sin2(shape, cycles, shift=(0,0), rotate=0, indexing='xy'):
     return np.sin(Z)
 
 
-def waffle2(shape, cycles, shift=(0,0), rotate=0, indexing='xy'):
+def waffle(shape, cycles, shift=(0,0), rotate=0, indexing='xy'):
     """
     Generate a 2D waffle function.
     
@@ -229,8 +229,8 @@ def waffle2(shape, cycles, shift=(0,0), rotate=0, indexing='xy'):
     waffle2 : ndarray
     """
 
-    a = sin2(shape, cycles, shift, rotate+45, indexing)
-    b = sin2(shape, cycles, shift, rotate+135, indexing)
+    a = sin(shape, cycles, shift, rotate+45, indexing)
+    b = sin(shape, cycles, shift, rotate+135, indexing)
     return a + b
 
 

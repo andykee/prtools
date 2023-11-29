@@ -3,7 +3,7 @@ import numpy as np
 import prtools
 
 
-def encircled_energy(a, energy=0.8, center=None):
+def ee(a, energy=0.8, center=None):
     """Compute the encircled energy diameter for a given energy fraction.
 
     Parameters

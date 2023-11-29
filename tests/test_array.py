@@ -30,16 +30,16 @@ def test_centroid_nan():
 x, _ = np.meshgrid(range(10), range(10))
 x[2,2] = 100
 
-def test_medfix2():
+def test_medfix():
     m = np.zeros_like(x)
     m[2,2] = 1
-    y = prtools.medfix2(x, mask=m, kernel=(3,3))
+    y = prtools.medfix(x, mask=m, kernel=(3,3))
     assert(y[2,2] == 2)
 
-def test_medfix2_bigmask():
+def test_medfix_bigmask():
     m = np.zeros_like(x)
     m[2:6, 2:6] = 1
     with warnings.catch_warnings():
         warnings.simplefilter('error')
-        y = prtools.medfix2(x, mask=m, kernel=(3,3))
+        y = prtools.medfix(x, mask=m, kernel=(3,3))
     assert(np.all(np.isnan(y[3:5,3:5])))
