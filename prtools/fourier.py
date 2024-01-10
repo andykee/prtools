@@ -76,6 +76,11 @@ def dft2(f, alpha, shape=None, shift=(0, 0), offset=(0, 0), unitary=True, out=No
     [1] Soummer, et. al. Fast computation of Lyot-style coronagraph propagation (2007)
 
     """
+
+    return _dftcore(f, alpha, shape, shift, offset, unitary, out, forward=True)
+
+
+def _dftcore(f, alpha, shape, shift, offset, unitary, out, forward):
     alpha_row, alpha_col = np.broadcast_to(alpha, (2,))
 
     f = np.asarray(f)
@@ -91,22 +96,38 @@ def dft2(f, alpha, shape=None, shift=(0, 0), offset=(0, 0), unitary=True, out=No
     if out is not None:
         if not np.can_cast(complex, out.dtype):
             raise TypeError(f"Cannot cast complex output to dtype('{out.dtype}')")
-
+        
     E1, E2 = _dft2_matrices(m, n, M, N, alpha_row, alpha_col, shift_row, shift_col,
-                            offset_row, offset_col)
+                            offset_row, offset_col, forward)
+        
     F = np.dot(E1.dot(f), E2, out=out)
 
     # now calculate the answer, without reallocating memory
     if unitary:
         np.multiply(F, np.sqrt(np.abs(alpha_row * alpha_col)), out=F)
 
+    # idft rescaling
+    if not forward:
+        F = np.divide(F, f.size, out=F)
+
     return F
 
 
-def _dft2_matrices(m, n, M, N, alphar, alphac, shiftr, shiftc, offsetr, offsetc):
+def _dft2_matrices(m, n, M, N, alphar, alphac, shiftr, shiftc, offsetr, offsetc, forward):
+    if forward:
+        sign = -1
+    else:
+        sign = 1
     R, S, U, V = _dft2_coords(m, n, M, N)
-    E1 = np.exp(-2.0 * 1j * np.pi * alphar * np.outer(R-shiftr+offsetr, U-shiftr)).T
-    E2 = np.exp(-2.0 * 1j * np.pi * alphac * np.outer(S-shiftc+offsetc, V-shiftc))
+    E1 = np.exp(sign*2.0 * 1j * np.pi * alphar * np.outer(R-shiftr+offsetr, U-shiftr)).T
+    E2 = np.exp(sign*2.0 * 1j * np.pi * alphac * np.outer(S-shiftc+offsetc, V-shiftc))
+    return E1, E2
+
+
+def _idft2_matrices(m, n, M, N, alphar, alphac, shiftr, shiftc, offsetr, offsetc):
+    R, S, U, V = _dft2_coords(m, n, M, N)
+    E1 = np.exp(2.0 * 1j * np.pi * alphar * np.outer(R-shiftr+offsetr, U-shiftr)).T
+    E2 = np.exp(2.0 * 1j * np.pi * alphac * np.outer(S-shiftc+offsetc, V-shiftc))
     return E1, E2
 
 
@@ -123,7 +144,7 @@ def _dft2_coords(m, n, M, N):
     return R, S, U, V
 
 
-def idft2(F, alpha, shape=None, shift=(0,0), unitary=True, out=None):
+def idft2(F, alpha, shape=None, shift=(0,0), offset=(0,0), unitary=True, out=None):
     r"""Compute the 2-dimensional inverse discrete Fourier Transform.
 
     The IDFT is defined in one dimension as
@@ -192,9 +213,4 @@ def idft2(F, alpha, shape=None, shift=(0,0), unitary=True, out=None):
     [2] `Expressing the inverse DFT in terms of the DFT <https://en.wikipedia.org/wiki/Discrete_Fourier_transform#Expressing_the_inverse_DFT_in_terms_of_the_DFT>`_.
 
     """
-    F = np.asarray(F)
-    N = F.size
-    # will allocate memory for F if out == None
-    F = dft2(np.conj(F), alpha, shape, shift, unitary=unitary, out=out)
-    np.conj(F, out=F)
-    return np.divide(F, N, out=F)
+    return _dftcore(F, alpha, shape, shift, offset,  unitary, out, forward=False)

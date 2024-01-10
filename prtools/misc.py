@@ -5,6 +5,48 @@ import prtools
 
 def calcpsf(amp, opd, wavelength, sampling, shape, oversample=2, 
             shift=(0,0), offset=(0,0), weight=1, flatten=True):
+    """Calculate a point spread function using far-field diffraction.
+
+    Parameters
+    ----------
+    amp : array_like
+        Pupil amplitude
+    opd : array_like
+        Pupil OPD
+    wavelength : float or list_like
+        Propagation wavelength(s)
+    sampling : float or tuple of floats
+        Propagation sampling term defined as 
+
+        .. math::
+            \mbox{sampling} = \\frac{dx \ du}/{z}
+        
+        where *dx* is the pupil plane spatial sampling, *du* is the image
+        plane spatial sampling, and *z* is the propagation distance. If a 
+        single value is supplied, the sampling is assumed to be uniform 
+        in both row and column.
+    shape : int or tuple of ints
+        Native output shape. If a single value is supplied, the output will
+        have shape = (shape, shape). Note that the actual output shape is 
+        floor(shape * oversample)
+    oversample : float
+        Number of times to oversample the output plane
+    shift : tuple of floats, optional
+        Shift from (0,0) in (r,c) of image plane. Default is (0,0).
+    offset : tuple of floats, optional
+        Offset from (0,0) in (r,c) of pupil plane. Default is (0,0).
+    weight : float or list_like
+        Weighting for each wavelength in :param:`wavelength`. 
+    flatten : bool, optional
+        If True (default),the output is flattened along the spectral 
+        dimension. Otherwise, a cube is returned with shape 
+        (len(wavelength), shape[0]*oversample, shape[1]*oversample)
+    
+    Returns
+    -------
+    psf : ndarray
+
+    """
     
     sampling = np.broadcast_to(sampling, (2,))
     shape = np.broadcast_to(shape, (2,))
@@ -12,7 +54,7 @@ def calcpsf(amp, opd, wavelength, sampling, shape, oversample=2,
     weight = np.broadcast_to(weight, wavelength.shape)
     shift = np.asarray(shift)
 
-    shape_out = (shape[0]*oversample, shape[1]*oversample)
+    shape_out = tuple(np.floor((shape[0]*oversample, shape[1]*oversample)).astype(int))
 
     out = []
     for wl, wt in zip(wavelength, weight):
@@ -79,10 +121,10 @@ def fft_shape(dx, du, z, wavelength, oversample):
     Parameters
     ----------
     dx : float or tuple of floats
-        Physical sampling of pupil plane. If a single value is supplied,
+        Spatial sampling of pupil plane. If a single value is supplied,
         the pupil is assumed to be uniformly sampled in both row and column.
     du : float or tuple of floats
-        Physical sampling of image plane. If a single value is supplied,
+        Spatial sampling of image plane. If a single value is supplied,
         the image is assumed to be uniformly sampled in both row and column.
     z : float
         Propagation distance
