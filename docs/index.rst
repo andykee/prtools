@@ -86,6 +86,18 @@ Misc utilities
    min_sampling
    fft_shape
    translation_defocus
+
+Sparse matrices
+---------------
+.. autosummary::
+   :toctree: generated
+   :caption: Sparse matrices
+   :nosignatures:
+
+   sparray
+   spmatrix
+   spindex
+   spmask
    
 Fourier transforms
 ------------------

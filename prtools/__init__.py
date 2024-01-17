@@ -17,6 +17,10 @@ from prtools.shapes import (
     circle, circlemask, hexagon, rectangle, gauss, sin, waffle
     )
 
+from prtools.sparse import (
+    spindex, sparray, spmatrix, spmask
+    )
+
 from prtools.stats import ee, rms, pv
 
 from prtools.zernike import (
