@@ -19,7 +19,7 @@ def calcpsf(amp, opd, wavelength, sampling, shape, oversample=2,
         Propagation sampling term defined as 
 
         .. math::
-            \mbox{sampling} = \\frac{dx \ du}/{z}
+            \mbox{sampling} = \\frac{dx \ du}{z}
         
         where *dx* is the pupil plane spatial sampling, *du* is the image
         plane spatial sampling, and *z* is the propagation distance. If a 
@@ -36,7 +36,7 @@ def calcpsf(amp, opd, wavelength, sampling, shape, oversample=2,
     offset : tuple of floats, optional
         Offset from (0,0) in (r,c) of pupil plane. Default is (0,0).
     weight : float or list_like
-        Weighting for each wavelength in :param:`wavelength`. 
+        Weighting for each wavelength in ``wavelength``. 
     flatten : bool, optional
         If True (default),the output is flattened along the spectral 
         dimension. Otherwise, a cube is returned with shape 
@@ -47,7 +47,6 @@ def calcpsf(amp, opd, wavelength, sampling, shape, oversample=2,
     psf : ndarray
 
     """
-    
     sampling = np.broadcast_to(sampling, (2,))
     shape = np.broadcast_to(shape, (2,))
     wavelength = np.atleast_1d(wavelength)
@@ -96,9 +95,25 @@ def translation_defocus(f_number, dz):
 # function to convert between pv tip/tilt and focal plane position
 
 def radial_avg(a, center=None):
-
-    # https://stackoverflow.com/a/21242776
+    """Compute the average radial profile of the input
     
+    Parameters
+    ----------
+    a : array_like
+        Input array
+    center : (2,) array_like or None
+        Coordinates of center of ``a`` given as (row, col). If None (default), 
+        the center coordinates are computed as the centroid of ``a``.
+
+    Returns
+    -------
+    (1,) ndarray
+
+    References
+    ----------
+    [1] https://stackoverflow.com/a/21242776
+    
+    """
     a = np.asarray(a)
 
     if center is None:
@@ -161,7 +176,7 @@ def min_sampling(wave, z, du, npix, min_q):
 
 
 def pixelscale_nyquist(wave, f_number):
-    """Compute the output plane sampling which is Nyquist sampled for
+    """Compute the output plane sampling that is Nyquist sampled for
     intensity.
 
     Parameters

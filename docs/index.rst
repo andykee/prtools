@@ -1,13 +1,26 @@
-:mod:`prtools` --- Utility functions for image-based phase retrieval
-====================================================================
+**prtools** --- Utility functions for image-based phase retrieval
+=================================================================
 
-The :mod:`prtools` package implements functionality and tools that may be
-helpful when performing image-based phase retrieval including:
+**Version**: |version|
+
+**Useful links**:
+`Source Repository <https://github.com/andykee/prtools>`_ |
+`Releases <https://pypi.org/project/prtools/>`_ |
+`Issue Tracker <https://github.com/andykee/prtools/issues>`_ 
+
+The :mod:`prtools` library provides functionality and tools that may be
+useful when performing image-based phase retrieval including:
 
 * Image processing, reduction, and analysis
 * Creating, fitting, and removing Zernike polynomials
 * Drawing various shapes in arrays
 * Computing statistics and optical simulation parameters
+
+Install prtools with pip:
+
+.. code-block:: bash
+
+    pip install prtools
 
 .. currentmodule:: prtools
 
@@ -38,6 +51,7 @@ Array metrics
    ee
    rms
    pv
+   radial_avg
 
 Zernike polynomials
 -------------------

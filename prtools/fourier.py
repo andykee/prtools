@@ -209,8 +209,6 @@ def idft2(F, alpha, shape=None, shift=(0,0), offset=(0,0), unitary=True, out=Non
     References
     ----------
     [1] Soummer, et. al. Fast computation of Lyot-style coronagraph propagation (2007)
-
-    [2] `Expressing the inverse DFT in terms of the DFT <https://en.wikipedia.org/wiki/Discrete_Fourier_transform#Expressing_the_inverse_DFT_in_terms_of_the_DFT>`_.
-
+    
     """
     return _dftcore(F, alpha, shape, shift, offset,  unitary, out, forward=False)

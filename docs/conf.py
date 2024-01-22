@@ -3,12 +3,15 @@
 # -- Path setup --------------------------------------------------------------
 
 import os
+import re
 import sys
 import datetime
 
 sys.path.insert(0, os.path.abspath('../'))
 path = os.path.abspath(os.path.dirname(__file__))
 
+with open(os.path.normpath(os.path.join(path, '..', 'prtools', '__init__.py'))) as f:
+    version = release = re.search("__version__ = '(.*?)'", f.read()).group(1)
 
 # -- Project information -----------------------------------------------------
 
@@ -27,7 +30,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.autosummary',
               'sphinx.ext.napoleon',
               'sphinx.ext.viewcode',
-#              'sphinx_remove_toctrees',
+              'sphinx_remove_toctrees',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -46,36 +49,28 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 #
 html_theme = 'pydata_sphinx_theme'
 
-html_logo = '_static/logo.png'
-
+html_logo = '_static/logo.svg'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-html_css_files = [
-    'custom.css',
-]
+html_css_files = ['custom.css']
 html_theme_options = {
-    "logo": {
-        "text": "prtools"
-    },
     "github_url": "https://github.com/andykee/prtools",
     "navbar_start": ["navbar-logo"],
     "navbar_center": ["navbar-nav"],
     "navbar_end": ["navbar-icon-links"],
-    "navbar_persistent": ["search-button"],
     "article_header_start": [],
     "secondary_sidebar_items": [],
     "footer_start": ["copyright"],
     "footer_end": [],
     "show_prev_next": False,
-    
 }
 
 html_sidebars = {
-  "index": ["search-field.html"],
-  "generated/*": ["search-field.html", "sidebar-nav.html"]
+  "index": ["sidebar-nav.html"], # also see sidebar-empty.html
+  "generated/*": ["sidebar-nav.html"]
 }
 
 html_show_sourcelink = False
