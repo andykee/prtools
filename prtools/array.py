@@ -5,7 +5,7 @@ from numpy.lib.stride_tricks import as_strided
 from scipy.ndimage import map_coordinates
 
 
-def centroid(a, where=None):
+def centroid(a, where=None, kind='absolute', indexing='ij'):
     """Compute array centroid location.
 
     Parameters
@@ -15,13 +15,44 @@ def centroid(a, where=None):
     where: array_like of bool, optional
         Elements to include in the centroid calculation. If None (default),
         all finite and non-NaN values are used.
+    kind : {'absolute', 'center'}, optional
+        Specifies the kind of centroid as a string. If 'absolute' (default), the 
+        absolute centroid within the input is returned. If 'center', the centroid
+        relative to the center of the input is returned.
+    indexing : {'ij', 'xy'}, optional
+        Matrix ('ij', default) or cartesian ('xy') indexing of mesh.
 
     Returns
     -------
     centroid : tuple
-        (r, c) centroid location.
+        (r, c) or (x, y) centroid location
+
+    Examples
+    --------
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
+
+        >>> circ = prtools.circle(shape=(256, 256), radius=25, shift=(-80, 50))
+        >>> plt.imshow(circ, cmap='gray')
+    
+    .. code:: pycon
+
+        >>> prtools.centroid(circ)
+        (48.00000000000002, 178.0)
+        >>> prtools.centroid(circ, kind='center')
+        (-79.99999999999997, 50.0)
+        >>> prtools.centroid(circ, kind='center', indexing='xy')
+        (50.0, 79.99999999999997)
 
     """
+    if kind not in ('absolute', 'center'):
+        raise ValueError(f'Unknown kind {kind}')
+    
+    if indexing not in ('ij', 'xy'):
+        raise ValueError("Valid values for indexing are 'xy' and 'ij'.")
+
     a = np.asarray(a)
 
     if where is None:
@@ -40,6 +71,14 @@ def centroid(a, where=None):
 
     r = np.dot(rr[where].ravel(), anorm.ravel())
     c = np.dot(cc[where].ravel(), anorm.ravel())
+
+    if kind == 'center':
+        rc, cc = np.array(a.shape)/2
+        r -= rc
+        c -= cc
+
+    if indexing == 'xy':
+        r, c = c, -r
 
     return r, c
 
@@ -63,8 +102,36 @@ def pad(a, shape, fill=0):
     padded_array : ndarray
         Zero-padded array with shape ``(nrows, ncols)``. If ``a`` has a
         third dimension, the return shape will be ``(depth, nrows, ncols)``.
-    """
 
+    Examples
+    --------
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
+
+        >>> circ = prtools.circle(shape=(128, 128), radius=64)
+        >>> circ_pad = prtools.pad(circ, shape=(200, 200))
+        >>> fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(5, 2))
+        >>> ax[0].imshow(circ, cmap='gray')
+        >>> ax[0].set_title('Original array')
+        >>> ax[1].imshow(circ_pad, cmap='gray')
+        >>> ax[1].set_title('Padded array')
+    
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
+
+        >>> circ = prtools.circle(shape=(128, 128), radius=64)
+        >>> circ_pad = prtools.pad(circ, shape=(110, 110))
+        >>> fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(5, 2))
+        >>> ax[0].imshow(circ, cmap='gray')
+        >>> ax[0].set_title('Original array')
+        >>> ax[1].imshow(circ_pad, cmap='gray')
+        >>> ax[1].set_title('Padded array')
+
+    """
     a = np.atleast_2d(a)
     shape = np.broadcast_to(np.asarray(shape, dtype=int), (2,))    
 
@@ -111,6 +178,22 @@ def boundary(x, threshold=0):
     rmin, rmax, cmin, cmax : ints
         Boundary indices
 
+    Examples
+    --------
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
+
+        >>> circ = prtools.circle(shape=(200, 200), radius=50)
+        >>> plt.imshow(circ, cmap='gray')
+        >>> plt.grid('on')
+
+    .. code:: pycon
+
+        >>> prtools.boundary(circ)
+        (50, 150, 50, 150)
+    
     """
     x = np.asarray(x)
     x = (x > threshold)
@@ -121,7 +204,7 @@ def boundary(x, threshold=0):
     rmin, rmax = np.where(rows)[0][[0, -1]]
     cmin, cmax = np.where(cols)[0][[0, -1]]
 
-    return rmin, rmax, cmin, cmax
+    return rmin, rmax, cmin, cmax(28, 228, 28, 228)
 
 
 def rebin(img, factor):
@@ -201,8 +284,7 @@ def rescale(img, scale, shape=None, mask=None, order=3, mode='nearest',
 
     Returns
     -------
-    img : ndarray
-        Rescaled image.
+    ndarray
 
     Note
     ----
@@ -313,8 +395,6 @@ def shift(a, shift):
     -------
     .. code:: pycon
 
-        >>> import prtools
-        >>> import numpy as np
         >>> arr = np.zeros((3,3))
         >>> arr[2,2] = 1
         >>> arr
@@ -385,8 +465,6 @@ def register(arr, ref, oversample, return_error=False):
     -------
     .. code:: pycon
 
-        >>> import prtools
-        >>> import numpy as np
         >>> ref = np.zeros((3,3))
         >>> ref[1,1] = 1
         >>> arr = np.zeros((3,3))
@@ -465,9 +543,7 @@ def medfix(input, mask, kernel=(3,3), nanwarn=False):
 
     Returns
     -------
-    out : ndarray
-        An array the same size as input where the masked entries are 
-        replaced with median filtered values.
+    ndarray
    
     Notes
     -----

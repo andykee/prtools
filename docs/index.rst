@@ -16,7 +16,7 @@ useful when performing image-based phase retrieval including:
 * Drawing various shapes in arrays
 * Computing statistics and optical simulation parameters
 
-Install prtools with pip:
+Install :mod:`prtools` with pip:
 
 .. code-block:: bash
 
@@ -48,10 +48,10 @@ Array metrics
    :caption: Array metrics
    :nosignatures:
    
-   ee
    rms
    pv
    radial_avg
+   ee
 
 Zernike polynomials
 -------------------
@@ -74,18 +74,20 @@ Shapes
    :nosignatures:
 
    circle
-   circlemask
    rectangle
    hexagon
+   hex_segments
+   spider
    gauss
    sin
    waffle
+   mesh
 
 .. note::
 
    The shape functions support both Cartesian (``xy``) and matrix (``ij``)
    indexing conventions for specifying the shift parameter via the 
-   ``indexing`` parameter. The default is Cartesian (``indexing='xy'``) for 
+   ``indexing`` parameter. The default is matrix (``indexing='ij'``) for 
    all functions.
 
 Misc utilities

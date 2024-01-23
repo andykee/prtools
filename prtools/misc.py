@@ -44,7 +44,27 @@ def calcpsf(amp, opd, wavelength, sampling, shape, oversample=2,
     
     Returns
     -------
-    psf : ndarray
+    ndarray
+
+    Examples
+    --------
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
+
+        >>> amp = prtools.circle(shape=(256, 256), radius=100)
+        >>> coeffs = np.random.uniform(low=-1, high=1, size=8)*1e-7
+        >>> opd = prtools.zernike_compose(amp, coeffs)
+        >>> wave = 500e-9
+        >>> dx = 1/200  # pupil diameter = 1m
+        >>> du = 5e-6
+        >>> focal_length = 10
+        >>> sampling = (dx * du)/focal_length
+        >>> shape = (64, 64)
+        >>> oversample = 5
+        >>> psf = prtools.calcpsf(amp, opd, wave, sampling, shape, oversample)
+        >>> plt.imshow(psf, cmap='inferno', norm='log', vmin=10e-5)
 
     """
     sampling = np.broadcast_to(sampling, (2,))
@@ -107,7 +127,7 @@ def radial_avg(a, center=None):
 
     Returns
     -------
-    (1,) ndarray
+    ndarray
 
     References
     ----------
@@ -172,6 +192,10 @@ def _dft_alpha(dx, du, wavelength, z, oversample):
 
 
 def min_sampling(wave, z, du, npix, min_q):
+    """Compute the minimum pupil plane sampling to satisfy given
+    constraints.
+    
+    """
     return (np.min(wave) * z)/(min_q * du * npix)
 
 

@@ -26,11 +26,13 @@ copyright = f'{datetime.date.today().year} Andy Kee'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc',
-              'sphinx.ext.autosummary',
-              'sphinx.ext.napoleon',
-              'sphinx.ext.viewcode',
-              'sphinx_remove_toctrees',
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
+    'sphinx_remove_toctrees',
+    'matplotlib.sphinxext.plot_directive'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -66,6 +68,8 @@ html_theme_options = {
     "footer_start": ["copyright"],
     "footer_end": [],
     "show_prev_next": False,
+    "pygment_light_style": "tango",
+    "pygment_dark_style": "nord",
 }
 
 html_sidebars = {
@@ -90,3 +94,39 @@ autodoc_default_options = {
 autosummary_generate = True
 
 remove_from_toctrees = ["generated/*"]
+
+
+# -- Plot config -------------------------------------------------------------
+dpi = 144
+
+plot_rcparams = {}  # noqa
+plot_rcparams['font.size'] = 12*72/dpi  # 12 pt
+plot_rcparams['axes.titlesize'] = 14*72/dpi  # 14 pt
+plot_rcparams['axes.labelsize'] = 12*72/dpi  # 12 pt
+plot_rcparams['axes.linewidth'] = 0.5
+plot_rcparams['lines.linewidth'] = 1
+plot_rcparams['lines.markersize'] = 2
+plot_rcparams['xtick.major.width'] = 0.5
+plot_rcparams['xtick.major.size'] = 2
+plot_rcparams['ytick.major.width'] = 0.5
+plot_rcparams['ytick.major.size'] = 2
+plot_rcparams['grid.linewidth'] = 0.5
+plot_rcparams['xtick.labelsize'] = 12*72/dpi  # 12 pt
+plot_rcparams['ytick.labelsize'] = 12*72/dpi  # 12 pt
+plot_rcparams['legend.fontsize'] = 12*72/dpi  # 12 pt
+plot_rcparams['figure.figsize'] = (2.5, 2.5)
+plot_rcparams['figure.subplot.wspace'] = 0.2
+plot_rcparams['figure.subplot.hspace'] = 0.2
+plot_rcparams['savefig.bbox'] = 'tight'
+plot_rcparams['savefig.transparent'] = True
+
+plot_apply_rcparams = True
+plot_html_show_source_link = False
+plot_html_show_formats = False
+plot_formats = [('png', dpi*2)]
+plot_pre_code = """
+import prtools
+import matplotlib.pyplot as plt
+import numpy as np
+np.random.seed(12345)
+"""

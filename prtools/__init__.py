@@ -1,5 +1,5 @@
 
-__version__ = '1.0.0'
+__version__ = '1.1.0-dev'
 
 from prtools.array import (
     centroid, pad, boundary, rebin, rescale, normpow,
@@ -13,8 +13,10 @@ from prtools.misc import (
     translation_defocus, fft_shape, calcpsf
     )
 
-from prtools.shapes import (
-    circle, circlemask, hexagon, rectangle, gauss, sin, waffle
+from prtools.segmented import hex_segments
+
+from prtools.shape import (
+    mesh, circle, hexagon, rectangle, spider, gauss, sin, waffle
     )
 
 from prtools.sparse import (

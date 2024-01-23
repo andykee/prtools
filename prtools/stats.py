@@ -109,8 +109,7 @@ def pv(a, axis=None):
 
     Returns
     -------
-    pv : ndarray
-        A new array containing the P-V along the requested axes.
+    ndarray
     """
     a = np.asarray(a)
     return np.amax(a, axis=axis) - np.min(a, axis=axis)
@@ -130,8 +129,7 @@ def rms(a, axis=None):
 
     Returns
     -------
-    rms : ndarray
-        A new array containing the RMS along the requested axes.
+    ndarray
 
     """
     a = np.asarray(a)

@@ -3,7 +3,6 @@ from math import factorial
 import numpy as np
 
 import prtools
-from prtools.shapes import _mesh
 
 
 def zernike(mask, index, normalize=True, rho=None, theta=None):
@@ -14,28 +13,23 @@ def zernike(mask, index, normalize=True, rho=None, theta=None):
     mask : array_like
         Binary mask defining the extent to compute the Zernike polynomial
         over.
-
     index : int
         Noll Zernike index as defined in [1]
-
     normalize : bool, optional
         If True (default), the output is normalized according to [1]. If False,
         the output value ranges [-1, 1] over the mask.
-
     rho : array_like, optional
         Radial coordinates of the mask array. :attr:`rho` should be 0 at the
         origin and 1 at the edge of the circle.
-
     theta : array_like, optional
         Angular coordinates of the mask array in radians.
 
     Returns
     -------
-    out
-        Circular Zernike polynomial computed over the given mask.
+    ndarray
 
-    Warning
-    -------
+    Notes
+    -----
     Zernike polynomials are defined to be orthogonal on the unit circle. If
     the supplied mask is non-circular, the Zernike polynomial is computed on an
     outscribing circle and then cropped by the mask. Note that this operation
@@ -130,7 +124,31 @@ def zernike_compose(mask, coeffs, normalize=True, rho=None, theta=None):
     Returns
     -------
     ndarray
-        OPD
+
+    Examples
+    --------
+    Compute a random OPD using the first ten Zernikes:
+
+    .. plot::
+        :scale: 50
+        :include-source:
+        :context: reset
+
+        >>> mask = prtools.circle((256,256), 120, antialias=False)
+        >>> coeffs = np.random.rand(10)*1e-8
+        >>> opd = prtools.zernike_compose(mask, coeffs)
+        >>> plt.imshow(opd)
+
+    Using the same mask, compute an OPD representing 200 nm focus error (Z4) and -100 nm
+    astigmatism error (Z6):
+
+    .. plot::
+        :context: close-figs
+        :include-source:
+        :scale: 50
+
+        >>> opd = prtools.zernike_compose(mask, [0, 0, 0, 200e-9, 0, -100e-9])
+        >>> plt.imshow(opd)
 
     References
     ----------
@@ -153,31 +171,25 @@ def zernike_basis(mask, modes, vectorize=False, normalize=True, rho=None, theta=
     ----------
     mask : array_like
         Binary mask defining the extent to compute the Zernike polynomial over.
-
     modes : array_like
         List of modes (Noll ordering) to return.
-
     vectorize : bool, optional
         If True, the output is returned as a
         ``(length(modes), modes.shape[0]*modes.shape[1])`` array If False
         (default), the output is returned as a
         ``(length(terms), mask.shape[0], mask.shape[1])`` cube.
-
     normalize : bool, optional
         If True (default), the output is normalized according to [1]. If False,
         the output value ranges [-1, 1] over the mask.
-
     rho : array_like, optional
         Radial coordinates of the mask array. :attr:`rho` should be 0 at the
         origin and 1 at the edge of the circle.
-
     theta : array_like, optional
         Angular coordinates of the mask array in radians.
 
     Returns
     -------
     ndarray
-        Zernike basis set
 
     References
     ----------
@@ -208,40 +220,31 @@ def zernike_fit(opd, mask, modes, normalize=True, rho=None, theta=None):
     ----------
     opd : array_like
         OPD to fit.
-
     mask : array_like
         Binary mask defining the extent to compute the Zernike basis over.
-
     modes : array_like
         List of modes (Noll ordering) to fit.
-
     normalize : bool, optional
         If True (default), the output is normalized according to [1]. If False,
         the output value ranges [-1, 1] over the mask.
-
     rho : array_like, optional
         Radial coordinates of the mask array. :attr:`rho` should be 0 at the
         origin and 1 at the edge of the circle.
-
     theta : array_like, optional
         Angular coordinates of the mask array in radians.
 
     Returns
     -------
     ndarray
-        List of coefficients fit to the supplied OPD over the specified number
-        of Zernike modes.
 
     Example
     -------
     .. code:: pycon
 
-        >>> import numpy as np
-        >>> import lentil
-        >>> mask = lentil.util.circlemask((256,256),128)
+        >>> mask = prtools.circle((256,256),128)
         >>> coeffs = np.random.rand(4)*100e-9
-        >>> opd = lentil.zernike.zernike_compose(mask, coeffs)
-        >>> fit_coeffs = lentil.zernike.zernike_fit(opd, mask, np.arange(2,4))
+        >>> opd = prtools.zernike_compose(mask, coeffs)
+        >>> fit_coeffs = prtools.zernike_fit(opd, mask, np.arange(2,4))
         >>> print('Tip/tilt coefficients:', coeffs[1:3])
         >>> print('Fit tip/tilt coefficients:', fit_coeffs)
 
@@ -274,25 +277,19 @@ def zernike_remove(opd, mask, modes, rho=None, theta=None):
     ----------
     opd : array_like
         OPD to fit.
-
     mask : array_like
         Binary mask defining the extent to compute the Zernike basis over.
-
     modes : array_like
         List of modes (Noll ordering) to remove.
-
     rho : array_like, optional
         Radial coordinates of the mask array. :attr:`rho` should be 0 at the
         origin and 1 at the edge of the circle.
-
     theta : array_like, optional
         Angular coordinates of the mask array in radians.
 
     Returns
     -------
     ndarray
-        Residual OPD after the specified Zernike modes have been fit and
-        removed.
 
     See Also
     --------
@@ -326,7 +323,6 @@ def zernike_index(j):
     -------
     n : int
         Radial Zernike index.
-
     m : int
         Azimuthal Zernike index.
 
@@ -362,7 +358,7 @@ def zernike_index(j):
     return m, n
 
 
-def zernike_coordinates(mask, shift=None, rotate=0):
+def zernike_coordinates(mask, shift=None, angle=0, indexing='ij'):
     """Compute the Zernike coordinate system for a given mask.
     
     Parameters
@@ -370,18 +366,15 @@ def zernike_coordinates(mask, shift=None, rotate=0):
     mask : array_like
         Binary mask defining the extent to compute the Zernike polynomial 
         over.
-    
     shift : (2,) array_like or None, optional
         x, y shift of the coordinate system origin in pixels. If None 
         (default), shift is computed automatically to locate the origin at the
         mask centroid.
-
-    rotate: float, optional
+    angle: float, optional
         Angle to rotate coordinate system by in degrees. rotate is specified 
         relative to the x-axis. Default is 0.
 
     """
-
     mask = np.asarray(mask)
 
     if shift is None:
@@ -390,13 +383,13 @@ def zernike_coordinates(mask, shift=None, rotate=0):
         shift = (centroid[1]-center[1], centroid[0]-center[0])
 
 
-    yy, xx = _mesh(mask.shape, shift)
+    yy, xx = prtools.mesh(shape=mask.shape, shift=shift, indexing=indexing)
 
     r = np.abs(xx+1j*yy)
     rho = r/np.max(r*mask)  # rho is defined to be 1 on the edge of the aperture
 
     # there is a 90 degree offset since np.angle places 0 degrees up
-    angle = (90-rotate) * np.pi/180
+    angle = (90-angle) * np.pi/180
     theta = np.angle(xx*np.exp(1j*angle) + 1j*yy*np.exp(1j*angle))
 
     return rho, theta
