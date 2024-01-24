@@ -132,6 +132,24 @@ def radial_avg(a, center=None):
     References
     ----------
     [1] https://stackoverflow.com/a/21242776
+
+    Examples
+    --------
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
+
+        >>> amp = prtools.circle(shape=(256,256), radius=100)
+        >>> psf = prtools.calcpsf(amp, 0, 500e-9, 1e-9, (64,64), 3)
+        >>> psf /= np.max(psf)
+        >>> ra = prtools.radial_avg(psf**0.1)
+        >>> fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(5,2))
+        >>> ax1.set_title('a')
+        >>> ax1.imshow(psf**0.1)
+        >>> ax2.set_title('radial_avg(a)')
+        >>> ax2.plot(np.arange(ra.size), ra)
+        >>> ax2.grid('on')
     
     """
     a = np.asarray(a)
