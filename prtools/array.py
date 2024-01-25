@@ -204,7 +204,7 @@ def boundary(x, threshold=0):
     rmin, rmax = np.where(rows)[0][[0, -1]]
     cmin, cmax = np.where(cols)[0][[0, -1]]
 
-    return rmin, rmax, cmin, cmax(28, 228, 28, 228)
+    return rmin, rmax, cmin, cmax
 
 
 def rebin(img, factor):
