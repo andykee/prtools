@@ -1,5 +1,5 @@
 
-__version__ = '1.1.0-dev'
+__version__ = '1.1.0'
 
 from prtools.array import (
     centroid, pad, boundary, rebin, rescale, normpow,
