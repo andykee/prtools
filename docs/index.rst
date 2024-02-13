@@ -67,7 +67,7 @@ Miscellaneous
 -------------
 .. autosummary::
    :toctree: generated
-   :caption: Misc utilities
+   :caption: Miscellaneous
    :nosignatures:
 
    calcpsf
