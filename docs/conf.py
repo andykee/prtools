@@ -16,7 +16,6 @@ with open(os.path.normpath(os.path.join(path, '..', 'prtools', '__init__.py'))) 
 # -- Project information -----------------------------------------------------
 
 project = 'prtools'
-copyright = '2023, Andy Kee'
 author = 'Andy Kee'
 copyright = f'{datetime.date.today().year} Andy Kee'
 

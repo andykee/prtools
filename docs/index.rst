@@ -5,8 +5,8 @@
 
 **Useful links**:
 `Source Repository <https://github.com/andykee/prtools>`_ |
-`Releases <https://pypi.org/project/prtools/>`_ |
-`Issue Tracker <https://github.com/andykee/prtools/issues>`_ 
+`Issue Tracker <https://github.com/andykee/prtools/issues>`_ |
+`Releases <https://github.com/andykee/prtools/releases>`_
 
 The :mod:`prtools` library provides functionality and tools that may be
 useful when performing image-based phase retrieval including:
@@ -53,18 +53,28 @@ Array metrics
    radial_avg
    ee
 
-Zernike polynomials
--------------------
+Fourier transforms
+------------------
 .. autosummary::
    :toctree: generated
-   :caption: Zernike polynomials
+   :caption: Fourier transforms
    :nosignatures:
-   
-   zernike
-   zernike_fit
-   zernike_remove
-   zernike_compose
-   zernike_basis
+
+   dft2
+   idft2
+
+Miscellaneous
+-------------
+.. autosummary::
+   :toctree: generated
+   :caption: Misc utilities
+   :nosignatures:
+
+   calcpsf
+   pixelscale_nyquist
+   min_sampling
+   fft_shape
+   translation_defocus
 
 Shapes
 ------
@@ -90,19 +100,6 @@ Shapes
    ``indexing`` parameter. The default is matrix (``indexing='ij'``) for 
    all functions.
 
-Misc utilities
---------------
-.. autosummary::
-   :toctree: generated
-   :caption: Misc utilities
-   :nosignatures:
-
-   calcpsf
-   pixelscale_nyquist
-   min_sampling
-   fft_shape
-   translation_defocus
-
 Sparse matrices
 ---------------
 .. autosummary::
@@ -114,13 +111,16 @@ Sparse matrices
    spmatrix
    spindex
    spmask
-   
-Fourier transforms
-------------------
+
+Zernike polynomials
+-------------------
 .. autosummary::
    :toctree: generated
-   :caption: Fourier transforms
+   :caption: Zernike polynomials
    :nosignatures:
-
-   dft2
-   idft2
+   
+   zernike
+   zernike_fit
+   zernike_remove
+   zernike_compose
+   zernike_basis
