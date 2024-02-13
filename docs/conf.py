@@ -94,6 +94,10 @@ html_sidebars = {
   "generated/*": ["sidebar-nav.html"]
 }
 
+html_context = {
+   "default_mode": "light"  # always prefer light mode
+}
+
 html_show_sourcelink = False
 
 html_scaled_image_link = False
