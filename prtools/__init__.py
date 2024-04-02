@@ -27,5 +27,5 @@ from prtools.stats import ee, rms, pv
 
 from prtools.zernike import (
     zernike, zernike_compose, zernike_basis, zernike_fit, 
-    zernike_remove
+    zernike_remove, zernike_coordinates
     )

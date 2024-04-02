@@ -358,7 +358,7 @@ def zernike_index(j):
     return m, n
 
 
-def zernike_coordinates(mask, shift=None, angle=0, indexing='ij'):
+def zernike_coordinates(mask, shift=(0,0), angle=0, indexing='ij'):
     """Compute the Zernike coordinate system for a given mask.
     
     Parameters
@@ -366,30 +366,28 @@ def zernike_coordinates(mask, shift=None, angle=0, indexing='ij'):
     mask : array_like
         Binary mask defining the extent to compute the Zernike polynomial 
         over.
-    shift : (2,) array_like or None, optional
-        x, y shift of the coordinate system origin in pixels. If None 
-        (default), shift is computed automatically to locate the origin at the
-        mask centroid.
+    shift : (2,) array_like, optional
+        How far to shift center in float (rows, cols). Default is (0, 0).
     angle: float, optional
         Angle to rotate coordinate system by in degrees. rotate is specified 
         relative to the x-axis. Default is 0.
-
+    indexing : {'ij', 'xy'}, optional
+        Matrix ('ij', default) or cartesian ('xy') indexing of output.
+    
+    Returns
+    -------
+    rho, theta : ndarrays
+    
     """
     mask = np.asarray(mask)
 
-    if shift is None:
-        center = np.asarray(mask.shape)/2
-        centroid = prtools.centroid(mask)
-        shift = (centroid[1]-center[1], centroid[0]-center[0])
-
-
-    yy, xx = prtools.mesh(shape=mask.shape, shift=shift, indexing=indexing)
+    yy, xx = prtools.mesh(shape=mask.shape, shift=shift, angle=angle, indexing=indexing)
 
     r = np.abs(xx+1j*yy)
     rho = r/np.max(r*mask)  # rho is defined to be 1 on the edge of the aperture
+    rho[np.where(rho==0)] = 1e-99
 
-    # there is a 90 degree offset since np.angle places 0 degrees up
-    angle = (90-angle) * np.pi/180
-    theta = np.angle(xx*np.exp(1j*angle) + 1j*yy*np.exp(1j*angle))
+    theta = np.angle(xx + 1j*yy)
+    theta[np.where(theta==0)] = 1e-99
 
     return rho, theta

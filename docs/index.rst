@@ -124,3 +124,4 @@ Zernike polynomials
    zernike_remove
    zernike_compose
    zernike_basis
+   zernike_coordinates
