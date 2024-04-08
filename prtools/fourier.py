@@ -119,15 +119,15 @@ def _dft2_matrices(m, n, M, N, alphar, alphac, shiftr, shiftc, offsetr, offsetc,
     else:
         sign = 1
     R, S, U, V = _dft2_coords(m, n, M, N)
-    E1 = np.exp(sign*2.0 * 1j * np.pi * alphar * np.outer(R-shiftr+offsetr, U-shiftr)).T
-    E2 = np.exp(sign*2.0 * 1j * np.pi * alphac * np.outer(S-shiftc+offsetc, V-shiftc))
+    E1 = np.exp(sign*2.0 * 1j * np.pi * alphar * np.outer(R+offsetr, U-shiftr)).T
+    E2 = np.exp(sign*2.0 * 1j * np.pi * alphac * np.outer(S+offsetc, V-shiftc))
     return E1, E2
 
 
 def _idft2_matrices(m, n, M, N, alphar, alphac, shiftr, shiftc, offsetr, offsetc):
     R, S, U, V = _dft2_coords(m, n, M, N)
-    E1 = np.exp(2.0 * 1j * np.pi * alphar * np.outer(R-shiftr+offsetr, U-shiftr)).T
-    E2 = np.exp(2.0 * 1j * np.pi * alphac * np.outer(S-shiftc+offsetc, V-shiftc))
+    E1 = np.exp(2.0 * 1j * np.pi * alphar * np.outer(R+offsetr, U-shiftr)).T
+    E2 = np.exp(2.0 * 1j * np.pi * alphac * np.outer(S+offsetc, V-shiftc))
     return E1, E2
 
 
