@@ -107,10 +107,11 @@ Sparse matrices
    :caption: Sparse matrices
    :nosignatures:
 
+   spindex
    sparray
    spmatrix
-   spindex
-   spmask
+   spindex_from_mask
+   mask_from_spindex
 
 Zernike polynomials
 -------------------

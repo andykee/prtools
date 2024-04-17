@@ -20,7 +20,7 @@ from prtools.shape import (
     )
 
 from prtools.sparse import (
-    spindex, sparray, spmatrix, spmask
+    spindex, sparray, spmatrix, spindex_from_mask, mask_from_spindex
     )
 
 from prtools.stats import ee, rms, pv
