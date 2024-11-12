@@ -234,3 +234,42 @@ def pixelscale_nyquist(wave, f_number):
 
     """
     return f_number * wave / 2
+
+
+def find_wrapped(opd, grad_thresh):
+    """Attempt to find phase wrapping using gradient edge detection while
+    automatically ignoring large gradients at mask edges.
+
+    Parameters
+    ----------
+    opd : array_like
+        OPD to detect wrapping in
+    grad_thresh : float
+        Threshold on magnitude of OPD gradient for determining wrapping
+
+    Returns
+    -------
+    wrapped : ndarray
+        Map of wrapped pixels
+    grad : ndarray
+        Gradient amplitude
+
+    """
+    opd = np.asarray(opd)
+
+    # compute gradient magnitude
+    gr, gc = np.gradient(opd)
+    G = np.sqrt(gr**2 + gc**2)
+
+    # compute mask to ignore gradient boundary
+    mask = np.zeros_like(opd)
+    mask[np.where(opd != 0)] = 1
+    grm, gcm = np.gradient(mask)
+    Gm = np.zeros_like(G)
+    Gm[np.where(np.sqrt(grm**2 + gcm**2) == 0)] = 1
+
+    grad = G * Gm
+    wrapped = np.zeros_like(grad)
+    wrapped[np.where(grad > grad_thresh)] = 1
+    
+    return wrapped, grad

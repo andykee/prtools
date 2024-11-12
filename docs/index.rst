@@ -75,6 +75,7 @@ Miscellaneous
    min_sampling
    fft_shape
    translation_defocus
+   find_wrapped
 
 Shapes
 ------

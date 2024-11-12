@@ -10,7 +10,7 @@ from prtools.fourier import dft2, idft2
 
 from prtools.misc import (
     min_sampling, pixelscale_nyquist, radial_avg, 
-    translation_defocus, fft_shape, calcpsf
+    translation_defocus, fft_shape, calcpsf, find_wrapped
     )
 
 from prtools.segmented import hex_segments
