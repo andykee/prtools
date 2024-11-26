@@ -20,7 +20,7 @@ Install and update prtools using `pip`_:
 
 Links
 -----
-* **Docs:** https://prtools.readthedocs.io/
+* **Docs:** https://andykee.github.io/prtools/
 * **Releases:** https://pypi.org/project/prtools/
 * **Source:** https://github.com/andykee/prtools/
 * **Issues:** https://github.com/andykee/prtools/issues/
