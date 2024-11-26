@@ -160,6 +160,73 @@ def pad(a, shape, fill=0):
     return np.squeeze(out)
 
 
+def subarray(a, shape, shift=(0,0)):
+    """Extract a contiguous subarray from a larger array.
+
+    The subarray is extracted about the center of the source array unless
+    a shift is specified.
+
+    Parameters
+    ----------
+    a : array_like
+        Source array
+    shape : array_like of ints
+        Shape of subarray array in ``(nrows, ncols)``.
+    shift : array_like of ints
+        Relative shift of the center of the subarray in ``(row, col)``.
+    
+    Returns
+    -------
+    out : ndarray
+        Subarray extracted from the source array.
+
+    Examples
+    --------
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
+
+        >>> circ = prtools.circle(shape=(128,128), radius=64)
+        >>> circ_subarray = prtools.subarray(circ, shape=(110,110))
+        >>> fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(5,2))
+        >>> ax[0].imshow(circ, cmap='gray')
+        >>> ax[0].set_title('Original array')
+        >>> ax[1].imshow(circ_subarray, cmap='gray')
+        >>> ax[1].set_title('Subarray')
+    
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
+
+        >>> circ = prtools.circle(shape=(128,128), radius=64)
+        >>> circ_subarray = prtools.subarray(circ, shape=(64,64), shift=(32,32))
+        >>> fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(5,2))
+        >>> ax[0].imshow(circ, cmap='gray')
+        >>> ax[0].set_title('Original array')
+        >>> ax[1].imshow(circ_subarray, cmap='gray')
+        >>> ax[1].set_title('Subarray')
+
+    """
+
+    a = np.asarray(a)
+    shape = np.asarray(shape)
+
+
+    rmin = a.shape[0]//2 - shape[0]//2 + shift[0]
+    cmin = a.shape[1]//2 - shape[1]//2 + shift[1]
+    rmax = rmin + shape[0]
+    cmax = cmin + shape[1]
+
+    print(rmin, rmax, cmin, cmax)
+
+    if any((rmin<0, cmin<0, rmax>a.shape[0], cmax>a.shape[1])):
+        raise ValueError('window lies outside of array')
+
+    return a[rmin:rmax, cmin:cmax]
+
+
 def boundary(x, threshold=0):
     """Find bounding row and column indices of data within an array.
 

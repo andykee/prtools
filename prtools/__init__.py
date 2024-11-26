@@ -2,7 +2,7 @@
 __version__ = '1.2.0'
 
 from prtools.array import (
-    centroid, pad, boundary, rebin, rescale, normpow,
+    centroid, pad, subarray, boundary, rebin, rescale, normpow,
     shift, register, medfix
     )
 

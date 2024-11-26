@@ -33,6 +33,7 @@ Array manipulation
    
    centroid
    pad
+   subarray
    boundary
    rebin
    rescale
