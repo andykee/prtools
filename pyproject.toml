@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "prtools"
+description = "Utility functions for image-based phase retrieval"
+authors = [
+    {name = "Andy Kee"},
+]
+readme = "README.rst"
+requires-python = ">=3.8"
+license = {file = "LICENSE"}
+dependencies = [
+    "numpy",
+    "scipy",
+]
+dynamic = ["version"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Astronomy",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules "
+]
+
+[project.urls]
+Homepage = "https://github.com/andykee/prtools"
+Documentation = "https://andykee.github.io/prtools/"
+"Bug Tracker" = "https://github.com/andykee/prtools/issues"
+
+[tool.setuptools]
+packages = ["prtools"]
+
+[tool.setuptools.dynamic]
+version = {attr = "prtools.__version__"} 
