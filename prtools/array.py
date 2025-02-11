@@ -401,6 +401,7 @@ def rescale(img, scale, shape=None, mask=None, order=3, mode='nearest',
 
     return out
 
+
 def normpow(array, power=1):
     r"""Normalizie the power in an array.
 
@@ -437,8 +438,7 @@ def normpow(array, power=1):
     return array * np.sqrt(power/np.sum(np.abs(array)**2))
 
 
-
-def shift(a, shift):
+def shift(a, shift, mode='wrap', fill=0.0):
     """Shift an array via FFT.
 
     Shift an array by (row, column). The shifts may be non-integer as the 
@@ -451,6 +451,26 @@ def shift(a, shift):
         The input array.
     shift : (2,) sequence
         The shift specified as (row, column).
+    mode : {'wrap', 'reflect', 'mirror', 'constant'}, optional
+        Determines how the input array is extended beyond its boundaries. 
+        Default is 'wrap'. 
+
+        * 'wrap' (a b c d | a b c d | a b c d)
+            The input is extended by wrapping around to the opposite edge.
+        * 'reflect' (d c b a | a b c d | d c b a)
+            The input is extended by reflecting about the edge of the last 
+            pixel. This mode is also sometimes referred to as half-sample 
+            symmetric.
+        * 'mirror' (d c b | a b c d | c b a)
+            The input is extended by reflecting about the center of the last 
+            pixel. This mode is also sometimes referred to as whole-sample 
+            symmetric.
+        * 'constant'
+            The input is extended by filling all values beyond the edge with 
+            the same constant value, defined by the fill parameter.
+
+    fill : scalar, optional
+        Value to fill past edges if `mode` is 'constant'. Default is 0.0
     Returns
     -------
     shifted : ndarray
@@ -473,8 +493,11 @@ def shift(a, shift):
                [-3.12823642e-17,  2.22044605e-16, -4.18468327e-17]])
     """
     a = np.asarray(a)
-
+    r, c = a.shape
     dr, dc = shift
+
+    a = _extend(a, shift, mode, fill)
+
     R = dr * np.fft.fftfreq(a.shape[0])
     C = dc * np.fft.fftfreq(a.shape[1])
 
@@ -482,11 +505,50 @@ def shift(a, shift):
     K = np.exp(-1j*2*np.pi*(RR+CC))
     shifted = np.fft.ifft2(np.fft.fft2(a)*K)
 
+    shifted = pad(shifted, (r,c)) # crop back to original size
+
     if np.any(np.iscomplex(a)):
         return shifted
     else:
         return shifted.real
     
+
+def _extend(a, shift, mode, fill):
+    r, c = a.shape
+    dr, dc = np.ceil(shift).astype(int)
+
+    if mode == 'wrap':  # (a b c d | a b c d | a b c d)
+        # no need to do anything since the Fourier transform 
+        # already does this
+        out = a
+    else:
+        # pad the array to accomodate for 
+        out = pad(a, shape=(r+2*dr, c+2*dc), fill=fill)
+
+        if mode == 'constant':  # (k k k k | a b c d | k k k k)
+            pass
+        elif mode == 'reflect': # (d c b a | a b c d | d c b a)
+            out[0:dr, 0:dc] = np.flip(a[0:dr, 0:dc]) # upper left
+            out[0:dr, dc:c+dc] = np.flip(a[0:dr, :], axis=0) # top
+            out[0:dr, c+dc:] = np.flip(a[0:dr, c-dc:]) # upper right
+            out[dr:r+dr, 0:dc] = np.flip(a[:, 0:dc], axis=1) # left
+            out[dr:r+dr, c+dc:] = np.flip(a[:, c-dc:], axis=1) # right
+            out[r+dr:, 0:dc] = np.flip(a[r-dr:r, 0:dc]) # lower left
+            out[r+dr:, dc:c+dc] = np.flip(a[r-dr:r, :], axis=0) # bottom
+            out[r+dr:, c+dc:] = np.flip(a[r-dr:r, c-dc:c])  # lower right
+        elif mode == 'mirror':  # (d c b | a b c d | c b a)
+            out[0:dr, 0:dc] = np.flip(a[1:dr+1, 1:dc+1]) # upper left
+            out[0:dr, dc:c+dc] = np.flip(a[1:dr+1, :], axis=0) # top
+            out[0:dr, c+dc:] = np.flip(a[1:dr+1, c-dc-1:c-1]) # upper right
+            out[dr:r+dr, 0:dc] = np.flip(a[:, 1:dc+1], axis=1) # left
+            out[dr:r+dr, c+dc:] = np.flip(a[:, c-dc-1:c-1], axis=1) # right
+            out[r+dr:, 0:dc] = np.flip(a[r-dr-1:r-1, 1:dc+1]) # lower left
+            out[r+dr:, dc:c+dc] = np.flip(a[r-dr-1:r-1, :], axis=0) # bottom
+            out[r+dr:, c+dc:] = np.flip(a[r-dr-1:r-1, c-dc-1:c-1])  # lower right
+        else:
+            raise ValueError(f'Unknown mode {mode}')
+    return out
+
 
 def register(arr, ref, oversample, return_error=False):
     """Compute the subpixel image translation to register the input array to a
