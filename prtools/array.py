@@ -515,7 +515,7 @@ def shift(a, shift, mode='wrap', fill=0.0):
 
 def _extend(a, shift, mode, fill):
     r, c = a.shape
-    dr, dc = np.ceil(shift).astype(int)
+    dr, dc = np.ceil(np.abs(shift)).astype(int)
 
     if mode == 'wrap':  # (a b c d | a b c d | a b c d)
         # no need to do anything since the Fourier transform 
