@@ -1,26 +1,25 @@
-import numpy as np
-
+from prtools.backend import numpy as np
 
 def mesh(shape, shift=(0, 0), angle=0, indexing='ij'):
     """Generate a standard mesh.
-    
+
     Parameters
     ----------
     shape : array_like
         Size of output in pixels (nrows, ncols)
     shift : (2,) array_like, optional
-        Coordinate translation from center of containing array. 
+        Coordinate translation from center of containing array.
         Default is (0, 0)
     indexing : {'ij', 'xy'}, optional
         Matrix ('ij', default) or cartesian ('xy') indexing of mesh.
-    
+
     Returns
     -------
     list of ndarrays
 
     """
-    shape = np.broadcast_to(shape, (2,))
-    angle = np.radians(angle)        
+    shape = np.broadcast_to(np.asarray(shape), (2,))
+    angle = np.radians(angle)
     if indexing == 'xy':
         x1, x2 = _meshxy(shape, shift, angle)
     elif indexing == 'ij':
@@ -45,7 +44,7 @@ def _meshij(shape, shift, angle):
     nr = shape[0]
     nc = shape[1]
     rr, cc = np.meshgrid(np.arange(nr) - np.floor(nr/2.0) - shift[0],
-                         np.arange(nc) - np.floor(nc/2.0) - shift[1], 
+                         np.arange(nc) - np.floor(nc/2.0) - shift[1],
                          indexing='ij')
     r = rr * np.cos(angle) + cc * np.sin(angle)
     c = rr * -np.sin(angle) + cc * np.cos(angle)
@@ -71,7 +70,7 @@ def circle(shape, radius, shift=(0, 0), antialias=True, indexing='ij'):
     Returns
     -------
     ndarray
-    
+
     Examples
     --------
     .. plot::
@@ -116,7 +115,7 @@ def hexagon(shape, radius, shift=(0, 0), rotate=False, antialias=True):
         of the default orientation which is aligned with the X direction.
     antialias : bool, optional
         If True (default), the shape edges are antialiased.
-    
+
     Returns
     -------
     ndarray
@@ -130,14 +129,14 @@ def hexagon(shape, radius, shift=(0, 0), rotate=False, antialias=True):
 
         >>> hex = prtools.hexagon(shape=(256,256), radius=75)
         >>> plt.imshow(hex, cmap='gray')
-    
+
     .. plot::
         :include-source:
         :context: reset
         :scale: 50
 
         >>> hex = prtools.hexagon(shape=(256,256), radius=75, rotate=True)
-        >>> plt.imshow(hex, cmap='gray')    
+        >>> plt.imshow(hex, cmap='gray')
 
     """
     r, c = mesh(shape, shift)
@@ -146,22 +145,22 @@ def hexagon(shape, radius, shift=(0, 0), rotate=False, antialias=True):
     inner_radius = radius * np.sqrt(3)/2
 
     for n in range(6):
-    
+
         theta = n * np.pi/3 if rotate else n * np.pi/3 + np.pi/6
         rho = r * np.sin(theta) + c * np.cos(theta)
-    
+
         if antialias:
             slc = np.clip(inner_radius + 0.5 - rho, 0.0, 1.0)
         else:
             slc = np.ones(shape)
             slc[rho > inner_radius] = 0
-    
+
         mask = np.minimum(mask, slc)
 
     return mask
 
 
-def rectangle(shape, width, height, shift=(0,0), angle=0, antialias=True, 
+def rectangle(shape, width, height, shift=(0, 0), angle=0, antialias=True,
               indexing='ij'):
     """Draw a rectangle
 
@@ -182,7 +181,7 @@ def rectangle(shape, width, height, shift=(0,0), angle=0, antialias=True,
         If True (default), the shape edges are antialiased.
     indexing : {'ij', 'xy'}, optional
         Matrix ('ij', default) or cartesian ('xy') indexing of output.
-    
+
     Returns
     -------
     ndarray
@@ -196,7 +195,7 @@ def rectangle(shape, width, height, shift=(0,0), angle=0, antialias=True,
 
         >>> rect = prtools.rectangle(shape=(256,256), width=200, height=100)
         >>> plt.imshow(rect, cmap='gray')
-    
+
     """
     rr, cc = mesh(shape, shift, angle)
     rect = np.ones(shape)
@@ -212,7 +211,7 @@ def rectangle(shape, width, height, shift=(0,0), angle=0, antialias=True,
     return rect
 
 
-def spider(shape, width, angle=0, shift=(0,0), antialias=True, indexing='ij'):
+def spider(shape, width, angle=0, shift=(0, 0), antialias=True, indexing='ij'):
     """Draw a spider
 
     Parameters
@@ -243,7 +242,7 @@ def spider(shape, width, angle=0, shift=(0,0), antialias=True, indexing='ij'):
         :scale: 50
 
         >>> spider = prtools.spider(shape=(256,256), width=3, angle=30)
-        >>> plt.imshow(spider, cmap='gray')        
+        >>> plt.imshow(spider, cmap='gray')
 
     """
     len = np.sqrt(2) * np.max(shape)/2  # max length when angle is a multiple of 45 deg
@@ -258,7 +257,7 @@ def ellipse():
     pass
 
 
-def gauss(shape, sigma, shift=(0,0), indexing='ij'):
+def gauss(shape, sigma, shift=(0, 0), indexing='ij'):
     """Generate a 2D Gaussian function.
 
     Parameters
@@ -276,7 +275,7 @@ def gauss(shape, sigma, shift=(0,0), indexing='ij'):
     Returns
     -------
     ndarray
-    
+
     Examples
     --------
     .. plot::
@@ -285,8 +284,8 @@ def gauss(shape, sigma, shift=(0,0), indexing='ij'):
         :scale: 50
 
         >>> gauss = prtools.gauss(shape=(256,256), sigma=20)
-        >>> plt.imshow(gauss, cmap='gray')        
-    
+        >>> plt.imshow(gauss, cmap='gray')
+
     """
     sigma = np.broadcast_to(np.asarray(sigma), (2,))
     x, y = mesh(shape, shift=shift, angle=0, indexing=indexing)
@@ -295,9 +294,9 @@ def gauss(shape, sigma, shift=(0,0), indexing='ij'):
     return G
 
 
-def sin(shape, cycles, shift=(0,0), angle=0, indexing='ij'):
+def sin(shape, cycles, shift=(0, 0), angle=0, indexing='ij'):
     """Generate a 2D sine function.
-    
+
     Parameters
     ----------
     shape : array_like
@@ -323,7 +322,7 @@ def sin(shape, cycles, shift=(0,0), angle=0, indexing='ij'):
         :scale: 50
 
         >>> sin = prtools.sin(shape=(256,256), cycles=5)
-        >>> plt.imshow(sin, cmap='gray')        
+        >>> plt.imshow(sin, cmap='gray')
 
     """
 
@@ -348,10 +347,10 @@ def sin(shape, cycles, shift=(0,0), angle=0, indexing='ij'):
     return np.sin(Z)
 
 
-def waffle(shape, cycles, shift=(0,0), angle=0, indexing='ij'):
+def waffle(shape, cycles, shift=(0, 0), angle=0, indexing='ij'):
     """
     Generate a 2D waffle function.
-    
+
     The waffle function is the sum of two orthogonal sine functions.
 
     Parameters
@@ -379,9 +378,9 @@ def waffle(shape, cycles, shift=(0,0), angle=0, indexing='ij'):
         :scale: 50
 
         >>> waffle = prtools.waffle(shape=(256,256), cycles=10)
-        >>> plt.imshow(waffle, cmap='gray')   
+        >>> plt.imshow(waffle, cmap='gray')
 
-    
+
     """
 
     a = sin(shape, cycles, shift, angle+45, indexing)

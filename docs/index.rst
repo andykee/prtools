@@ -54,30 +54,6 @@ Array metrics
    radial_avg
    ee
 
-Fourier transforms
-------------------
-.. autosummary::
-   :toctree: generated
-   :caption: Fourier transforms
-   :nosignatures:
-
-   dft2
-   idft2
-
-Miscellaneous
--------------
-.. autosummary::
-   :toctree: generated
-   :caption: Miscellaneous
-   :nosignatures:
-
-   calcpsf
-   pixelscale_nyquist
-   min_sampling
-   fft_shape
-   translation_defocus
-   find_wrapped
-
 Shapes
 ------
 .. autosummary::
@@ -101,6 +77,16 @@ Shapes
    indexing conventions for specifying the shift parameter via the 
    ``indexing`` parameter. The default is matrix (``indexing='ij'``) for 
    all functions.
+
+Fourier transforms
+------------------
+.. autosummary::
+   :toctree: generated
+   :caption: Fourier transforms
+   :nosignatures:
+
+   dft2
+   idft2
 
 Sparse matrices
 ---------------
@@ -128,3 +114,49 @@ Zernike polynomials
    zernike_compose
    zernike_basis
    zernike_coordinates
+
+Cost functions
+--------------
+.. autosummary::
+   :toctree: generated
+   :caption: Cost functions
+   :nosignatures:
+
+   sserror
+
+Optimization
+------------
+.. autosummary::
+   :toctree: generated
+   :caption: Optimization
+   :nosignatures:
+
+   lbfgs
+
+Miscellaneous
+-------------
+.. autosummary::
+   :toctree: generated
+   :caption: Miscellaneous
+   :nosignatures:
+
+   calcpsf
+   pixelscale_nyquist
+   min_sampling
+   fft_shape
+   translation_defocus
+   find_wrapped
+
+Backends
+--------
+:mod:`prtools` supports multiple numerical backends. Calling 
+``set_backend('numpy')`` sets the backend math library to Numpy. This works
+similarly for JAX. The default backend is Numpy.
+
+.. autosummary::
+   :toctree: generated
+   :caption: Backends
+   :nosignatures:
+
+   set_backend
+   get_backend

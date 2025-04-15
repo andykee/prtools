@@ -1,8 +1,11 @@
 import functools
-import numpy as np
+
+from prtools.backend import numpy as np
+from prtools import get_backend
 
 
-def dft2(f, alpha, shape=None, shift=(0, 0), offset=(0, 0), unitary=True, out=None):
+def dft2(f, alpha, shape=None, shift=(0, 0), offset=(0, 0), unitary=True,
+         out=None):
     r"""Compute the 2-dimensional discrete Fourier Transform.
 
     The DFT is defined in one dimension as
@@ -25,10 +28,9 @@ def dft2(f, alpha, shape=None, shift=(0, 0), offset=(0, 0), unitary=True, out=No
         represents column-wise sampling. If :attr:`alpha` is a scalar,
         ``alpha[1] = alpha[2] = alpha`` gives uniform sampling across the rows
         and columns of the output plane.
-    shape : int or array_like, optional
+    shape : (2,) array_like, optional
         Size of the output array :attr:`F`. If :attr:`shape` is an array,
-        ``F.shape = (shape[0], shape[1])``. If :attr:`shape`` is a scalar,
-        ``F.shape = (shape, shape)``. Default is ``f.shape``.
+        ``F.shape = (shape[0], shape[1])``. Default is ``f.shape``.
     shift : array_like, optional
         Number of pixels in (r,c) to shift the DC pixel in the output plane
         with the origin centrally located in the plane. Default is ``(0,0)``.
@@ -67,44 +69,49 @@ def dft2(f, alpha, shape=None, shift=(0, 0), offset=(0, 0), unitary=True, out=No
 
     * If the y-axis shift behavior is not what you are expecting, you most
       likely have your plotting axes flipped (matplotlib's default behavior is
-      to place [0,0] in the upper left corner of the axes). This may be resolved
-      by either flipping the sign of the y component of ``shift`` or by passing
-      ``origin = 'lower'`` to ``imshow()``.
+      to place [0,0] in the upper left corner of the axes). This may be
+      resolved by either flipping the sign of the y component of ``shift`` or
+      by passing ``origin = 'lower'`` to ``imshow()``.
 
     References
     ----------
-    [1] Soummer, et. al. Fast computation of Lyot-style coronagraph propagation (2007)
-
+    [1] Soummer, et. al. Fast computation of Lyot-style coronagraph
+        propagation (2007)
     """
 
     return _dftcore(f, alpha, shape, shift, offset, unitary, out, forward=True)
 
 
 def _dftcore(f, alpha, shape, shift, offset, unitary, out, forward):
+
+    backend = get_backend()
+
+    if out is not None:
+        if backend == 'numpy':
+            if not np.can_cast(complex, out.dtype):
+                raise TypeError(f"Cannot cast complex output to dtype('{out.dtype}')")
+        elif backend == 'jax':
+            raise ValueError('JAX backend does not support the out parameter')
+
     alpha_row, alpha_col = np.broadcast_to(alpha, (2,))
 
     f = np.asarray(f)
     m, n = f.shape
 
     if shape is None:
-        shape = [m, n]
-    M, N = np.broadcast_to(shape, (2,))
+        shape = (m, n)
+    M, N = shape
 
     shift_row, shift_col = np.broadcast_to(shift, (2,))
     offset_row, offset_col = np.broadcast_to(offset, (2,))
 
-    if out is not None:
-        if not np.can_cast(complex, out.dtype):
-            raise TypeError(f"Cannot cast complex output to dtype('{out.dtype}')")
-        
     E1, E2 = _dft2_matrices(m, n, M, N, alpha_row, alpha_col, shift_row, shift_col,
                             offset_row, offset_col, forward)
-        
+
     F = np.dot(E1.dot(f), E2, out=out)
 
-    # now calculate the answer, without reallocating memory
     if unitary:
-        np.multiply(F, np.sqrt(np.abs(alpha_row * alpha_col)), out=F)
+        F = np.multiply(F, np.sqrt(np.abs(alpha_row * alpha_col)), out=F)
 
     # idft rescaling
     if not forward:

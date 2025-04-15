@@ -1,17 +1,24 @@
 
 __version__ = '1.2.1'
 
+
 from prtools.array import (
     centroid, pad, subarray, boundary, rebin, rescale, normpow,
     shift, register, medfix
     )
 
+from prtools.backend import get_backend, set_backend
+
+from prtools.cost import sserror
+
 from prtools.fourier import dft2, idft2
 
 from prtools.misc import (
-    min_sampling, pixelscale_nyquist, radial_avg, 
-    translation_defocus, fft_shape, calcpsf, find_wrapped
+    min_sampling, pixelscale_nyquist, translation_defocus, fft_shape, calcpsf,
+    find_wrapped
     )
+
+from prtools.optimize import lbfgs
 
 from prtools.segmented import hex_segments
 
@@ -23,9 +30,9 @@ from prtools.sparse import (
     spindex, sparray, spmatrix, spindex_from_mask, mask_from_spindex
     )
 
-from prtools.stats import ee, rms, pv
+from prtools.stats import ee, rms, pv, radial_avg
 
 from prtools.zernike import (
-    zernike, zernike_compose, zernike_basis, zernike_fit, 
-    zernike_remove, zernike_coordinates
+    zernike, zernike_compose, zernike_basis, zernike_fit, zernike_remove,
+    zernike_coordinates
     )
