@@ -24,6 +24,30 @@ Install :mod:`prtools` with pip:
 
 .. currentmodule:: prtools
 
+Backends
+--------
+:mod:`prtools` supports multiple numerical backends for representing
+N-dimensional data and performing numerical calculations. Currently Numpy (the
+default backend) and JAX are supported. The :mod:`prtools` interface remains
+the same, but a different backend library is used under the hood.
+
+.. autosummary::
+   :toctree: generated
+   :caption: Backends
+   :nosignatures:
+
+   set_backend
+   get_backend
+
+.. important::
+
+   Numpy is a :mod:`prtools` dependency and will be automatically installed as
+   needed. No additional backends are installed (or required to use
+   :mod:`prtools`). To install additional backends, refer to their respective
+   installation instructions:
+
+   * `JAX <https://docs.jax.dev/en/latest/developer.html#building-or-installing-jaxlib>`_
+     
 Array manipulation
 ------------------
 .. autosummary::
@@ -147,16 +171,3 @@ Miscellaneous
    translation_defocus
    find_wrapped
 
-Backends
---------
-:mod:`prtools` supports multiple numerical backends. Calling 
-``set_backend('numpy')`` sets the backend math library to Numpy. This works
-similarly for JAX. The default backend is Numpy.
-
-.. autosummary::
-   :toctree: generated
-   :caption: Backends
-   :nosignatures:
-
-   set_backend
-   get_backend

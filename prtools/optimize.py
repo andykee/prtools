@@ -8,7 +8,10 @@ def lbfgs(fun, x0, tol, maxiter, callback=None):
 
     .. attention::
 
-        Using :func:`lbfgs` requires the JAX backend to be active
+        `optax <https://optax.readthedocs.io/en/latest/#installation>`_ must
+        be installed before using :func:`lbfgs`.
+
+        The JAX backend must be active to use this function.
 
     Parameters
     ----------
