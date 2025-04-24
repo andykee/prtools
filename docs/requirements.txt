@@ -2,5 +2,6 @@ sphinx>=3.0
 matplotlib>=3.6
 pydata-sphinx-theme
 sphinx_remove_toctrees
+sphinx-favicon
 numpy
 scipy

@@ -24,29 +24,25 @@ Install :mod:`prtools` with pip:
 
 .. currentmodule:: prtools
 
-Backends
---------
-:mod:`prtools` supports multiple numerical backends for representing
+:mod:`prtools` supports different numerical backends for representing
 N-dimensional data and performing numerical calculations. Currently Numpy (the
-default backend) and JAX are supported. The :mod:`prtools` interface remains
-the same, but a different backend library is used under the hood.
+default backend) and `JAX <https://docs.jax.dev>`_ are supported. The table
+below shows how to install and use each of the available backends.
 
-.. autosummary::
-   :toctree: generated
-   :caption: Backends
-   :nosignatures:
+======= ============================ =================================
+Backend Install                      Import
+======= ============================ =================================
+numpy   ``pip install prtools``      ``import prtools``
+jax     ``pip install prtools[jax]`` ``import prtools.jax as prtools``
+======= ============================ =================================
 
-   set_backend
-   get_backend
+The current backend is given in the ``prtools.__backend__`` attribute.
 
-.. important::
+. important::
 
-   Numpy is a :mod:`prtools` dependency and will be automatically installed as
-   needed. No additional backends are installed (or required to use
-   :mod:`prtools`). To install additional backends, refer to their respective
-   installation instructions:
-
-   * `JAX <https://docs.jax.dev/en/latest/developer.html#building-or-installing-jaxlib>`_
+   The :mod:`prtools` API remains the same regardless of which backend is in
+   use, but different backends may also expose additional functionality. See
+   the backend-specific documentation below for more details.
      
 Array manipulation
 ------------------
@@ -148,15 +144,6 @@ Cost functions
 
    sserror
 
-Optimization
-------------
-.. autosummary::
-   :toctree: generated
-   :caption: Optimization
-   :nosignatures:
-
-   lbfgs
-
 Miscellaneous
 -------------
 .. autosummary::
@@ -171,3 +158,11 @@ Miscellaneous
    translation_defocus
    find_wrapped
 
+JAX backend
+-----------
+.. autosummary::
+   :toctree: generated
+   :caption: JAX backend
+   :nosignatures:
+
+   jax.optimize.lbfgs

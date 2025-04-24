@@ -31,6 +31,7 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
     'sphinx_remove_toctrees',
+    'sphinx_favicon',
     'matplotlib.sphinxext.plot_directive'
 ]
 
@@ -69,24 +70,6 @@ html_theme_options = {
     "show_prev_next": False,
     "pygment_light_style": "tango",
     "pygment_dark_style": "nord",
-    "favicons": [
-      {
-         "rel": "icon",
-         "sizes": "16x16",
-         "href": "favicon/favicon-16x16.png",
-      },
-      {
-         "rel": "icon",
-         "sizes": "32x32",
-         "href": "favicon/favicon-32x32.png",
-      },
-      {
-         "rel": "apple-touch-icon",
-         "sizes": "180x180",
-         "href": "favicon/apple-touch-icon-180x180.png",
-         "color": "#000000",
-      },
-    ]
 }
 
 html_sidebars = {
@@ -101,6 +84,25 @@ html_context = {
 html_show_sourcelink = False
 
 html_scaled_image_link = False
+
+favicons = [
+    {
+        "rel": "icon",
+        "sizes": "16x16",
+        "href": "favicon/favicon-16x16.png",
+    },
+    {
+        "rel": "icon",
+        "sizes": "32x32",
+        "href": "favicon/favicon-32x32.png",
+    },
+    {
+        "rel": "apple-touch-icon",
+        "sizes": "180x180",
+        "href": "favicon/apple-touch-icon-180x180.png",
+        "color": "#000000",
+    },
+]
 
 # if true, the current module name will be prepended to all description
 # unit titles (such as .. function::).
