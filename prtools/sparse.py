@@ -1,6 +1,11 @@
 import numpy as np
 
 
+__all__ = [
+    'spindex', 'spmatrix', 'sparray', 'spindex_from_mask', 'mask_from_spindex'
+]
+
+
 class spindex:
     """Sparse coordinate list (COO) index
 

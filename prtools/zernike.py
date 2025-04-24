@@ -5,6 +5,12 @@ import numpy as np
 import prtools
 
 
+__all__ = [
+    'zernike', 'zernike_compose', 'zernike_basis', 'zernike_fit',
+    'zernike_remove', 'zernike_coordinates'
+]
+
+
 def zernike(mask, index, normalize=True, rho=None, theta=None):
     """Compute the circular Zernike polynomial for a given mask.
 

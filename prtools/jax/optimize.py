@@ -1,5 +1,6 @@
-from prtools.backend import numpy as np
-from prtools import get_backend
+import jax
+import optax
+import optax.tree_utils as otu
 
 
 def lbfgs(fun, x0, tol, maxiter, callback=None):
@@ -33,16 +34,6 @@ def lbfgs(fun, x0, tol, maxiter, callback=None):
     final_state : 
 
     """
-    try:
-        import optax
-        import optax.tree_utils as otu
-        import jax
-    except ImportError:
-        ImportError('optax must be installed to use lbfgs')
-
-    if get_backend() != 'jax':
-        raise RuntimeError('prtools must be using JAX backend to use lbfgs')
-
     if callback:
         # https://optax.readthedocs.io/en/latest/_collections/examples/lbfgs.html#l-bfgs-solver
         raise NotImplementedError

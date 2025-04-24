@@ -1,5 +1,12 @@
 from prtools.backend import numpy as np
 
+
+__all__ = [
+    'mesh', 'circle', 'hexagon', 'rectangle', 'spider', 'gauss', 'sin',
+    'waffle'
+]
+
+
 def mesh(shape, shift=(0, 0), angle=0, indexing='ij'):
     """Generate a standard mesh.
 

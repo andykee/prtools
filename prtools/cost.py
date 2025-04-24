@@ -1,6 +1,9 @@
 from prtools.backend import numpy as np
 
 
+__all__ = ['sserror']
+
+
 def sserror(data, est, mask=None, gain_bias_invariant=False, ghat=None):
     r"""Compute the normalized sum squared error between two arrays.
 

@@ -4,6 +4,9 @@ import numpy as np
 
 import prtools
 
+__all__ = ['hex_segments']
+
+
 
 def hex_segments(rings, seg_radius, seg_gap, rotate=False, antialias=True,
                  flatten=False, pad=2, drop=(0,)):

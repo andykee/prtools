@@ -36,6 +36,9 @@ Homepage = "https://github.com/andykee/prtools"
 Documentation = "https://andykee.github.io/prtools/"
 "Bug Tracker" = "https://github.com/andykee/prtools/issues"
 
+[project.optional-dependencies]
+jax = ["jax", "optax"]
+
 [tool.setuptools]
 packages = ["prtools"]
 

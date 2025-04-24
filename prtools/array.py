@@ -4,6 +4,11 @@ import numpy as np
 from numpy.lib.stride_tricks import as_strided
 from scipy.ndimage import map_coordinates
 
+__all__ = [
+    'centroid', 'pad', 'subarray', 'boundary', 'rebin', 'rescale', 'normpow',
+    'shift', 'register', 'medfix'
+]
+
 
 def centroid(a, where=None, kind='absolute', indexing='ij'):
     """Compute array centroid location.

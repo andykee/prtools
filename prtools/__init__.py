@@ -1,38 +1,30 @@
 
 __version__ = '1.2.1'
 
+from prtools.array import *
+from prtools.backend import __backend__
+from prtools.cost import *
+from prtools.fourier import *
+from prtools.misc import *
+from prtools.segmented import *
+from prtools.shape import *
+from prtools.sparse import *
+from prtools.stats import *
+from prtools.zernike import *
 
-from prtools.array import (
-    centroid, pad, subarray, boundary, rebin, rescale, normpow,
-    shift, register, medfix
-    )
+__all__ = ['__backend__', '__version__']
+__all__ += array.__all__
+__all__ += cost.__all__
+__all__ += fourier.__all__
+__all__ += misc.__all__
+__all__ += segmented.__all__
+__all__ += shape.__all__
+__all__ += sparse.__all__
+__all__ += stats.__all__
 
-from prtools.backend import get_backend, set_backend
-
-from prtools.cost import sserror
-
-from prtools.fourier import dft2, idft2
-
-from prtools.misc import (
-    min_sampling, pixelscale_nyquist, translation_defocus, fft_shape, calcpsf,
-    find_wrapped
-    )
-
-from prtools.optimize import lbfgs
-
-from prtools.segmented import hex_segments
-
-from prtools.shape import (
-    mesh, circle, hexagon, rectangle, spider, gauss, sin, waffle
-    )
-
-from prtools.sparse import (
-    spindex, sparray, spmatrix, spindex_from_mask, mask_from_spindex
-    )
-
-from prtools.stats import ee, rms, pv, radial_avg
-
-from prtools.zernike import (
-    zernike, zernike_compose, zernike_basis, zernike_fit, zernike_remove,
-    zernike_coordinates
-    )
+# zernike module imports have to be added manually because once
+# we do from prtools.zernike import *, zernike is now a function
+__all__ += [
+    'zernike', 'zernike_compose', 'zernike_basis', 'zernike_fit',
+    'zernike_remove', 'zernike_coordinates'
+]

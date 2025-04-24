@@ -1,7 +1,10 @@
 import functools
 
+from prtools import __backend__
 from prtools.backend import numpy as np
-from prtools import get_backend
+
+
+__all__ = ['dft2', 'idft2']
 
 
 def dft2(f, alpha, shape=None, shift=(0, 0), offset=(0, 0), unitary=True,
@@ -84,13 +87,13 @@ def dft2(f, alpha, shape=None, shift=(0, 0), offset=(0, 0), unitary=True,
 
 def _dftcore(f, alpha, shape, shift, offset, unitary, out, forward):
 
-    backend = get_backend()
+    #__backend__ = prtools.__backend__
 
     if out is not None:
-        if backend == 'numpy':
+        if __backend__ == 'numpy':
             if not np.can_cast(complex, out.dtype):
                 raise TypeError(f"Cannot cast complex output to dtype('{out.dtype}')")
-        elif backend == 'jax':
+        elif __backend__ == 'jax':
             raise ValueError('JAX backend does not support the out parameter')
 
     alpha_row, alpha_col = np.broadcast_to(alpha, (2,))
