@@ -1,5 +1,5 @@
+from prtools import __backend__
 from prtools.backend import numpy as np
-
 
 __all__ = [
     'mesh', 'circle', 'hexagon', 'rectangle', 'spider', 'gauss', 'sin',
@@ -101,7 +101,10 @@ def circle(shape, radius, shift=(0, 0), antialias=True, indexing='ij'):
     r = np.sqrt(np.square(rr - shift[0]) + np.square(cc - shift[1]))
     mask = np.clip(radius + 0.5 - r, 0.0, 1.0)
     if not antialias:
-        mask[mask > 0] = 1
+        if __backend__ == 'jax':
+            mask = mask.at[mask > 0].set(1)
+        else:
+            mask[mask > 0] = 1
     return mask
 
 

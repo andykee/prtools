@@ -38,12 +38,13 @@ jax     ``pip install prtools[jax]`` ``import prtools.jax as prtools``
 
 The current backend is given in the ``prtools.__backend__`` attribute.
 
-. important::
+.. note::
 
    The :mod:`prtools` API remains the same regardless of which backend is in
-   use, but different backends may also expose additional functionality. See
-   the backend-specific documentation below for more details.
-     
+   use, but different backends may expose additional functionality. See the
+   backend-specific documentation below for more details.
+
+
 Array manipulation
 ------------------
 .. autosummary::

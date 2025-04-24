@@ -27,6 +27,11 @@ def dot(a, b, out=None):
 
 
 @prtools.backend.numpy.overload
+def max(a, *args, **kwargs):
+    return jax.numpy.max(jax.numpy.asarray(a), *args, **kwargs)
+
+
+@prtools.backend.numpy.overload
 def multiply(a, b, out=None):
     # jax.numpy.multiply doesn't support the `out` parameter so we'll
     # ignore it

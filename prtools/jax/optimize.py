@@ -7,13 +7,6 @@ def lbfgs(fun, x0, tol, maxiter, callback=None):
     """Minimize a scalar function of one or more variables using the L-BFGS
     algorithm
 
-    .. attention::
-
-        `optax <https://optax.readthedocs.io/en/latest/#installation>`_ must
-        be installed before using :func:`lbfgs`.
-
-        The JAX backend must be active to use this function.
-
     Parameters
     ----------
     fun : callable
