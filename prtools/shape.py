@@ -1,10 +1,5 @@
 from prtools import __backend__
-from prtools.backend import numpy as np
-
-__all__ = [
-    'mesh', 'circle', 'hexagon', 'rectangle', 'spider', 'gauss', 'sin',
-    'waffle'
-]
+from prtools._backend import numpy as np
 
 
 def mesh(shape, shift=(0, 0), angle=0, indexing='ij'):

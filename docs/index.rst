@@ -24,17 +24,19 @@ Install :mod:`prtools` with pip:
 
 .. currentmodule:: prtools
 
+Numerical backends
+------------------
 :mod:`prtools` supports different numerical backends for representing
-N-dimensional data and performing numerical calculations. Currently Numpy (the
-default backend) and `JAX <https://docs.jax.dev>`_ are supported. The table
-below shows how to install and use each of the available backends.
+N-dimensional data and performing numerical calculations. The backend is
+configured by the :func:`prtools.use` function. Currently Numpy (the
+default backend) and `JAX <https://docs.jax.dev>`_ are supported.
 
-======= ============================ =================================
-Backend Install                      Import
-======= ============================ =================================
-numpy   ``pip install prtools``      ``import prtools``
-jax     ``pip install prtools[jax]`` ``import prtools.jax as prtools``
-======= ============================ =================================
+.. .. autosummary::
+..    :toctree: generated
+..    :caption: Numerical backends
+..    :nosignatures:
+.. 
+..    use
 
 The current backend is given in the ``prtools.__backend__`` attribute.
 
@@ -42,7 +44,7 @@ The current backend is given in the ``prtools.__backend__`` attribute.
 
    The :mod:`prtools` API remains the same regardless of which backend is in
    use, but different backends may expose additional functionality. See the
-   backend-specific documentation below for more details.
+   :ref:`backend-specific documentation <backends>` below for more details.
 
 
 Array manipulation
@@ -159,6 +161,8 @@ Miscellaneous
    translation_defocus
    find_wrapped
 
+.. _backends:
+
 JAX backend
 -----------
 .. autosummary::
@@ -166,4 +170,4 @@ JAX backend
    :caption: JAX backend
    :nosignatures:
 
-   jax.optimize.lbfgs
+   backend.jax.lbfgs

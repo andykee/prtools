@@ -1,12 +1,5 @@
-import numpy as np
-
 import prtools
-
-
-__all__ = [
-    'calcpsf', 'translation_defocus', 'fft_shape', 'min_sampling',
-    'pixelscale_nyquist', 'find_wrapped'
-]
+from prtools._backend import numpy as np
 
 
 def calcpsf(amp, opd, wavelength, sampling, shape, oversample=2,

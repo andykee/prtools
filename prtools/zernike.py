@@ -1,14 +1,7 @@
 from math import factorial
 
-import numpy as np
-
 import prtools
-
-
-__all__ = [
-    'zernike', 'zernike_compose', 'zernike_basis', 'zernike_fit',
-    'zernike_remove', 'zernike_coordinates'
-]
+from prtools._backend import numpy as np
 
 
 def zernike(mask, index, normalize=True, rho=None, theta=None):

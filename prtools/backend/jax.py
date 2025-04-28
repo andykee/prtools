@@ -1,6 +1,41 @@
-import jax
-import optax
-import optax.tree_utils as otu
+import importlib
+
+from ._base import _BackendLibrary
+from prtools import __backend__
+
+
+class Numpy(_BackendLibrary):
+    def __init__(self):
+        super().__init__(importlib.import_module('jax.numpy'))
+
+    def broadcast_to(self, array, shape):
+        # jax broadcast_to expects an array input
+        array = self.module.asarray(array)
+        return self.module.broadcast_to(array, shape)
+
+    def dot(self, a, b, out=None):
+        # jax.numpy.dot doesn't support the `out` parameter so we ignore it
+        return self.module.dot(a, b)
+
+    def max(self, a, *args, **kwargs):
+        # jax max expects an array input
+        array = self.module.asarray(a)
+        return self.module.max(array, *args, **kwargs)
+
+    def multiply(self, a, b, out=None):
+        # jax.numpy.multiply doesn't support the `out` parameter so we
+        # ignore it
+        return self.module.multiply(a, b)
+
+    def divide(self, a, b, out=None):
+        # jax.numpy.divide doesn't support the `out` parameter so we
+        # ignore it
+        return self.module.divide(a, b)
+
+
+class Scipy(_BackendLibrary):
+    def __init__(self):
+        super().__init__(importlib.import_module('jax.scipy'))
 
 
 def lbfgs(fun, x0, tol, maxiter, callback=None):
@@ -24,9 +59,19 @@ def lbfgs(fun, x0, tol, maxiter, callback=None):
     -------
     final_params :
 
-    final_state : 
+    final_state :
 
     """
+    if __backend__ != 'jax':
+        raise RuntimeError('JAX backend must be selected')
+
+    try:
+        import jax
+        import optax
+        import optax.tree_utils as otu
+    except ImportError as error:
+        raise ImportError('lbfgs requires jax and optax') from error
+
     if callback:
         # https://optax.readthedocs.io/en/latest/_collections/examples/lbfgs.html#l-bfgs-solver
         raise NotImplementedError

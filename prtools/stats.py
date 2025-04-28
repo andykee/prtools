@@ -1,11 +1,5 @@
-import numpy as np
-
 import prtools
-
-
-__all__ = [
-    'ee', 'pv', 'rms', 'radial_avg'
-]
+from prtools._backend import numpy as np
 
 
 def ee(a, energy=0.8, center=None):

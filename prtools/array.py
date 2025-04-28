@@ -2,12 +2,8 @@ import warnings
 
 import numpy as np
 from numpy.lib.stride_tricks import as_strided
-from scipy.ndimage import map_coordinates
 
-__all__ = [
-    'centroid', 'pad', 'subarray', 'boundary', 'rebin', 'rescale', 'normpow',
-    'shift', 'register', 'medfix'
-]
+from prtools._backend import scipy
 
 
 def centroid(a, where=None, kind='absolute', indexing='ij'):
@@ -389,15 +385,15 @@ def rescale(img, scale, shape=None, mask=None, order=3, mode='nearest',
 
     xx, yy = np.meshgrid(x, y)
 
-    mask = map_coordinates(mask, [yy, xx], order=1, mode='nearest')
+    mask = scipy.ndimage.map_coordinates(mask, [yy, xx], order=1, mode='nearest')
     mask[mask < np.finfo(mask.dtype).eps] = 0
 
     if np.iscomplexobj(img):
         out = np.zeros(shape, dtype=np.complex128)
-        out.real = map_coordinates(img.real, [yy, xx], order=order, mode=mode)
-        out.imag = map_coordinates(img.imag, [yy, xx], order=order, mode=mode)
+        out.real = scipy.ndimage.map_coordinates(img.real, [yy, xx], order=order, mode=mode)
+        out.imag = scipy.ndimage.map_coordinates(img.imag, [yy, xx], order=order, mode=mode)
     else:
-        out = map_coordinates(img, [yy, xx], order=order, mode=mode)
+        out = scipy.ndimage.map_coordinates(img, [yy, xx], order=order, mode=mode)
 
     if unitary:
         out *= np.sum(img)/np.sum(out)

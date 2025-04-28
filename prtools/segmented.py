@@ -1,11 +1,7 @@
 import collections
 
-import numpy as np
-
 import prtools
-
-__all__ = ['hex_segments']
-
+from prtools._backend import numpy as np
 
 
 def hex_segments(rings, seg_radius, seg_gap, rotate=False, antialias=True,
