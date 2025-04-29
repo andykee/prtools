@@ -158,8 +158,8 @@ def zernike_compose(mask, coeffs, normalize=True, rho=None, theta=None):
     coeffs = np.asarray(coeffs)
     opd = np.zeros(mask.shape)
 
-    for index, coeff in np.ndenumerate(coeffs):
-        opd += coeff * zernike(mask, index[0]+1, normalize, rho, theta)
+    for index, coeff in enumerate(coeffs):
+        opd += coeff * zernike(mask, index+1, normalize, rho, theta)
 
     return opd
 
@@ -200,10 +200,11 @@ def zernike_basis(mask, modes, vectorize=False, normalize=True, rho=None, theta=
         modes = modes[..., np.newaxis]
 
     mask = np.asarray(mask)
-    basis = np.zeros(modes.shape + mask.shape)
 
-    for index, mode in np.ndenumerate(modes):
-        basis[index] = zernike(mask, mode, normalize, rho, theta)
+    basis = []
+    for index, mode in enumerate(modes):
+        basis.append(zernike(mask, mode, normalize, rho, theta))
+    basis = np.asarray(basis)
 
     if vectorize:
         # reshape basis from cube to matrix
@@ -391,9 +392,13 @@ def zernike_coordinates(mask, shift=None, angle=0, indexing='ij'):
 
     r = np.abs(xx+1j*yy)
     rho = r/np.max(r*mask)  # rho is defined to be 1 on the edge of the aperture
-    rho[np.where(rho==0)] = 1e-99
-
     theta = np.angle(xx + 1j*yy)
-    theta[np.where(theta==0)] = 1e-99
+    
+    if prtools.__backend__ == 'jax':
+        rho = rho.at[np.where(rho==0)].set(1e-99)
+        theta = theta.at[np.where(theta==0)].set(1e-99)
+    else:
+        rho[np.where(rho==0)] = 1e-99
+        theta[np.where(theta==0)] = 1e-99
 
     return rho, theta

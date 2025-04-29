@@ -1,7 +1,9 @@
 import importlib
+from typing import NamedTuple
 
 from ._base import _BackendLibrary
 from prtools import __backend__
+from prtools._backend import numpy as np
 
 
 class Numpy(_BackendLibrary):
@@ -38,6 +40,29 @@ class Scipy(_BackendLibrary):
         super().__init__(importlib.import_module('jax.scipy'))
 
 
+class OptimizeResult(dict):
+    """Represents the optimization result.
+
+    Attributes
+    ----------
+    x : ndarray
+        The solution of the optimization.
+    
+    """
+
+    def __init__(self):
+        super().__init__()
+
+    #def __getattr__(self, name):
+    #    try:
+    #        return self[name]
+    #    except KeyError as e:
+    #        raise AttributeError(name) from e
+        
+    #__setattr__ = dict.__setitem__
+    #__delattr__ = dict.__delitem__
+
+
 def lbfgs(fun, x0, tol, maxiter, callback=None):
     """Minimize a scalar function of one or more variables using the L-BFGS
     algorithm
@@ -72,10 +97,6 @@ def lbfgs(fun, x0, tol, maxiter, callback=None):
     except ImportError as error:
         raise ImportError('lbfgs requires jax and optax') from error
 
-    if callback:
-        # https://optax.readthedocs.io/en/latest/_collections/examples/lbfgs.html#l-bfgs-solver
-        raise NotImplementedError
-
     opt = optax.lbfgs()
     value_and_grad_fun = optax.value_and_grad_from_state(fun)
 
@@ -85,6 +106,13 @@ def lbfgs(fun, x0, tol, maxiter, callback=None):
         updates, state = opt.update(
             grad, state, params, value=value, grad=grad, value_fn=fun,
         )
+        if callback:
+            res = {}
+            res['x'] = params
+            res['grad'] = grad
+            res['fun'] = value
+            res['nit'] = otu.tree_get(state, 'count')
+            jax.debug.callback(callback, res)
         params = optax.apply_updates(params, updates)
         return params, state
 
