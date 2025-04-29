@@ -24,21 +24,20 @@ Install :mod:`prtools` with pip:
 
 .. currentmodule:: prtools
 
-Numerical backends
-------------------
 :mod:`prtools` supports different numerical backends for representing
 N-dimensional data and performing numerical calculations. The backend is
 configured by the :func:`prtools.use` function. Currently Numpy (the
-default backend) and `JAX <https://docs.jax.dev>`_ are supported.
+default backend) and `JAX <https://docs.jax.dev>`_ are supported. The table
+below shows how to use and optionally install each of the available backends:
 
-.. .. autosummary::
-..    :toctree: generated
-..    :caption: Numerical backends
-..    :nosignatures:
-.. 
-..    use
+========== ============================ ========================
+Backend    Install                      Use
+========== ============================ ========================
+numpy [1]_ ``pip install prtools``      ``prtools.use('numpy')``
+jax        ``pip install prtools[jax]`` ``prtools.use('jax')``  
+========== ============================ ========================
 
-The current backend is given in the ``prtools.__backend__`` attribute.
+The current backend name is given in the ``prtools.__backend__`` attribute.
 
 .. note::
 
@@ -46,6 +45,9 @@ The current backend is given in the ``prtools.__backend__`` attribute.
    use, but different backends may expose additional functionality. See the
    :ref:`backend-specific documentation <backends>` below for more details.
 
+.. [1] The Numpy backend is initialized by default when :mod:`prtools` is
+   imported. No additional steps are required to use :mod:`prtools` with the
+   Numpy backend.
 
 Array manipulation
 ------------------
@@ -160,6 +162,15 @@ Miscellaneous
    fft_shape
    translation_defocus
    find_wrapped
+
+Numerical backends
+------------------
+.. autosummary::
+   :toctree: generated
+   :caption: Numerical backends
+   :nosignatures:
+
+   use
 
 .. _backends:
 

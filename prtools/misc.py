@@ -4,7 +4,7 @@ from prtools._backend import numpy as np
 
 def calcpsf(amp, opd, wavelength, sampling, shape, oversample=2,
             shift=(0, 0), offset=(0, 0), weight=1, flatten=True):
-    """Calculate a point spread function using far-field diffraction.
+    r"""Calculate a point spread function using far-field diffraction.
 
     Parameters
     ----------
