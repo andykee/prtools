@@ -1,5 +1,7 @@
 __version__ = '1.2.1'
 
+from prtools._backend import __backend__, use
+
 from prtools.array import (
     centroid,
     pad,
@@ -12,8 +14,6 @@ from prtools.array import (
     register,
     medfix
 )
-
-from prtools._backend import __backend__, use
 
 from prtools.cost import sserror
 

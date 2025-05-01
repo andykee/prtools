@@ -1,8 +1,7 @@
 import warnings
 
-import numpy as np
-from numpy.lib.stride_tricks import as_strided
-
+from prtools import __backend__
+from prtools._backend import numpy as np
 from prtools._backend import scipy
 
 
@@ -684,32 +683,52 @@ def medfix(input, mask, kernel=(3,3), nanwarn=False):
 
     mask = np.asarray(mask, dtype=bool)
 
+    if not mask.any():
+        # nothing to do
+        return input
+
     kernel = np.asarray(kernel)
     if kernel.shape == ():
         kernel = np.repeat(kernel, 2)
     if np.any(kernel % 2 == 0):
-        raise ValueError("Each element of kernel must be odd")
+        raise ValueError("Kernel must be odd sized")
 
-    input[mask] = np.nan
+    if __backend__ == 'jax':
+        input = input.at[mask].set(np.nan)
+    else:
+        input[mask] = np.nan
 
-    pad_size = np.array((kernel-1)/2, dtype=int)
-    input_pad = np.full((input.shape[0] + pad_size[0] * 2, 
-                         input.shape[1] + pad_size[1] * 2), np.nan)
-    slc = (slice(pad_size[0], pad_size[0] + input.shape[0]), 
-           slice(pad_size[1], pad_size[1] + input.shape[1]))
-    input_pad[slc] = input
+    pw = (kernel - 1)//2
+    pad_width = ((pw[0], pw[0]), (pw[1], pw[1]))
 
-    input_pad = as_strided(input_pad, 
-                           shape=(input_pad.shape[0], input_pad.shape[1], kernel[0], kernel[1]),
-                           strides=input_pad.strides + input_pad.strides)
-    input_pad = input_pad.reshape((input_pad.shape[0], input_pad.shape[1], np.prod(kernel)))
-
-    mask_idx = np.where(mask)
+    input_pad = np.pad(input, pad_width=pad_width, mode='constant', constant_values=np.nan)
     
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore', category=RuntimeWarning)
-        input[mask_idx] = np.nanmedian(input_pad[mask_idx[0], mask_idx[1], :], axis=1)
+    # Get indices where mask is True
+    i, j = np.nonzero(mask)
 
+    # Offset indices because of padding
+    i_pad, j_pad = i + pw[0], j + pw[1]
+
+    # Define neighborhood offsets
+    di = np.arange(kernel[0]) - pw[0]
+    dj = np.arange(kernel[1]) - pw[1]
+    window = np.stack(np.meshgrid(di, dj, indexing='ij'), axis=-1).reshape(-1, 2)  # shape (prod(kernel), 2)
+
+    # Compute all neighborhood coordinates
+    rows = i_pad[:, None] + window[:, 0]  # shape (num_bad_px, prod(kernel))
+    cols = j_pad[:, None] + window[:, 1]  # shape (num_bad_px, prod(kernel))
+
+    # Extract neighborhoods using advanced indexing
+    bad_px_kernel = input_pad[rows, cols]
+
+    
+    bad_px_vals = np.nanmedian(bad_px_kernel, axis=1)
+
+    if __backend__ == 'jax':
+        input = input.at[i,j].set(bad_px_vals)
+    else:
+        input[i,j] = bad_px_vals
+    
     if np.isnan(input).any():
         warnings.warn('Result contains NaNs', RuntimeWarning,
                       stacklevel=2)
