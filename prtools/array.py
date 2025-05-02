@@ -16,9 +16,9 @@ def centroid(a, where=None, kind='absolute', indexing='ij'):
         Elements to include in the centroid calculation. If None (default),
         all finite and non-NaN values are used.
     kind : {'absolute', 'center'}, optional
-        Specifies the kind of centroid as a string. If 'absolute' (default), the 
-        absolute centroid within the input is returned. If 'center', the centroid
-        relative to the center of the input is returned.
+        Specifies the kind of centroid as a string. If 'absolute' (default),
+        the absolute centroid within the input is returned. If 'center', the
+        centroid relative to the center of the input is returned.
     indexing : {'ij', 'xy'}, optional
         Matrix ('ij', default) or cartesian ('xy') indexing of mesh.
 
@@ -36,7 +36,7 @@ def centroid(a, where=None, kind='absolute', indexing='ij'):
 
         >>> circ = prtools.circle(shape=(256, 256), radius=25, shift=(-80, 50))
         >>> plt.imshow(circ, cmap='gray')
-    
+
     .. code:: pycon
 
         >>> prtools.centroid(circ)
@@ -49,7 +49,7 @@ def centroid(a, where=None, kind='absolute', indexing='ij'):
     """
     if kind not in ('absolute', 'center'):
         raise ValueError(f'Unknown kind {kind}')
-    
+
     if indexing not in ('ij', 'xy'):
         raise ValueError("Valid values for indexing are 'xy' and 'ij'.")
 
@@ -63,7 +63,7 @@ def centroid(a, where=None, kind='absolute', indexing='ij'):
     if np.isnan(a[where]).any():
         warnings.warn('Unmasked NaN in input', RuntimeWarning,
                       stacklevel=2)
-    
+
     anorm = a[where]/np.sum(a[where])
 
     nr, nc = a.shape
@@ -96,7 +96,7 @@ def pad(a, shape, fill=0):
         Shape of output array in ``(nrows, ncols)``.
     fill : scalar
         Fill vlue used when pad operation increases array size.
-    
+
     Returns
     -------
     padded_array : ndarray
@@ -117,7 +117,7 @@ def pad(a, shape, fill=0):
         >>> ax[0].set_title('Original array')
         >>> ax[1].imshow(circ_pad, cmap='gray')
         >>> ax[1].set_title('Padded array')
-    
+
     .. plot::
         :include-source:
         :context: reset
@@ -133,14 +133,14 @@ def pad(a, shape, fill=0):
 
     """
     a = np.atleast_2d(a)
-    shape = np.broadcast_to(np.asarray(shape, dtype=int), (2,))    
+    shape = np.broadcast_to(np.asarray(shape, dtype=int), (2,))
 
     if a.ndim == 2:
         shape = np.append(1, shape)
-        a = a[np.newaxis,:]         
+        a = a[np.newaxis, :]
     else:  # a.ndim == 3
         shape = np.append(a.shape[0], shape)
-        
+
     out = np.ones(shape, dtype=a.dtype) * fill
 
     # The row and col indices here are 1 and 2 respectively since we've
@@ -153,14 +153,14 @@ def pad(a, shape, fill=0):
     a_slc_r = slice(a.shape[1]//2-rmin, a.shape[1]//2+rmax)
     a_slc_c = slice(a.shape[2]//2-cmin, a.shape[2]//2+cmax)
 
-    out_slc_r = slice(out.shape[1]//2-rmin, out.shape[1]//2+rmax) 
+    out_slc_r = slice(out.shape[1]//2-rmin, out.shape[1]//2+rmax)
     out_slc_c = slice(out.shape[2]//2-cmin, out.shape[2]//2+cmax)
-    
+
     out[:, out_slc_r, out_slc_c] = a[:, a_slc_r, a_slc_c]
     return np.squeeze(out)
 
 
-def subarray(a, shape, shift=(0,0)):
+def subarray(a, shape, shift=(0, 0)):
     """Extract a contiguous subarray from a larger array.
 
     The subarray is extracted about the center of the source array unless
@@ -174,7 +174,7 @@ def subarray(a, shape, shift=(0,0)):
         Shape of subarray array in ``(nrows, ncols)``.
     shift : array_like of ints
         Relative shift of the center of the subarray in ``(row, col)``.
-    
+
     Returns
     -------
     out : ndarray
@@ -194,7 +194,7 @@ def subarray(a, shape, shift=(0,0)):
         >>> ax[0].set_title('Original array')
         >>> ax[1].imshow(circ_subarray, cmap='gray')
         >>> ax[1].set_title('Subarray')
-    
+
     .. plot::
         :include-source:
         :context: reset
@@ -212,7 +212,6 @@ def subarray(a, shape, shift=(0,0)):
 
     a = np.asarray(a)
     shape = np.asarray(shape)
-
 
     rmin = a.shape[0]//2 - shape[0]//2 + shift[0]
     cmin = a.shape[1]//2 - shape[1]//2 + shift[1]
@@ -258,7 +257,7 @@ def boundary(x, threshold=0):
 
         >>> prtools.boundary(circ)
         (50, 150, 50, 150)
-    
+
     """
     x = np.asarray(x)
     x = (x > threshold)
@@ -278,8 +277,8 @@ def rebin(img, factor):
     Parameters
     ----------
     img : array_like
-        Array or cube of arrays to rebin. If a cube is provided, the first dimension
-        should index the image slices.
+        Array or cube of arrays to rebin. If a cube is provided, the first
+        dimension should index the image slices.
 
     factor : int
         Rebinning factor
@@ -366,8 +365,8 @@ def rescale(img, scale, shape=None, mask=None, order=3, mode='nearest',
     img = np.asarray(img)
 
     if mask is None:
-        # take the real portion to ensure that even if img is complex, mask will
-        # be real
+        # take the real portion to ensure that even if img is complex, mask
+        # will be real
         mask = np.zeros_like(img).real
         mask[img != 0] = 1
 
@@ -441,8 +440,8 @@ def normpow(array, power=1):
 def shift(a, shift, mode='wrap', fill=0.0):
     """Shift an array via FFT.
 
-    Shift an array by (row, column). The shifts may be non-integer as the 
-    shift operation is implemented by introducing a Fourier-domain tilt. If 
+    Shift an array by (row, column). The shifts may be non-integer as the
+    shift operation is implemented by introducing a Fourier-domain tilt. If
     ``a`` is complex, the result will also be complex.
 
     Parameters
@@ -452,21 +451,21 @@ def shift(a, shift, mode='wrap', fill=0.0):
     shift : (2,) sequence
         The shift specified as (row, column).
     mode : {'wrap', 'reflect', 'mirror', 'constant'}, optional
-        Determines how the input array is extended beyond its boundaries. 
-        Default is 'wrap'. 
+        Determines how the input array is extended beyond its boundaries.
+        Default is 'wrap'.
 
         * 'wrap' (a b c d | a b c d | a b c d)
             The input is extended by wrapping around to the opposite edge.
         * 'reflect' (d c b a | a b c d | d c b a)
-            The input is extended by reflecting about the edge of the last 
-            pixel. This mode is also sometimes referred to as half-sample 
+            The input is extended by reflecting about the edge of the last
+            pixel. This mode is also sometimes referred to as half-sample
             symmetric.
         * 'mirror' (d c b | a b c d | c b a)
-            The input is extended by reflecting about the center of the last 
-            pixel. This mode is also sometimes referred to as whole-sample 
+            The input is extended by reflecting about the center of the last
+            pixel. This mode is also sometimes referred to as whole-sample
             symmetric.
         * 'constant'
-            The input is extended by filling all values beyond the edge with 
+            The input is extended by filling all values beyond the edge with
             the same constant value, defined by the fill parameter.
 
     fill : scalar, optional
@@ -505,45 +504,45 @@ def shift(a, shift, mode='wrap', fill=0.0):
     K = np.exp(-1j*2*np.pi*(RR+CC))
     shifted = np.fft.ifft2(np.fft.fft2(a)*K)
 
-    shifted = pad(shifted, (r,c)) # crop back to original size
+    shifted = pad(shifted, (r, c))  # crop back to original size
 
     if np.any(np.iscomplex(a)):
         return shifted
     else:
         return shifted.real
-    
+
 
 def _extend(a, shift, mode, fill):
     r, c = a.shape
     dr, dc = np.ceil(np.abs(shift)).astype(int)
 
     if mode == 'wrap':  # (a b c d | a b c d | a b c d)
-        # no need to do anything since the Fourier transform 
+        # no need to do anything since the Fourier transform
         # already does this
         out = a
     else:
-        # pad the array to accomodate for 
+        # pad the array to accomodate for
         out = pad(a, shape=(r+2*dr, c+2*dc), fill=fill)
 
         if mode == 'constant':  # (k k k k | a b c d | k k k k)
             pass
-        elif mode == 'reflect': # (d c b a | a b c d | d c b a)
-            out[0:dr, 0:dc] = np.flip(a[0:dr, 0:dc]) # upper left
-            out[0:dr, dc:c+dc] = np.flip(a[0:dr, :], axis=0) # top
-            out[0:dr, c+dc:] = np.flip(a[0:dr, c-dc:]) # upper right
-            out[dr:r+dr, 0:dc] = np.flip(a[:, 0:dc], axis=1) # left
-            out[dr:r+dr, c+dc:] = np.flip(a[:, c-dc:], axis=1) # right
-            out[r+dr:, 0:dc] = np.flip(a[r-dr:r, 0:dc]) # lower left
-            out[r+dr:, dc:c+dc] = np.flip(a[r-dr:r, :], axis=0) # bottom
+        elif mode == 'reflect':  # (d c b a | a b c d | d c b a)
+            out[0:dr, 0:dc] = np.flip(a[0:dr, 0:dc])  # upper left
+            out[0:dr, dc:c+dc] = np.flip(a[0:dr, :], axis=0)  # top
+            out[0:dr, c+dc:] = np.flip(a[0:dr, c-dc:])  # upper right
+            out[dr:r+dr, 0:dc] = np.flip(a[:, 0:dc], axis=1)  # left
+            out[dr:r+dr, c+dc:] = np.flip(a[:, c-dc:], axis=1)  # right
+            out[r+dr:, 0:dc] = np.flip(a[r-dr:r, 0:dc])  # lower left
+            out[r+dr:, dc:c+dc] = np.flip(a[r-dr:r, :], axis=0)  # bottom
             out[r+dr:, c+dc:] = np.flip(a[r-dr:r, c-dc:c])  # lower right
         elif mode == 'mirror':  # (d c b | a b c d | c b a)
-            out[0:dr, 0:dc] = np.flip(a[1:dr+1, 1:dc+1]) # upper left
-            out[0:dr, dc:c+dc] = np.flip(a[1:dr+1, :], axis=0) # top
-            out[0:dr, c+dc:] = np.flip(a[1:dr+1, c-dc-1:c-1]) # upper right
-            out[dr:r+dr, 0:dc] = np.flip(a[:, 1:dc+1], axis=1) # left
-            out[dr:r+dr, c+dc:] = np.flip(a[:, c-dc-1:c-1], axis=1) # right
-            out[r+dr:, 0:dc] = np.flip(a[r-dr-1:r-1, 1:dc+1]) # lower left
-            out[r+dr:, dc:c+dc] = np.flip(a[r-dr-1:r-1, :], axis=0) # bottom
+            out[0:dr, 0:dc] = np.flip(a[1:dr+1, 1:dc+1])  # upper left
+            out[0:dr, dc:c+dc] = np.flip(a[1:dr+1, :], axis=0)  # top
+            out[0:dr, c+dc:] = np.flip(a[1:dr+1, c-dc-1:c-1])  # upper right
+            out[dr:r+dr, 0:dc] = np.flip(a[:, 1:dc+1], axis=1)  # left
+            out[dr:r+dr, c+dc:] = np.flip(a[:, c-dc-1:c-1], axis=1)  # right
+            out[r+dr:, 0:dc] = np.flip(a[r-dr-1:r-1, 1:dc+1])  # lower left
+            out[r+dr:, dc:c+dc] = np.flip(a[r-dr-1:r-1, :], axis=0)  # bottom
             out[r+dr:, c+dc:] = np.flip(a[r-dr-1:r-1, c-dc-1:c-1])  # lower right
         else:
             raise ValueError(f'Unknown mode {mode}')
@@ -554,9 +553,9 @@ def register(arr, ref, oversample, return_error=False):
     """Compute the subpixel image translation to register the input array to a
     reference array.
 
-    The registration shift is computed in two steps: first a coarse estimate 
+    The registration shift is computed in two steps: first a coarse estimate
     is computed from the FFT-based cross-correlation of the two input arrays.
-    This estimate is then refined to subpixel accuracy by computing the 
+    This estimate is then refined to subpixel accuracy by computing the
     upsampled DFT-based cross-correlation in a small neigborhood around the
     initial estimate.
 
@@ -581,7 +580,7 @@ def register(arr, ref, oversample, return_error=False):
 
     References
     ----------
-    Guizar-Sicairos, Thurman, and Fienup, "Efficient subpixel image 
+    Guizar-Sicairos, Thurman, and Fienup, "Efficient subpixel image
     registration algorithms". Optics Letters 33, 156-158 (2008)
 
     See also
@@ -604,7 +603,7 @@ def register(arr, ref, oversample, return_error=False):
     F = np.fft.fft2(arr)
     G = np.fft.fft2(ref)
     xcorr = np.fft.fftshift(np.fft.ifft2(G*np.conj(F)))
-    
+
     # find peak
     maxima = np.unravel_index(np.argmax(np.abs(xcorr)), xcorr.shape)
     peak = xcorr[maxima]
@@ -612,8 +611,8 @@ def register(arr, ref, oversample, return_error=False):
     # compute shifts
     center = np.array([np.fix(x/2) for x in arr.shape])
     shift = maxima - center
-    if oversample !=1:
-        # now we can set up and perform the oversampled dft on an oversampled 
+    if oversample != 1:
+        # now we can set up and perform the oversampled dft on an oversampled
         # 1.5 x 1.5 pixel region about the peak
         npix_dft = np.ceil(oversample*1.5)
         dft_shift = np.fix(npix_dft/2)
@@ -625,15 +624,15 @@ def register(arr, ref, oversample, return_error=False):
         Y = np.arange(arr.shape[0]) - np.floor(arr.shape[0]/2)
         U = np.arange(npix_dft) - cs
         V = np.arange(npix_dft) - rs
-        E1 = np.exp(-2*np.pi*1j/(arr.shape[0]*oversample)*np.outer(V,Y))
-        E2 = np.exp(-2*np.pi*1j/(arr.shape[1]*oversample)*np.outer(X,U))
-        xcorr = np.dot(np.dot(E1,np.conj(np.fft.ifftshift(G*np.conj(F)))),E2)
-        
+        E1 = np.exp(-2*np.pi*1j/(arr.shape[0]*oversample)*np.outer(V, Y))
+        E2 = np.exp(-2*np.pi*1j/(arr.shape[1]*oversample)*np.outer(X, U))
+        xcorr = np.dot(np.dot(E1, np.conj(np.fft.ifftshift(G*np.conj(F)))), E2)
+
         maxima_subpx = np.unravel_index(np.argmax(np.abs(xcorr)), xcorr.shape)
         peak = xcorr[maxima_subpx]
 
         # Combine subpixel peak coordinates with integer pixel peak coords
-        maxima_subpx -= dft_shift 
+        maxima_subpx -= dft_shift
         shift[0] += maxima_subpx[0]/oversample
         shift[1] += maxima_subpx[1]/oversample
 
@@ -650,7 +649,7 @@ def register(arr, ref, oversample, return_error=False):
     return shift
 
 
-def medfix(input, mask, kernel=(3,3), nanwarn=False):
+def medfix(input, mask, kernel=(3, 3), nanwarn=False):
     """Fix masked entries in a 2-dimensional array via median filtering.
 
     Parameters
@@ -661,8 +660,8 @@ def medfix(input, mask, kernel=(3,3), nanwarn=False):
         A 2-dimensional mask with the same shape as input. Entries which
         evaluate to True are considered masked and will be repaired.
     kernel : array_like, optional
-        A scalar or list of length 2 specifying the filter window in 
-        each dimension. Elements of *kernel* should be odd. If *kernel*
+        A scalar or list of length 2 specifying the filter window in
+        each dimension. Elements of *kernel* must be odd. If *kernel*
         is a scalar, it is used for each dimension. Default is (3,3).
     nanwarn : bool, optional
         If True, a RuntimeWarning will be raised if NaNs are present
@@ -671,7 +670,7 @@ def medfix(input, mask, kernel=(3,3), nanwarn=False):
     Returns
     -------
     ndarray
-   
+
     Notes
     -----
     Masked areas larger than the kernel size will introduce NaNs into
@@ -680,7 +679,6 @@ def medfix(input, mask, kernel=(3,3), nanwarn=False):
     """
     # force a copy by calling array instead of asarray
     input = np.array(input, dtype=float)
-
     mask = np.asarray(mask, dtype=bool)
 
     if not mask.any():
@@ -701,35 +699,35 @@ def medfix(input, mask, kernel=(3,3), nanwarn=False):
     pw = (kernel - 1)//2
     pad_width = ((pw[0], pw[0]), (pw[1], pw[1]))
 
-    input_pad = np.pad(input, pad_width=pad_width, mode='constant', constant_values=np.nan)
-    
-    # Get indices where mask is True
-    i, j = np.nonzero(mask)
+    input_pad = np.pad(input, pad_width=pad_width, mode='constant',
+                       constant_values=np.nan)
 
-    # Offset indices because of padding
-    i_pad, j_pad = i + pw[0], j + pw[1]
+    i, j = np.nonzero(mask)  # indices of bad pixels
+    i_pad, j_pad = i + pw[0], j + pw[1]  # indices offset by padding width
 
-    # Define neighborhood offsets
+    # define neighborhood offsets
     di = np.arange(kernel[0]) - pw[0]
     dj = np.arange(kernel[1]) - pw[1]
     window = np.stack(np.meshgrid(di, dj, indexing='ij'), axis=-1).reshape(-1, 2)  # shape (prod(kernel), 2)
 
-    # Compute all neighborhood coordinates
+    # compute all neighborhood coordinates
     rows = i_pad[:, None] + window[:, 0]  # shape (num_bad_px, prod(kernel))
     cols = j_pad[:, None] + window[:, 1]  # shape (num_bad_px, prod(kernel))
 
-    # Extract neighborhoods using advanced indexing
+    # extract neighborhoods using advanced indexing and compute replacement
+    # values
     bad_px_kernel = input_pad[rows, cols]
 
-    
-    bad_px_vals = np.nanmedian(bad_px_kernel, axis=1)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', category=RuntimeWarning)
+        bad_px_vals = np.nanmedian(bad_px_kernel, axis=1)
 
     if __backend__ == 'jax':
-        input = input.at[i,j].set(bad_px_vals)
+        input = input.at[i, j].set(bad_px_vals)
     else:
-        input[i,j] = bad_px_vals
-    
-    if np.isnan(input).any():
+        input[i, j] = bad_px_vals
+
+    if nanwarn and np.isnan(input).any():
         warnings.warn('Result contains NaNs', RuntimeWarning,
                       stacklevel=2)
 

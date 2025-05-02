@@ -26,9 +26,10 @@ Install :mod:`prtools` with pip:
 
 :mod:`prtools` supports different numerical backends for representing
 N-dimensional data and performing numerical calculations. The backend is
-configured by the :func:`prtools.use` function. Currently Numpy (the
-default backend) and `JAX <https://docs.jax.dev>`_ are supported. The table
-below shows how to use and optionally install each of the available backends:
+configured by the :func:`prtools.use` function. Currently 
+`Numpy <https://numpy.org>`_ (the default backend) and 
+`JAX <https://docs.jax.dev>`_ are supported. The table below shows how to use
+and optionally install each of the available backends:
 
 ========== ============================ ========================
 Backend    Install                      Use
@@ -176,6 +177,11 @@ Numerical backends
 
 JAX backend
 -----------
+The JAX backend has the following additional dependencies:
+
+* `JAX <https://docs.jax.dev/>`_
+* `Optax <https://optax.readthedocs.io/en/latest/>`_
+
 .. autosummary::
    :toctree: generated
    :caption: JAX backend
