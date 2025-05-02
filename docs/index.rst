@@ -121,11 +121,11 @@ Sparse matrices
    :caption: Sparse matrices
    :nosignatures:
 
-   spindex
-   sparray
-   spmatrix
-   spindex_from_mask
-   mask_from_spindex
+   index
+   sparse
+   dense
+   index_from_mask
+   mask_from_index
 
 Zernike polynomials
 -------------------
@@ -179,7 +179,7 @@ JAX backend
 -----------
 The JAX backend has the following additional dependencies:
 
-* `JAX <https://docs.jax.dev/>`_
+* `JAX <https://docs.jax.dev/>`__
 * `Optax <https://optax.readthedocs.io/en/latest/>`_
 
 .. autosummary::

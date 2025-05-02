@@ -42,11 +42,11 @@ from prtools.shape import (
 )
 
 from prtools.sparse import (
-    spindex,
-    spmatrix,
-    sparray,
-    spindex_from_mask,
-    mask_from_spindex
+    index,
+    dense,
+    sparse,
+    index_from_mask,
+    mask_from_index
 )
 
 from prtools.stats import (

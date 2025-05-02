@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class spindex:
+class index:
     """Sparse coordinate list (COO) index
 
     Parameters
@@ -12,34 +12,37 @@ class spindex:
         List of column indices which contain nonzero data
     shape : (2,) array_like
         Dimensions of dense matrix
-    nnz : int, optional
-        Number of nonzero entries in dense matrix. If not 
-        specified, 
+
+    Attributes
+    ----------
+    nnz : int
+        Number of nonzero entries in dense matrix
+
     Returns
     -------
-    spindex
+    index
 
     See Also
     --------
-    * :func:`~prtools.sparray` Create a sparse array from a dense matrix
-    * :func:`~prtools.spmatrix` Create a dense matrix from a sparse array
+    * :func:`~prtools.sparse` Create a sparse array from a dense matrix
+    * :func:`~prtools.dense` Create a dense matrix from a sparse array
     """
 
-    def __init__(self, row, col, shape, nnz=None):
+    def __init__(self, row, col, shape):
         self.row = row
         self.col = col
         self.shape = shape
-        self.nnz = nnz if nnz is not None else len(self.row)
+        self.nnz = len(self.row)
 
 
-def spmatrix(a, index):
+def dense(a, index):
     """Create a dense matrix from a sparse array
-    
+
     Parameters
     ----------
     a : array_like
         Sparse array to be reformed as a dense matrix
-    index : :class:`~prtools.spindex`
+    index : :class:`~prtools.index`
         Corresponding index object
 
     Returns
@@ -49,8 +52,8 @@ def spmatrix(a, index):
 
     See Also
     --------
-    * :func:`~prtools.sparray` Create a sparse array from a dense matrix
-    * :func:`~prtools.spindex` Create a sparse coordinate list (COO) index
+    * :func:`~prtools.sparse` Create a sparse array from a dense matrix
+    * :func:`~prtools.index` Create a sparse coordinate list (COO) index
       object
     """
 
@@ -60,39 +63,38 @@ def spmatrix(a, index):
     return m
 
 
-
-def sparray(m, index=None):
+def sparse(m, index=None):
     """Create a sparse array from a dense matrix
 
     Parameters
     ----------
     m : array_like
         Dense matrix to be reformed as a sparse vector
-    index : :class:`~prtools.spindex`
+    index : :class:`~prtools.index`
         Corresponding index object
 
     Returns
     -------
     ndarray
         Sparse vector
-    
+
     See Also
     --------
-    * :func:`~prtools.spmatrix` Create a dense matrix from a sparse array
-    * :func:`~prtools.spindex` Create a sparse coordinate list (COO) index
+    * :func:`~prtools.dense` Create a dense matrix from a sparse array
+    * :func:`~prtools.index` Create a sparse coordinate list (COO) index
       object
     """
 
     if index is None:
-        index = spindex(m)
+        index = index(m)
 
     rmi = np.ravel_multi_index((index.row, index.col),
-                              index.shape, order='C')
+                               index.shape, order='C')
     a = m.ravel()
     return a[rmi]
-    
 
-def spindex_from_mask(m):
+
+def index_from_mask(m):
     """Create a sparse coordinate list (COO) index object from a
     mask.
 
@@ -103,22 +105,21 @@ def spindex_from_mask(m):
 
     Returns
     -------
-    :class:`~prtools.spindex`
+    :class:`~prtools.index`
     """
 
     m = np.asarray(m)
     r, c = m.nonzero()
     shape = m.shape
-    nnz = len(r)
-    return spindex(row=r, col=c, shape=shape, nnz=nnz)
+    return index(row=r, col=c, shape=shape)
 
 
-def mask_from_spindex(index):
+def mask_from_index(index):
     """Create a mask from a sparse coordinate list (COO) index.
-    
+
     Parameters
     ----------
-    index : :class:`~prtools.spindex`
+    index : :class:`~prtools.index`
         Index object
 
     Returns
@@ -127,4 +128,4 @@ def mask_from_spindex(index):
         Dense matrix
     """
 
-    return spmatrix(np.ones(index.row.shape), index)
+    return dense(np.ones(index.row.shape), index)
