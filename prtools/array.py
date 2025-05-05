@@ -320,8 +320,10 @@ def rescale(img, scale, shape=None, mask=None, order=3, mode='nearest',
     img : array_like
         Image to rescale
 
-    scale : float
-        Scaling factor. Scale factors less than 1 will shrink the image. Scale
+    scale : float or tuple of floats
+        Scaling factor. If scale is a tuple, img is rescaled according to
+        ``scale_row, scale_col)``. A single value rescales img equally in both
+        dimensions. Scale factors less than 1 will shrink the image. Scale
         factors greater than 1 will grow the image.
 
     shape : array_like or int, optional
@@ -339,7 +341,7 @@ def rescale(img, scale, shape=None, mask=None, order=3, mode='nearest',
 
     mode : {'constant', 'nearest', 'reflect', 'wrap'}, optional
         Points outside the boundaries of the input are filled according to the
-        given mode. Default is 'constant'.
+        given mode. Default is 'nearest'.
 
     unitary : bool, optional
         Normalization flag. If True (default), a normalization is performed on
@@ -363,6 +365,12 @@ def rescale(img, scale, shape=None, mask=None, order=3, mode='nearest',
     """
 
     img = np.asarray(img)
+    scale = np.broadcast_to(scale, (2,))
+
+    if shape is None:
+        shape = img.shape
+    shape = np.broadcast_to(shape, (2,))
+    shape = np.ceil(shape * scale).astype(int)
 
     if mask is None:
         # take the real portion to ensure that even if img is complex, mask
@@ -370,28 +378,20 @@ def rescale(img, scale, shape=None, mask=None, order=3, mode='nearest',
         mask = np.zeros_like(img).real
         mask[img != 0] = 1
 
-    if shape is None:
-        shape = np.ceil((img.shape[0]*scale, img.shape[1]*scale)).astype(int)
-    else:
-        if np.isscalar(shape):
-            shape = np.ceil((shape*scale, shape*scale)).astype(int)
-        else:
-            shape = np.ceil((shape[0]*scale, shape[1]*scale)).astype(int)
+    r = (np.arange(shape[0], dtype=np.float64) - shape[0]/2.)/scale[0] + img.shape[0]/2.
+    c = (np.arange(shape[1], dtype=np.float64) - shape[1]/2.)/scale[1] + img.shape[1]/2.
 
-    x = (np.arange(shape[1], dtype=np.float64) - shape[1]/2.)/scale + img.shape[1]/2.
-    y = (np.arange(shape[0], dtype=np.float64) - shape[0]/2.)/scale + img.shape[0]/2.
+    rr, cc = np.meshgrid(r, c, indexing='ij')
 
-    xx, yy = np.meshgrid(x, y)
-
-    mask = scipy.ndimage.map_coordinates(mask, [yy, xx], order=1, mode='nearest')
+    mask = scipy.ndimage.map_coordinates(mask, [rr, cc], order=1, mode='nearest')
     mask[mask < np.finfo(mask.dtype).eps] = 0
 
     if np.iscomplexobj(img):
         out = np.zeros(shape, dtype=np.complex128)
-        out.real = scipy.ndimage.map_coordinates(img.real, [yy, xx], order=order, mode=mode)
-        out.imag = scipy.ndimage.map_coordinates(img.imag, [yy, xx], order=order, mode=mode)
+        out.real = scipy.ndimage.map_coordinates(img.real, [rr, cc], order=order, mode=mode)
+        out.imag = scipy.ndimage.map_coordinates(img.imag, [rr, cc], order=order, mode=mode)
     else:
-        out = scipy.ndimage.map_coordinates(img, [yy, xx], order=order, mode=mode)
+        out = scipy.ndimage.map_coordinates(img, [rr, cc], order=order, mode=mode)
 
     if unitary:
         out *= np.sum(img)/np.sum(out)
