@@ -1,4 +1,4 @@
-__version__ = '1.2.1'
+__version__ = '1.3.0'
 
 from prtools._backend import __backend__, use
 
