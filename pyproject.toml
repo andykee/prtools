@@ -36,8 +36,5 @@ Documentation = "https://andykee.github.io/prtools/"
 [project.optional-dependencies]
 jax = ["jax", "optax"]
 
-[tool.setuptools]
-packages = ["prtools"]
-
 [tool.setuptools.dynamic]
 version = {attr = "prtools.__version__"} 
