@@ -265,8 +265,9 @@ def boundary(x, threshold=0):
     rows = np.any(x, axis=1)
     cols = np.any(x, axis=0)
 
-    rmin, rmax = np.where(rows)[0][[0, -1]]
-    cmin, cmax = np.where(cols)[0][[0, -1]]
+    idx = np.array((0, -1))  # https://github.com/andykee/prtools/issues/6
+    rmin, rmax = np.where(rows)[0][idx]
+    cmin, cmax = np.where(cols)[0][idx]
 
     return rmin, rmax, cmin, cmax
 

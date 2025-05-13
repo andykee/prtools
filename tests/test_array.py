@@ -47,6 +47,7 @@ def test_medfix(backend):
     y = prtools.medfix(x, mask=m, kernel=(3, 3))
     assert y[2, 2] == 2
 
+
 @pytest.mark.parametrize('backend', BACKENDS)
 def test_medfix_bigmask(backend):
     prtools.use(backend)
@@ -56,3 +57,11 @@ def test_medfix_bigmask(backend):
         warnings.simplefilter('error')
         y = prtools.medfix(x, mask=m, kernel=(3, 3))
     assert np.all(np.isnan(y[3:5, 3:5]))
+
+
+@pytest.mark.parametrize('backend', BACKENDS)
+def test_boundary(backend):
+    prtools.use(backend)
+    x = np.zeros((10, 10))
+    x[3:7, 2:8] = 1
+    assert np.array_equal(prtools.boundary(x), (3, 6, 2, 7))
