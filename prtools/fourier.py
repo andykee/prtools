@@ -1,5 +1,3 @@
-import functools
-
 from prtools import __backend__
 from prtools._backend import numpy as np
 
@@ -137,7 +135,6 @@ def _idft2_matrices(m, n, M, N, alphar, alphac, shiftr, shiftc, offsetr, offsetc
     return E1, E2
 
 
-@functools.lru_cache(maxsize=32)
 def _dft2_coords(m, n, M, N):
     # R and S are (r,c) coordinates in the (m x n) input plane f
     # V and U are (r,c) coordinates in the (M x N) output plane F
