@@ -1,5 +1,15 @@
+from dataclasses import dataclass
+from functools import partial
 import importlib
-from typing import NamedTuple
+
+try:
+    import jax
+    import optax
+    import optax.tree_utils as otu
+except ImportError as exc:
+    JAX_AVAILABLE = False
+else:
+    JAX_AVAILABLE = True
 
 from ._base import _BackendLibrary
 from prtools import __backend__
@@ -40,30 +50,34 @@ class Scipy(_BackendLibrary):
         super().__init__(importlib.import_module('jax.scipy'))
 
 
-class OptimizeResult(dict):
+# TODO: The interface for registering a dataclass with JAX was significantly
+# improved in JAX v0.4.36. Once some time has passed, we should switch over
+# to this new method (and require JAX >= 0.4.36)
+@partial(jax.tree_util.register_dataclass,
+         data_fields=['x', 'n', 'grad', 'fun'],
+         meta_fields=[])
+@dataclass
+class JaxOptimizeResult:
     """Represents the optimization result.
 
     Attributes
     ----------
-    x : ndarray
+    x : jax.Array
         The solution of the optimization.
-    
+    fun : jax.Array
+        Value of objective function at x.
+    grad : jax.Array
+        Values of objective function's gradient at x.
+    n : jax.Array
+        Number of iterations performed by the optimizer.
     """
-
-    def __init__(self):
-        super().__init__()
-
-    #def __getattr__(self, name):
-    #    try:
-    #        return self[name]
-    #    except KeyError as e:
-    #        raise AttributeError(name) from e
-        
-    #__setattr__ = dict.__setitem__
-    #__delattr__ = dict.__delitem__
+    x: jax.Array  # The solution of the optimization
+    n: jax.Array
+    grad: jax.Array
+    fun: jax.Array
 
 
-def lbfgs(fun, x0, tol, maxiter, callback=None):
+def lbfgs(fun, x0, gtol, maxiter, callback=None):
     """Minimize a scalar function of one or more variables using the L-BFGS
     algorithm
 
@@ -71,31 +85,34 @@ def lbfgs(fun, x0, tol, maxiter, callback=None):
     ----------
     fun : callable
         The objective function to be minimied
-    x0 : array_like
-        Initial starting guess
-    tol : float
-        Termination tolerance
+    x0 : jax.Array
+        Initial guess
+    gtol : float
+        Iteration stops when ``l2_norm(grad) <= gtol``
     maxiter : int
         Maximum number of iterations
     callback : callable, optional
-        Not currently implemented
+        A callable called after each iteration with the signature
+
+        .. code:: python
+
+            callback(intermediate_result: JaxOptimizeResult)
+
+        where ``intermediate_result`` is a :class:`JaxOptimizeResult`.
 
     Returns
     -------
-    final_params :
-
-    final_state :
+    res: JaxOptimizeResult
+        The optimization result. See :class:`JaxOptimizeResult` for a
+        description of attributes.
 
     """
+    if not JAX_AVAILABLE:
+        message = "jax and optax must be installed to use method `lbfgs`."
+        raise ModuleNotFoundError(message) from exc
+
     if __backend__ != 'jax':
         raise RuntimeError('JAX backend must be selected')
-
-    try:
-        import jax
-        import optax
-        import optax.tree_utils as otu
-    except ImportError as error:
-        raise ImportError('lbfgs requires jax and optax') from error
 
     opt = optax.lbfgs()
     value_and_grad_fun = optax.value_and_grad_from_state(fun)
@@ -107,11 +124,11 @@ def lbfgs(fun, x0, tol, maxiter, callback=None):
             grad, state, params, value=value, grad=grad, value_fn=fun,
         )
         if callback:
-            res = {}
-            res['x'] = params
-            res['grad'] = grad
-            res['fun'] = value
-            res['nit'] = otu.tree_get(state, 'count')
+            res = JaxOptimizeResult(
+                n=otu.tree_get(state, 'count'),
+                x=params, 
+                grad=grad,
+                fun=value)
             jax.debug.callback(callback, res)
         params = optax.apply_updates(params, updates)
         return params, state
@@ -120,8 +137,8 @@ def lbfgs(fun, x0, tol, maxiter, callback=None):
         _, state = carry
         iter_num = otu.tree_get(state, 'count')
         grad = otu.tree_get(state, 'grad')
-        err = otu.tree_l2_norm(grad)
-        return (iter_num == 0) | ((iter_num < maxiter) & (err >= tol))
+        grad_norm = otu.tree_l2_norm(grad)
+        return (iter_num == 0) | ((iter_num < maxiter) & (grad_norm >= gtol))
 
     init_carry = (x0, opt.init(x0))
     final_params, final_state = jax.lax.while_loop(
