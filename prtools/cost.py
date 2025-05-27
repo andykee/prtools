@@ -1,4 +1,4 @@
-from prtools._backend import numpy as np
+from prtools.backend import numpy as np
 
 
 def sserror(data, est, mask=None, gain_bias_invariant=False, ghat=None):

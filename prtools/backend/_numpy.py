@@ -1,13 +1,13 @@
-from ._base import _BackendLibrary
+from ._base import BackendLibrary
 
 
-class Numpy(_BackendLibrary):
+class Numpy(BackendLibrary):
     def __init__(self):
         import numpy
         super().__init__(numpy)
 
 
-class Scipy(_BackendLibrary):
+class Scipy(BackendLibrary):
     def __init__(self):
         import scipy
         super().__init__(scipy)

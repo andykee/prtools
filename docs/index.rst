@@ -187,4 +187,5 @@ The JAX backend has the following additional dependencies:
    :caption: JAX backend
    :nosignatures:
 
-   backend.jax.lbfgs
+   jax.lbfgs
+   jax.JaxOptimizeResult

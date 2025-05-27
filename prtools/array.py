@@ -1,8 +1,8 @@
 import warnings
 
 from prtools import __backend__
-from prtools._backend import numpy as np
-from prtools._backend import scipy
+from prtools.backend import numpy as np
+from prtools.backend import scipy
 
 
 def centroid(a, where=None, kind='absolute', indexing='ij'):

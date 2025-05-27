@@ -1,5 +1,5 @@
 from prtools import __backend__
-from prtools._backend import numpy as np
+from prtools.backend import numpy as np
 
 
 def mesh(shape, shift=(0, 0), angle=0, indexing='ij'):

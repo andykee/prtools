@@ -1,7 +1,7 @@
 from math import factorial
 
 import prtools
-from prtools._backend import numpy as np
+from prtools.backend import numpy as np
 
 
 def zernike(mask, index, normalize=True, rho=None, theta=None):

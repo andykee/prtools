@@ -1,5 +1,5 @@
 import prtools
-from prtools._backend import numpy as np
+from prtools.backend import numpy as np
 
 
 def ee(a, energy=0.8, center=None):

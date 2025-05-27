@@ -1,5 +1,5 @@
 import prtools
-from prtools._backend import numpy as np
+from prtools.backend import numpy as np
 
 
 def calcpsf(amp, opd, wavelength, sampling, shape, oversample=2,

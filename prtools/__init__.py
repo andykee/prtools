@@ -1,9 +1,9 @@
 __version__ = '1.3.1'
 
-from prtools._backend import __backend__, use
+from prtools.backend import __backend__, use
 
-import prtools.backend.jax
-import prtools.backend.numpy
+#import prtools.backend.jax
+#import prtools.backend.numpy
 
 from prtools.array import (
     centroid,
@@ -21,6 +21,8 @@ from prtools.array import (
 from prtools.cost import sserror
 
 from prtools.fourier import dft2, idft2
+
+import prtools.jax
 
 from prtools.misc import (
     calcpsf,

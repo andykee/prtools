@@ -1,5 +1,5 @@
 
-class _BackendLibrary:
+class BackendLibrary:
     def __init__(self, module):
         self.module = module
 
