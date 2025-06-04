@@ -5,3 +5,5 @@ sphinx_remove_toctrees
 sphinx-favicon
 numpy
 scipy
+jax
+optax
