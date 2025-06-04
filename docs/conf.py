@@ -68,8 +68,8 @@ html_theme_options = {
     "footer_start": ["copyright"],
     "footer_end": [],
     "show_prev_next": False,
-    "pygment_light_style": "tango",
-    "pygment_dark_style": "nord",
+    "pygments_light_style": "tango",
+    "pygments_dark_style": "nord",
 }
 
 html_sidebars = {
