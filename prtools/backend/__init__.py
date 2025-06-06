@@ -5,8 +5,18 @@ import types
 from ._base import BackendLibrary
 
 
+def backend_available(name):
+    """Return True if backend library is available"""
+    try:
+        importlib.import_module(name)
+    except ImportError:
+        return False
+    else:
+        return True
+        
+
 class BackendName:
-    """Helper class for storing the backend name - needed since strings are
+    """Helper class for changing the backend name - needed since strings are
     immutable.
     """
 
@@ -41,9 +51,14 @@ class BackendRegistry:
 registry = BackendRegistry()
 
 class Backend(types.ModuleType):
-    __backend__ = BackendName(None)
+    
     numpy = BackendLibrary(None)
     scipy = BackendLibrary(None)
+
+    __backend__ = BackendName(None)
+
+    JAX_AVAILABLE = backend_available('jax') & backend_available('optax')
+    NUMPY_AVAILABLE = backend_available('numpy')
 
     @classmethod
     def use(cls, backend):

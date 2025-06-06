@@ -2,9 +2,6 @@ __version__ = '1.3.1'
 
 from prtools.backend import __backend__, use
 
-#import prtools.backend.jax
-#import prtools.backend.numpy
-
 from prtools.array import (
     centroid,
     pad,

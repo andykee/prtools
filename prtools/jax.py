@@ -1,35 +1,36 @@
 from dataclasses import dataclass
-from functools import partial
-import importlib
+from typing import Any
 
-try:
+from prtools import __backend__
+from prtools.backend import JAX_AVAILABLE
+
+if JAX_AVAILABLE:
     import jax
     import optax
     import optax.tree_utils as otu
-except ImportError as exc:
-    JAX_AVAILABLE = False
-else:
-    JAX_AVAILABLE = True
-
-from prtools import __backend__
 
 
-# TODO: The interface for registering a dataclass with JAX was significantly
-# improved in JAX v0.4.36. Once some time has passed, we should switch over
-# to this new method (and require JAX >= 0.4.36)
-@partial(jax.tree_util.register_dataclass,
-         data_fields=['x', 'n', 'grad', 'fun'],
-         meta_fields=[])
+def register_dataclass(cls):
+    if JAX_AVAILABLE:
+        data_fields = ['x', 'n', 'grad', 'fun']
+        meta_fields = []
+        cls = jax.tree_util.register_dataclass(cls,
+                                               data_fields=data_fields,
+                                               meta_fields=meta_fields)
+    return cls
+
+
+@register_dataclass
 @dataclass
 class JaxOptimizeResult:
     """Represents the optimization result."""
-    x: jax.Array  #: The solution of the optimization
-    n: jax.Array  #: Number of iterations performed by the optimizer
-    grad: jax.Array  #: Value of objective function gradient at x
-    fun: jax.Array  #: Value of objective function at x
+    x: Any  #: The solution of the optimization
+    n: Any  #: Number of iterations performed by the optimizer
+    grad: Any  #: Value of objective function gradient at x
+    fun: Any  #: Value of objective function at x
 
 
-def lbfgs(fun, x0, gtol, maxiter, callback=None):
+def lbfgs(fun, x0, gtol=None, maxiter=None, callback=None):
     """Minimize a scalar function of one or more variables using the L-BFGS
     algorithm
 
@@ -61,14 +62,17 @@ def lbfgs(fun, x0, gtol, maxiter, callback=None):
     """
     if not JAX_AVAILABLE:
         message = "jax and optax must be installed to use method `lbfgs`."
-        raise ModuleNotFoundError(message) from exc
+        raise ModuleNotFoundError(message)
 
     if __backend__ != 'jax':
         raise RuntimeError('JAX backend must be selected')
 
+    if not any((gtol, maxiter)):
+        raise ValueError('At least one termination tolerance must be specified.')
+
     opt = optax.lbfgs()
     value_and_grad_fun = optax.value_and_grad_from_state(fun)
-
+    
     def step(carry):
         params, state = carry
         value, grad = value_and_grad_fun(params, state=state)
@@ -78,7 +82,7 @@ def lbfgs(fun, x0, gtol, maxiter, callback=None):
         if callback:
             res = JaxOptimizeResult(
                 n=otu.tree_get(state, 'count'),
-                x=params, 
+                x=params,
                 grad=grad,
                 fun=value)
             jax.debug.callback(callback, res)
