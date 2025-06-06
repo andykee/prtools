@@ -18,7 +18,7 @@ def calcpsf(amp, opd, wavelength, sampling, shape, oversample=2,
         Propagation sampling term defined as
 
         .. math::
-            \mbox{sampling} = \\frac{dx \ du}{z}
+            \mbox{sampling} = \frac{dx \ du}{z}
 
         where *dx* is the pupil plane spatial sampling, *du* is the image
         plane spatial sampling, and *z* is the propagation distance. If a
