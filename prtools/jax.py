@@ -12,7 +12,7 @@ if JAX_AVAILABLE:
 
 def register_dataclass(cls):
     if JAX_AVAILABLE:
-        data_fields = ['x', 'n', 'grad', 'fun']
+        data_fields = ['x', 'n', 'grad', 'value', 'state']
         meta_fields = []
         cls = jax.tree_util.register_dataclass(cls,
                                                data_fields=data_fields,
@@ -26,8 +26,9 @@ class JaxOptimizeResult:
     """Represents the optimization result."""
     x: Any  #: The solution of the optimization
     n: Any  #: Number of iterations performed by the optimizer
+    value: Any  #: Value of objective function at x
     grad: Any  #: Value of objective function gradient at x
-    fun: Any  #: Value of objective function at x
+    state: Any  #: Optimizer state
 
 
 def lbfgs(fun, x0, gtol=None, maxiter=None, callback=None):
@@ -77,14 +78,14 @@ def lbfgs(fun, x0, gtol=None, maxiter=None, callback=None):
         params, state = carry
         value, grad = value_and_grad_fun(params, state=state)
         updates, state = opt.update(
-            grad, state, params, value=value, grad=grad, value_fn=fun,
-        )
+            grad, state, params, value=value, grad=grad, value_fn=fun)
         if callback:
             res = JaxOptimizeResult(
-                n=otu.tree_get(state, 'count'),
+                n=otu.tree_get(state, 'count')-1,
                 x=params,
                 grad=grad,
-                fun=value)
+                value=value,
+                state=state)
             jax.debug.callback(callback, res)
         params = optax.apply_updates(params, updates)
         return params, state
@@ -98,6 +99,16 @@ def lbfgs(fun, x0, gtol=None, maxiter=None, callback=None):
 
     init_carry = (x0, opt.init(x0))
     final_params, final_state = jax.lax.while_loop(
-        continuing_criterion, step, init_carry
-    )
-    return final_params, final_state
+        continuing_criterion, step, init_carry)
+
+    res = JaxOptimizeResult(
+        n=otu.tree_get(final_state, 'count'),
+        x=final_params,
+        grad=otu.tree_get(final_state, 'grad'),
+        value=otu.tree_get(final_state, 'value'),
+        state=final_state)
+    
+    if callback:
+        jax.debug.callback(callback, res)
+
+    return res
