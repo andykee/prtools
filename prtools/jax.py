@@ -31,14 +31,22 @@ class JaxOptimizeResult:
     state: Any  #: Optimizer state
 
 
-def lbfgs(fun, x0, gtol=None, maxiter=None, callback=None):
+def lbfgs(fn, x0, gtol=None, maxiter=None, callback=None, fn_args=None, 
+          fn_kwargs=None):
     """Minimize a scalar function of one or more variables using the L-BFGS
     algorithm
 
     Parameters
     ----------
-    fun : callable
-        The objective function to be minimied
+    fn : callable
+        The objective function to be minimized:
+
+        .. code:: python
+
+            fn(x, *fn_args, **fn_kwargs)
+        
+        where ``x`` is a 1-D array with shape (n,) and ``fn_args`` and
+        ``fn_kwargs`` are optional positional and keyword arguments.
     x0 : jax.Array
         Initial guess
     gtol : float
@@ -53,6 +61,10 @@ def lbfgs(fun, x0, gtol=None, maxiter=None, callback=None):
             callback(intermediate_result: JaxOptimizeResult)
 
         where ``intermediate_result`` is a :class:`JaxOptimizeResult`.
+    fn_args : iterable or None
+        Extra positional arguments passed to ``fn()``
+    fn_kwargs : dict or None
+        Extra keyword arguments passed to the ``fn()``
 
     Returns
     -------
@@ -71,14 +83,21 @@ def lbfgs(fun, x0, gtol=None, maxiter=None, callback=None):
     if not any((gtol, maxiter)):
         raise ValueError('At least one termination tolerance must be specified.')
 
+    fn_args = [] if fn_args is None else fn_args
+    fn_kwargs = {} if fn_kwargs is None else fn_kwargs
+
     opt = optax.lbfgs()
-    value_and_grad_fun = optax.value_and_grad_from_state(fun)
+    value_and_grad_fn = optax.value_and_grad_from_state(fn)
     
     def step(carry):
         params, state = carry
-        value, grad = value_and_grad_fun(params, state=state)
+        # NOTE: passing *args and **kwargs to value_and_grad_fun is very
+        # poorly documented in optax (as of v0.2.6 - 10/2025) but this
+        # seems to work for now
+        value, grad = value_and_grad_fn(params, *fn_args, state=state, 
+                                         **fn_kwargs)
         updates, state = opt.update(
-            grad, state, params, value=value, grad=grad, value_fn=fun)
+            grad, state, params, value=value, grad=grad, value_fn=fn)
         if callback:
             res = JaxOptimizeResult(
                 n=otu.tree_get(state, 'count')-1,
