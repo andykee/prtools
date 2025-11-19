@@ -62,8 +62,6 @@ def zernike(mask, index, normalize=True, order='noll', rho=None, theta=None):
         if theta is None:
             raise ValueError("Both rho and theta must be specified")
 
-    m, n = zernike_index(index)
-
     if m == 0:
         if n == 0:
             Z = mask
