@@ -167,7 +167,7 @@ def zernike_compose(mask, coeffs, normalize=True, order='noll', rho=None, theta=
 
     return opd
 
-def zernike_basis(mask, modes, vectorize=False, normalize=True, order='noll', 
+def zernike_basis(mask, modes, vectorize=False, normalize=True, order='noll',
                   rho=None, theta=None):
     """Compute a Zernike basis set for a given mask.
 
@@ -218,7 +218,7 @@ def zernike_basis(mask, modes, vectorize=False, normalize=True, order='noll',
         return basis.reshape(basis.shape[0], -1)
     else:
         return basis
-    
+
 
 def zernike_fit(opd, mask, modes, normalize=True, order='noll', rho=None,
                 theta=None):
@@ -315,8 +315,8 @@ def zernike_remove(opd, mask, modes, order='noll', rho=None, theta=None):
     opd = np.asarray(opd)
     mask = np.asarray(mask)
 
-    coeffs = zernike_fit(opd, mask, modes, order, rho, theta)
-    fit_opd = zernike_compose(mask, coeffs, rho, order, theta)
+    coeffs = zernike_fit(opd, mask, modes, True, order, rho, theta)
+    fit_opd = zernike_compose(mask, coeffs, True, order, rho, theta)
 
     residual = opd - fit_opd
 
