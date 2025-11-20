@@ -15,6 +15,14 @@ from prtools.array import (
     medfix
 )
 
+from prtools.convolve import (
+    fftconv,
+    gauss,
+    gauss_kernel,
+    pixel_kernel,
+    sinc,
+)
+
 from prtools.cost import sserror
 
 from prtools.fourier import dft2, idft2
@@ -38,7 +46,6 @@ from prtools.shape import (
     hexagon,
     rectangle,
     spider,
-    gauss,
     sin,
     waffle
 )
