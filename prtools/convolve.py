@@ -60,11 +60,11 @@ def gauss(x1, x2, sigma, oversample=1, indexing='ij', normalize=False):
 
     Parameters
     ----------
-    x1, x1 : array_like
+    x1, x2 : array_like
         1-D arrays representing the grid coordinates
     sigma : float or (2,) array_like
         Standard deviation of Gaussian. Providing two values allows for
-        non-symmetric Gaussian interpreted as `(sigma_row, sigma_col)`https://shokz.com/pages/openrunpro2
+        non-symmetric Gaussian interpreted as `(sigma_row, sigma_col)`
     oversample : int, optional
         Oversampling factor. Defailt is 1.
     indexing : {'ij', 'xy'}, optional
@@ -79,7 +79,15 @@ def gauss(x1, x2, sigma, oversample=1, indexing='ij', normalize=False):
 
     Examples
     --------
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
 
+        >>> r = np.arange(-128,128)
+        >>> c = np.arange(-128,128)
+        >>> g = prtools.gauss(r, c, sigma=20)
+        >>> plt.imshow(g, cmap='gray')
     """
     xx1, xx2 = np.meshgrid(x1, x2, indexing=indexing)
     sigma = np.broadcast_to(sigma, (2,)) / oversample
@@ -90,6 +98,38 @@ def gauss(x1, x2, sigma, oversample=1, indexing='ij', normalize=False):
 
 
 def sinc(x1, x2, size=1, oversample=1, indexing='ij'):
+    """2D sinc function
+
+    Parameters
+    ----------
+    x1, x2 : array_like
+        1-D arrays representing the grid coordinates
+    size : float
+        
+    oversample : int, optional
+        Oversampling factor. Defailt is 1.
+    indexing : {'ij', 'xy'}, optional
+        Matrix ('ij', default) or cartesian ('xy') indexing of output.
+    normalize : bool, optional
+        If True, the output is normalized such that its sum is equal to 1.
+        If False (default), the output has max equal to one.
+
+    Returns
+    -------
+    ndarray
+
+    Examples
+    --------
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
+
+        >>> r = np.linspace(-2,2,100)
+        >>> c = np.linspace(-2,2,100)
+        >>> s = prtools.sinc(r, c)
+        >>> plt.imshow(s, cmap='gray')
+    """
 
     xx1, xx2 = np.meshgrid(x1, x2, indexing=indexing)
     size = np.broadcast_to(size, (2,)) / oversample

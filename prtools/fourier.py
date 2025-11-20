@@ -74,7 +74,7 @@ def dft2(f, alpha, shape=None, shift=(0, 0), offset=(0, 0), unitary=True,
     References
     ----------
     [1] Soummer, et. al. Fast computation of Lyot-style coronagraph
-        propagation (2007)
+    propagation (2007)
     """
     return _dftcore(f, alpha, shape, shift, offset, unitary, out, forward=True)
 
