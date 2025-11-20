@@ -18,8 +18,10 @@ from prtools.array import (
 from prtools.convolve import (
     fftconv,
     gauss,
+    gauss_blur,
     gauss_kernel,
     pixel_kernel,
+    pixelate,
     sinc,
 )
 

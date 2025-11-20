@@ -92,7 +92,6 @@ Shapes
    hexagon
    hex_segments
    spider
-   gauss
    sin
    waffle
    mesh
@@ -113,6 +112,21 @@ Fourier transforms
 
    dft2
    idft2
+
+Convolution and filtering
+-------------------------
+.. autosummary::
+   :toctree: generated
+   :caption: Convolution and filtering
+   :nosignatures:
+
+   fftconv
+   gauss_blur
+   pixelate
+   gauss
+   sinc
+   gauss_kernel
+   pixel_kernel
 
 Sparse matrices
 ---------------

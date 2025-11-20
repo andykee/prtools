@@ -1,14 +1,39 @@
 from prtools.backend import numpy as np
 
-# gauss_kernel
-# pixel_kernel
-# fftconv(array, kernel)
-# pixelate
-# gauss_blur
-
 
 def fftconv(array, kernel, normalize_kernel=True, fft_array=True,
             fft_kernel=True):
+    r"""Convolve an array with a kernel using the FFT.
+
+    The colvolution is computed as
+
+    .. math::
+
+        u*v = \mathcal{F}^{-1}\left\{\mathcal{F}\{u\}\cdot\mathcal{F}\{v\}\right\}
+
+
+    Parameters
+    ----------
+    array : array_like
+        Array to be convolved with `kernel`.
+    kernel : array_like
+        Convolution kernel. Should have the same shape as `array`.
+    normalize_kernel : bool, optional
+        If True (default), kernel is normalized so that `kernel =
+        kernel / np.sum(kernel)`.
+    fft_array : bool, optional
+        If True (default), the array is assumed to be provided in the spatial
+        domain. If False, the array is assumed to be provided in the frequency
+        domain.
+    fft_kernel : bool, optional
+        If True (default), the kernel is assumed to be provided in the spatial
+        domain. If False, the kernel is assumed to be provided in the frequency
+        domain.
+
+    Returns
+    -------
+    ndarray
+    """
 
     a = np.fft.fft2(array) if fft_array else array
     k = np.fft.fft2(array) if fft_kernel else kernel
@@ -20,7 +45,15 @@ def fftconv(array, kernel, normalize_kernel=True, fft_array=True,
 
 
 def gauss_blur(img, sigma, oversample):
+    img = np.asarray(img)
+    kernel = gauss_kernel(img.shape, sigma, oversample, fftshift=False)
+    return fftconv(img, kernel, normalize_kernel=True, fft_array=True,
+                   fft_kernel=False)
+
+
+def pixelate():
     pass
+
 
 def gauss(x1, x2, sigma, oversample=1, indexing='ij', normalize=False):
     """2D Gaussian function
@@ -79,5 +112,15 @@ def gauss_kernel(shape, sigma, oversample=1, fftshift=True):
         return k
 
 
-def pixel_kernel():
-    pass
+def pixel_kernel(shape, oversample=1, fftshift=True):
+    shape = np.broadcast_to(shape)
+
+    x1 = np.fft.fftfreq(shape[0]*oversample)
+    x2 = np.fft.fftfreq(shape[1]*oversample)
+
+    k = sinc(x1, x2, 1, oversample, indexing='ij')
+
+    if fftshift:
+        return np.fft.fftshift(k)
+    else:
+        return k
