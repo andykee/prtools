@@ -97,17 +97,15 @@ def gauss(x1, x2, sigma, oversample=1, indexing='ij', normalize=False):
     return g
 
 
-def sinc(x1, x2, size=1, oversample=1, indexing='ij'):
-    """2D sinc function
+def sinc(x1, x2, scale=1, indexing='ij'):
+    r"""Normalized 2D sinc function
 
     Parameters
     ----------
     x1, x2 : array_like
         1-D arrays representing the grid coordinates
-    size : float
-        
-    oversample : int, optional
-        Oversampling factor. Defailt is 1.
+    scale : float
+        Scale of the sinc function
     indexing : {'ij', 'xy'}, optional
         Matrix ('ij', default) or cartesian ('xy') indexing of output.
     normalize : bool, optional
@@ -118,6 +116,17 @@ def sinc(x1, x2, size=1, oversample=1, indexing='ij'):
     -------
     ndarray
 
+    See also
+    --------
+    :func:`~prtools.pixel_kernel`
+    
+    Notes
+    -----
+    This function uses ``numpy.sinc``, which computes the sinc function as 
+
+    .. math::
+        \mbox{sinc}(x) = \frac{\sin \pi x}{\pi x}
+
     Examples
     --------
     .. plot::
@@ -125,15 +134,25 @@ def sinc(x1, x2, size=1, oversample=1, indexing='ij'):
         :context: reset
         :scale: 50
 
-        >>> r = np.linspace(-2,2,100)
-        >>> c = np.linspace(-2,2,100)
+        >>> r = np.linspace(-3,3,512)
+        >>> c = np.linspace(-3,3,512)
         >>> s = prtools.sinc(r, c)
-        >>> plt.imshow(s, cmap='gray')
+        >>> plt.imshow(s, cmap='gray', extent=[r.min(), r.max(), c.min(), c.max()])
+    
+    To generate a wider sinc over the same grid:
+    
+    .. plot::
+        :include-source:
+        :context: close-figs
+        :scale: 50
+
+        >>> s = prtools.sinc(r, c, scale=2)
+        >>> plt.imshow(s, cmap='gray', extent=[r.min(), r.max(), c.min(), c.max()])
     """
 
     xx1, xx2 = np.meshgrid(x1, x2, indexing=indexing)
-    size = np.broadcast_to(size, (2,)) / oversample
-    return np.sinc(xx1 * size[0]) * np.sinc(xx2 * size[1])
+    scale = np.broadcast_to(scale, (2,))
+    return np.sinc(xx1 / scale[0]) * np.sinc(xx2 / scale[1])
 
 
 def gauss_kernel(shape, sigma, oversample=1, fftshift=True):
@@ -153,12 +172,59 @@ def gauss_kernel(shape, sigma, oversample=1, fftshift=True):
 
 
 def pixel_kernel(shape, oversample=1, fftshift=True):
-    shape = np.broadcast_to(shape)
+    r"""2D pixel MTF filter kernel
+    
+    This function returns a normalized 2D sinc function sized to represent
+    the frequency-domain transfer function of an idealized square pixel.
 
-    x1 = np.fft.fftfreq(shape[0]*oversample)
-    x2 = np.fft.fftfreq(shape[1]*oversample)
+    Parameters
+    ----------
+    shape : int or tuple of int
+        Shape of the kernel
+    oversample : float, optional
+        Oversampling factor to represent in the kernel. Default is 1.
+    indexing : {'ij', 'xy'}, optional
+        Matrix ('ij', default) or cartesian ('xy') indexing of output.
+    fftshift : bool, optional
+        If True (default), the kernel is FFT-shifted before it is returned.
 
-    k = sinc(x1, x2, 1, oversample, indexing='ij')
+    Returns
+    -------
+    ndarray
+
+    See also
+    --------
+    :func:`~prtools.fftconv`
+    :func:`~prtools.sinc`
+
+    Examples
+    --------
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
+
+        >>> pixel_mtf = prtools.pixel_kernel((256,256), 1)
+        >>> plt.imshow(pixel_mtf, cmap='gray', vmin=0)
+    
+    Note this is euqivalent to
+
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
+
+        >>> r = np.fft.fftfreq(256)
+        >>> c = np.fft.fftfreq(256)
+        >>> pixel_mtf = np.fft.fftshift(np.abs(prtools.sinc(r, c)))
+        >>> plt.imshow(pixel_mtf, cmap='gray', vmin=0)
+    """
+    shape = np.broadcast_to(shape, (2,))
+
+    x1 = np.fft.fftfreq(shape[0])
+    x2 = np.fft.fftfreq(shape[1])
+
+    k = np.abs(sinc(x1, x2, 1/oversample, indexing='ij'))
 
     if fftshift:
         return np.fft.fftshift(k)
