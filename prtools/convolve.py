@@ -87,8 +87,7 @@ def gauss_blur(img, sigma, oversample=1):
 
 
 def pixelate(img, oversample=1):
-    """Apply the aperture effects of an idealized square pixel on a discretely
-    sampled image using the FFT.
+    """Apply the aperture effects of an idealized square pixel using the FFT.
 
     Parameters
     ----------
