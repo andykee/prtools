@@ -11,7 +11,6 @@ def fftconv(array, kernel, normalize_kernel=True, fft_array=True,
 
         u*v = \mathcal{F}^{-1}\left\{\mathcal{F}\{u\}\cdot\mathcal{F}\{v\}\right\}
 
-
     Parameters
     ----------
     array : array_like
@@ -33,6 +32,11 @@ def fftconv(array, kernel, normalize_kernel=True, fft_array=True,
     Returns
     -------
     ndarray
+
+    See also
+    --------
+    :func:`~prtools.gauss_blur`
+    :func:`~prtools.pixelate`
     """
 
     a = np.fft.fft2(array) if fft_array else array
@@ -44,15 +48,91 @@ def fftconv(array, kernel, normalize_kernel=True, fft_array=True,
     return np.fft.ifft2(a*k).real
 
 
-def gauss_blur(img, sigma, oversample):
+def gauss_blur(img, sigma, oversample=1):
+    """Blur an image using a Gaussian filter using the FFT. 
+
+    Parameters
+    ----------
+    img : array_like
+        Array to be blurred
+    sigma : float or (2,) array_like
+        Standard deviation of Gaussian. Providing two values allows for
+        non-symmetric Gaussian interpreted as `(sigma_row, sigma_col)`
+    oversample : float, optional
+        Oversampling factor of `img`. Default is 1.
+    
+    Returns
+    -------
+    ndarray
+
+    Examples
+    --------
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
+
+        >>> img = prtools.circle((256,256), 100)
+        >>> img_blurred = prtools.gauss_blur(img, sigma=3)
+        >>> fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(5,2))
+        >>> ax[0].imshow(img, cmap='gray')
+        >>> ax[0].set_title('Input image')
+        >>> ax[1].imshow(img_blurred, cmap='gray')
+        >>> ax[1].set_title('Blurred image')
+    """
     img = np.asarray(img)
     kernel = gauss_kernel(img.shape, sigma, oversample, fftshift=False)
     return fftconv(img, kernel, normalize_kernel=True, fft_array=True,
                    fft_kernel=False)
 
 
-def pixelate():
-    pass
+def pixelate(img, oversample=1):
+    """Apply the aperture effects of an idealized square pixel on a discretely
+    sampled image using the FFT.
+
+    Parameters
+    ----------
+    img : array_like
+        Input image
+    oversample : float, optional
+        Oversampling factor of `img`. Default is 1.
+
+    Returns
+    -------
+    out : ndarray
+        Image with pixel sampling effects applied.
+
+    Notes
+    -----
+    To avoid the introduction of numerical artifacts, this function should be
+    performed on data that is at least 2x oversampled.
+
+    Examples
+    --------
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
+
+        >>> img = prtools.circle((17,17), 5)
+        >>> img_pixelate = prtools.pixelate(img)
+        >>> fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(5,2))
+        >>> ax[0].imshow(img, cmap='gray')
+        >>> ax[0].set_title('Input image')
+        >>> ax[1].imshow(img_pixelate, cmap='gray')
+        >>> ax[1].set_title('Pixelated image')
+
+    Note that the pixelation process preserves image power:
+
+    .. code:: pycon
+
+        >>> print(np.sum(img), np.sum(img_pixelate))
+        64.0, 64.0
+    """
+    img = np.asarray(img)
+    kernel = pixel_kernel(img.shape, oversample=oversample, fftshift=False)
+    return fftconv(img, kernel, normalize_kernel=False, fft_array=True,
+                   fft_kernel=False)
 
 
 def gauss(x1, x2, sigma, oversample=1, indexing='ij', normalize=False):
@@ -65,7 +145,7 @@ def gauss(x1, x2, sigma, oversample=1, indexing='ij', normalize=False):
     sigma : float or (2,) array_like
         Standard deviation of Gaussian. Providing two values allows for
         non-symmetric Gaussian interpreted as `(sigma_row, sigma_col)`
-    oversample : int, optional
+    oversample : float, optional
         Oversampling factor. Defailt is 1.
     indexing : {'ij', 'xy'}, optional
         Matrix ('ij', default) or cartesian ('xy') indexing of output.
@@ -97,15 +177,13 @@ def gauss(x1, x2, sigma, oversample=1, indexing='ij', normalize=False):
     return g
 
 
-def sinc(x1, x2, scale=1, indexing='ij'):
+def sinc(x1, x2, indexing='ij'):
     r"""Normalized 2D sinc function
 
     Parameters
     ----------
     x1, x2 : array_like
         1-D arrays representing the grid coordinates
-    scale : float
-        Scale of the sinc function
     indexing : {'ij', 'xy'}, optional
         Matrix ('ij', default) or cartesian ('xy') indexing of output.
     normalize : bool, optional
@@ -119,10 +197,10 @@ def sinc(x1, x2, scale=1, indexing='ij'):
     See also
     --------
     :func:`~prtools.pixel_kernel`
-    
+
     Notes
     -----
-    This function uses ``numpy.sinc``, which computes the sinc function as 
+    This function uses ``numpy.sinc``, which computes the sinc function as
 
     .. math::
         \mbox{sinc}(x) = \frac{\sin \pi x}{\pi x}
@@ -138,29 +216,68 @@ def sinc(x1, x2, scale=1, indexing='ij'):
         >>> c = np.linspace(-3,3,512)
         >>> s = prtools.sinc(r, c)
         >>> plt.imshow(s, cmap='gray', extent=[r.min(), r.max(), c.min(), c.max()])
-    
-    To generate a wider sinc over the same grid:
-    
-    .. plot::
-        :include-source:
-        :context: close-figs
-        :scale: 50
-
-        >>> s = prtools.sinc(r, c, scale=2)
-        >>> plt.imshow(s, cmap='gray', extent=[r.min(), r.max(), c.min(), c.max()])
     """
-
     xx1, xx2 = np.meshgrid(x1, x2, indexing=indexing)
-    scale = np.broadcast_to(scale, (2,))
-    return np.sinc(xx1 / scale[0]) * np.sinc(xx2 / scale[1])
+    return np.sinc(xx1) * np.sinc(xx2)
 
 
 def gauss_kernel(shape, sigma, oversample=1, fftshift=True):
+    """2D Gaussian filter kernel
+
+    This function returns the transfer function of a normalized 2D Gaussian
+    function.
+
+    Parameters
+    ----------
+    shape : int or tuple of int
+        Shape of the kernel
+    sigma : float
+        Standard deviation of Gaussian. Providing two values allows for
+        non-symmetric Gaussian interpreted as `(sigma_row, sigma_col)`
+    oversample : float, optional
+        Oversampling factor to represent in the kernel. Default is 1.
+    fftshift : bool, optional
+        If True (default), the kernel is FFT-shifted before it is returned.
+
+    Returns
+    -------
+    ndarray
+
+    See also
+    --------
+    :func:`~prtools.fftconv`
+    :func:`~prtools.gauss_blur`
+    :func:`~prtools.gauss`
+
+    Examples
+    --------
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
+
+        >>> blur_kernel = prtools.gauss_kernel((256,256), 1)
+        >>> plt.imshow(blur_kernel, cmap='gray')
+
+    Note this is functionally equivalent to
+
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
+
+        >>> r = np.fft.fftfreq(256)
+        >>> c = np.fft.fftfreq(256)
+        >>> sigma = 1
+        >>> blur_kernel = np.fft.fftshift(prtools.gauss(r, c, 1/(2*np.pi*sigma)))
+        >>> plt.imshow(blur_kernel, cmap='gray')
+    """
+    
     shape = np.broadcast_to(shape, (2,))
     sigma = np.broadcast_to(sigma, (2,))
 
-    x1 = np.fft.fftfreq(shape[0]*oversample)
-    x2 = np.fft.fftfreq(shape[1]*oversample)
+    x1 = np.fft.fftfreq(shape[0])
+    x2 = np.fft.fftfreq(shape[1])
 
     k = gauss(x1, x2, 1/(2*np.pi*sigma), oversample, indexing='ij',
               normalize=False)
@@ -175,7 +292,7 @@ def pixel_kernel(shape, oversample=1, fftshift=True):
     r"""2D pixel MTF filter kernel
     
     This function returns a normalized 2D sinc function sized to represent
-    the frequency-domain transfer function of an idealized square pixel.
+    the transfer function of an idealized square pixel.
 
     Parameters
     ----------
@@ -183,8 +300,6 @@ def pixel_kernel(shape, oversample=1, fftshift=True):
         Shape of the kernel
     oversample : float, optional
         Oversampling factor to represent in the kernel. Default is 1.
-    indexing : {'ij', 'xy'}, optional
-        Matrix ('ij', default) or cartesian ('xy') indexing of output.
     fftshift : bool, optional
         If True (default), the kernel is FFT-shifted before it is returned.
 
@@ -195,6 +310,7 @@ def pixel_kernel(shape, oversample=1, fftshift=True):
     See also
     --------
     :func:`~prtools.fftconv`
+    :func:`~prtools.pixelate`
     :func:`~prtools.sinc`
 
     Examples
@@ -206,8 +322,8 @@ def pixel_kernel(shape, oversample=1, fftshift=True):
 
         >>> pixel_mtf = prtools.pixel_kernel((256,256), 1)
         >>> plt.imshow(pixel_mtf, cmap='gray', vmin=0)
-    
-    Note this is euqivalent to
+
+    Note this is functionally equivalent to
 
     .. plot::
         :include-source:
@@ -221,10 +337,10 @@ def pixel_kernel(shape, oversample=1, fftshift=True):
     """
     shape = np.broadcast_to(shape, (2,))
 
-    x1 = np.fft.fftfreq(shape[0])
-    x2 = np.fft.fftfreq(shape[1])
+    x1 = np.fft.fftfreq(shape[0]) / oversample
+    x2 = np.fft.fftfreq(shape[1]) / oversample
 
-    k = np.abs(sinc(x1, x2, 1/oversample, indexing='ij'))
+    k = np.abs(sinc(x1, x2, indexing='ij'))
 
     if fftshift:
         return np.fft.fftshift(k)
