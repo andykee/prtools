@@ -40,7 +40,7 @@ def fftconv(array, kernel, normalize_kernel=True, fft_array=True,
     """
 
     a = np.fft.fft2(array) if fft_array else array
-    k = np.fft.fft2(array) if fft_kernel else kernel
+    k = np.fft.fft2(kernel) if fft_kernel else kernel
 
     if normalize_kernel:
         k /= np.sum(k)
