@@ -44,11 +44,11 @@ class Numpy(BackendLibrary):
         a = self.module.asarray(a)
         return self.module.sum(a, *args, **kwargs)
 
-    def take(self, a, indices, *args, **kwargs):
-        # jax numpy.take expects an array input for a and indices
-        a = self.module.asarray(a)
-        indices = self.module.asarray(indices)
-        return self.module.take(a, indices, *args, **kwargs)
+    #def take(self, a, indices, *args, **kwargs):
+    #    # jax numpy.take expects an array input for a and indices
+    #    a = self.module.asarray(a)
+    #    indices = self.module.asarray(indices)
+    #    return self.module.take(a, indices, *args, **kwargs)
 
 
 class Scipy(BackendLibrary):

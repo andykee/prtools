@@ -100,11 +100,8 @@ def _dftcore(f, alpha, shape, shift, offset, axes, unitary, forward, out):
 
     f = np.asarray(f)
 
-    out_shape, axes = _cook_nd_args(f, shape, axes)
-    in_shape = np.take(np.asarray(f.shape), axes)
-
-    m, n = in_shape
-    M, N = out_shape
+    (M, N), axes = _cook_nd_args(f, shape, axes)
+    m, n = (f.shape[axes[0]], f.shape[axes[1]])
 
     alpha_row, alpha_col = np.broadcast_to(alpha, (2,))
     shift_row, shift_col = np.broadcast_to(shift, (2,))
@@ -158,7 +155,7 @@ def _cook_nd_args(a, s=None, axes=None):
             else:
                 raise ValueError("Array must have ndim == 2 or 3")
         else:
-            s = np.take(a.shape, axes)
+            s = np.take(np.asarray(a.shape), np.asarray(axes))
     s = list(s)
     if axes is None:
         axes = list(range(-len(s), 0))
