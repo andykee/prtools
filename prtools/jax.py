@@ -31,7 +31,7 @@ class JaxOptimizeResult:
     state: Any  #: Optimizer state
 
 
-def lbfgs(fn, x0, gtol=None, maxiter=None, callback=None, fn_args=None, 
+def lbfgs(fn, x0, gtol=None, maxiter=None, callback=None, fn_args=None,
           fn_kwargs=None):
     """Minimize a scalar function of one or more variables using the L-BFGS
     algorithm
@@ -44,7 +44,7 @@ def lbfgs(fn, x0, gtol=None, maxiter=None, callback=None, fn_args=None,
         .. code:: python
 
             fn(x, *fn_args, **fn_kwargs)
-        
+
         where ``x`` is a 1-D array with shape (n,) and ``fn_args`` and
         ``fn_kwargs`` are optional positional and keyword arguments.
     x0 : jax.Array
@@ -88,14 +88,14 @@ def lbfgs(fn, x0, gtol=None, maxiter=None, callback=None, fn_args=None,
 
     opt = optax.lbfgs()
     value_and_grad_fn = optax.value_and_grad_from_state(fn)
-    
+
     def step(carry):
         params, state = carry
         # NOTE: passing *args and **kwargs to value_and_grad_fun is very
         # poorly documented in optax (as of v0.2.6 - 10/2025) but this
         # seems to work for now
-        value, grad = value_and_grad_fn(params, *fn_args, state=state, 
-                                         **fn_kwargs)
+        value, grad = value_and_grad_fn(params, *fn_args, state=state,
+                                        **fn_kwargs)
         updates, state = opt.update(
             grad, state, params, value=value, grad=grad, value_fn=fn)
         if callback:
@@ -126,8 +126,9 @@ def lbfgs(fn, x0, gtol=None, maxiter=None, callback=None, fn_args=None,
         grad=otu.tree_get(final_state, 'grad'),
         value=otu.tree_get(final_state, 'value'),
         state=final_state)
-    
+
     if callback:
         jax.debug.callback(callback, res)
 
     return res
+

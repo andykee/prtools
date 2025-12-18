@@ -6,53 +6,43 @@ from .import BACKENDS
 
 
 @pytest.mark.parametrize('backend', BACKENDS)
-def test_dft2_even(backend):
+@pytest.mark.parametrize('shape', ((10,10), (11,11), (10,11)))
+def test_dft2(backend, shape):
     prtools.use(backend)
-    n = 10
-    f = np.random.rand(n, n) + 1j * np.random.rand(n, n)
+    m, n = shape
+    f = np.random.rand(m, n) + 1j * np.random.rand(m, n)
 
-    F_dft = prtools.dft2(f, 1/n, unitary=False)
+    F_dft = prtools.dft2(f, [1/m, 1/n], unitary=False)
     F_fft = np.fft.fftshift(np.fft.fft2(np.fft.ifftshift(f)))
 
     assert np.allclose(F_dft, F_fft, atol=1e-5)
 
 
 @pytest.mark.parametrize('backend', BACKENDS)
-def test_idft2_even(backend):
+@pytest.mark.parametrize('axes', ((0,1), (1,2), (0,2)))
+def test_dft2_cube(backend, axes):
     prtools.use(backend)
-    n = 10
-    F = np.random.rand(n, n) + 1j * np.random.rand(n, n)
+    shape = (10, 11, 12)
+    m, n = np.take(shape, axes)
+    f = np.random.uniform(size=shape) + 1j * np.random.uniform(size=shape)
 
-    f_dft = prtools.idft2(F, 1/n, unitary=False)
-    f_fft = np.fft.fftshift(np.fft.ifft2(np.fft.ifftshift(F)))
+    F_dft = prtools.dft2(f, [1/m, 1/n], axes=axes, unitary=False)
+    F_fft = np.fft.fftshift(np.fft.fft2(np.fft.ifftshift(f), axes=axes))
 
-    assert np.allclose(f_dft, f_fft, atol=1e-5)
+    assert np.allclose(F_dft, F_fft, atol=5e-5)
 
 
 @pytest.mark.parametrize('backend', BACKENDS)
-def test_dft2_odd(backend):
+@pytest.mark.parametrize('shape', ((10,10), (11,11), (10,11)))
+def test_idft2(backend, shape):
     prtools.use(backend)
-    n = 11
-    f = np.random.rand(n, n) + 1j * np.random.rand(n, n)
+    m, n = shape
+    f = np.random.rand(m, n) + 1j * np.random.rand(m, n)
 
-    F_dft = prtools.dft2(f, 1/n, unitary=False)
-    F_fft = np.fft.fftshift(np.fft.fft2(np.fft.ifftshift(f)))
-    
-    print(F_dft.dtype)
-    print(F_fft.dtype)
+    F_dft = prtools.idft2(f, [1/m, 1/n], unitary=False)
+    F_fft = np.fft.fftshift(np.fft.ifft2(np.fft.ifftshift(f)))
+
     assert np.allclose(F_dft, F_fft, atol=1e-5)
-
-
-@pytest.mark.parametrize('backend', BACKENDS)
-def test_idft2_odd(backend):
-    prtools.use(backend)
-    n = 11
-    F = np.random.rand(n, n) + 1j * np.random.rand(n, n)
-
-    f_dft = prtools.idft2(F, 1/n, unitary=False)
-    f_fft = np.fft.fftshift(np.fft.ifft2(np.fft.ifftshift(F)))
-
-    assert np.allclose(f_dft, f_fft, atol=1e-5)
 
 
 @pytest.mark.parametrize('backend', BACKENDS)

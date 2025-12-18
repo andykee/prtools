@@ -2,8 +2,8 @@ from prtools import __backend__
 from prtools.backend import numpy as np
 
 
-def dft2(f, alpha, shape=None, shift=(0, 0), offset=(0, 0), unitary=True,
-         out=None):
+def dft2(f, alpha, shape=None, shift=(0, 0), offset=(0, 0), axes=(-2, -1),
+         unitary=True, out=None):
     r"""Compute the 2-dimensional discrete Fourier Transform.
 
     The DFT is defined in one dimension as
@@ -31,10 +31,13 @@ def dft2(f, alpha, shape=None, shift=(0, 0), offset=(0, 0), unitary=True,
         ``F.shape = (shape[0], shape[1])``. Default is ``f.shape``.
     shift : array_like, optional
         Number of pixels in (r,c) to shift the DC pixel in the output plane
-        with the origin centrally located in the plane. Default is ``(0,0)``.
+        with the origin centrally located in the plane. Default is ``(0, 0)``.
     offset : array_like, optional
         Number of pixels in (r,c) that the input plane is shifted relative to
-        the origin. Default is ``(0,0)``.
+        the origin. Default is ``(0, 0)``.
+    axes : (2,) array_like of ints, optional
+        Axes over which to compute the DFT. If not given, the last two axes are
+        used.
     unitary : bool, optional
         Normalization flag. If ``True``, a normalization is performed on the
         output such that the DFT operation is unitary and energy is conserved
@@ -42,8 +45,8 @@ def dft2(f, alpha, shape=None, shift=(0, 0), offset=(0, 0), unitary=True,
         way, the energy in in a limited-area DFT is a fraction of the total
         energy corresponding to the limited area. Default is ``True``.
     out : ndarray or None
-        A location into which the result is stored. If provided, out.shape ==
-        shape and out.dtype == np.complex. If not provided or None, a
+        A location into which the result is stored. If provided, ``out.shape ==
+        shape`` and ``out.dtype == np.complex``. If not provided or None, a
         freshly-allocated array is returned.
 
     Returns
@@ -76,36 +79,42 @@ def dft2(f, alpha, shape=None, shift=(0, 0), offset=(0, 0), unitary=True,
     [1] Soummer, et. al. Fast computation of Lyot-style coronagraph
     propagation (2007)
     """
-    return _dftcore(f, alpha, shape, shift, offset, unitary, out, forward=True)
+
+    return _dftcore(f, alpha, shape, shift, offset, axes, unitary,
+                    forward=True, out=out)
 
 
-def _dftcore(f, alpha, shape, shift, offset, unitary, out, forward):
+def _dftcore(f, alpha, shape, shift, offset, axes, unitary, forward, out):
 
-    #__backend__ = prtools.__backend__
-
-    if out is not None:
-        if __backend__ == 'numpy':
+    if __backend__ == 'numpy':
+        if out is not None:
             if not np.can_cast(complex, out.dtype):
                 raise TypeError(f"Cannot cast complex output to dtype('{out.dtype}')")
-        elif __backend__ == 'jax':
+
+    elif __backend__ == 'jax':
+        if out is not None:
             raise ValueError('JAX backend does not support the out parameter')
 
-    alpha_row, alpha_col = np.broadcast_to(alpha, (2,))
-
     f = np.asarray(f)
-    m, n = f.shape
 
-    if shape is None:
-        shape = (m, n)
-    M, N = shape
+    out_shape, axes = _cook_nd_args(f, shape, axes)
+    in_shape = np.take(np.asarray(f.shape), axes)
 
+    m, n = in_shape
+    M, N = out_shape
+
+    alpha_row, alpha_col = np.broadcast_to(alpha, (2,))
     shift_row, shift_col = np.broadcast_to(shift, (2,))
     offset_row, offset_col = np.broadcast_to(offset, (2,))
 
-    E1, E2 = _dft2_matrices(m, n, M, N, alpha_row, alpha_col, shift_row, shift_col,
-                            offset_row, offset_col, forward)
-
-    F = np.dot(E1.dot(f), E2, out=out)
+    E1, E2 = _dft2_matrices(m, n, M, N, alpha_row, alpha_col, shift_row,
+                            shift_col, offset_row, offset_col, forward)
+    # note there's no function _multi_dot_three in the base numpy namespace
+    # (although this function does exist in numpy.linalg). What's really being
+    # called here is prtools.backend.numpy._multi_dot_three, which provides
+    # different highly optimized implementations of the matrix triple product
+    # depending on which backend is active.
+    F = np._multi_dot_three(E1, f, E2, axes, out)
 
     if unitary:
         F = np.multiply(F, np.sqrt(np.abs(alpha_row * alpha_col)), out=F)
@@ -117,28 +126,21 @@ def _dftcore(f, alpha, shape, shift, offset, unitary, out, forward):
     return F
 
 
-def _dft2_matrices(m, n, M, N, alphar, alphac, shiftr, shiftc, offsetr, offsetc, forward):
+def _dft2_matrices(m, n, M, N, alphar, alphac, shiftr, shiftc, offsetr,
+                   offsetc, forward):
     if forward:
-        sign = -1
+        c = -1j
     else:
-        sign = 1
+        c = 1j
     R, S, U, V = _dft2_coords(m, n, M, N)
-    E1 = np.exp(sign*2.0 * 1j * np.pi * alphar * np.outer(R+offsetr, U-shiftr)).T
-    E2 = np.exp(sign*2.0 * 1j * np.pi * alphac * np.outer(S+offsetc, V-shiftc))
-    return E1, E2
-
-
-def _idft2_matrices(m, n, M, N, alphar, alphac, shiftr, shiftc, offsetr, offsetc):
-    R, S, U, V = _dft2_coords(m, n, M, N)
-    E1 = np.exp(2.0 * 1j * np.pi * alphar * np.outer(R+offsetr, U-shiftr)).T
-    E2 = np.exp(2.0 * 1j * np.pi * alphac * np.outer(S+offsetc, V-shiftc))
+    E1 = np.exp(2.0 * c * np.pi * alphar * np.outer(R+offsetr, U-shiftr)).T
+    E2 = np.exp(2.0 * c * np.pi * alphac * np.outer(S+offsetc, V-shiftc))
     return E1, E2
 
 
 def _dft2_coords(m, n, M, N):
     # R and S are (r,c) coordinates in the (m x n) input plane f
     # V and U are (r,c) coordinates in the (M x N) output plane F
-
     R = np.arange(m) - np.floor(m/2.0)
     S = np.arange(n) - np.floor(n/2.0)
     U = np.arange(M) - np.floor(M/2.0)
@@ -147,7 +149,28 @@ def _dft2_coords(m, n, M, N):
     return R, S, U, V
 
 
-def idft2(F, alpha, shape=None, shift=(0,0), offset=(0,0), unitary=True, out=None):
+def _cook_nd_args(a, s=None, axes=None):
+    # slightly modified version of numpy's function of the same name
+    if s is None:
+        if axes is None:
+            if a.ndim == 2:
+                s = list(a.shape)
+            elif a.ndim == 3:
+                s = list(a.shape[1:3])
+            else:
+                raise ValueError("Array must have ndim == 2 or 3")
+        else:
+            s = np.take(a.shape, axes)
+    s = list(s)
+    if axes is None:
+        axes = list(range(-len(s), 0))
+    if len(s) != len(axes):
+        raise ValueError("Shape and axes have different lengths.")
+    return s, axes
+
+
+def idft2(F, alpha, shape=None, shift=(0, 0), offset=(0, 0), axes=(-2, -1),
+          unitary=True, out=None):
     r"""Compute the 2-dimensional inverse discrete Fourier Transform.
 
     The IDFT is defined in one dimension as
@@ -165,9 +188,9 @@ def idft2(F, alpha, shape=None, shift=(0,0), offset=(0,0), unitary=True, out=Non
     F : array_like
         2D array to Fourier Transform
     alpha : float or array_like
-        Input plane sampling interval (frequency). If :attr:`alpha` is an array,
-        ``alpha[1]`` represents row-wise sampling and ``alpha[2]`` represents
-        column-wise sampling. If :attr:`alpha` is a scalar,
+        Input plane sampling interval (frequency). If :attr:`alpha` is an
+        array, ``alpha[1]`` represents row-wise sampling and ``alpha[2]``
+        represents column-wise sampling. If :attr:`alpha` is a scalar,
         ``alpha[1] = alpha[2] = alpha`` represents uniform sampling across the
         rows and columns of the input plane.
     shape : int or array_like, optional
@@ -175,14 +198,24 @@ def idft2(F, alpha, shape=None, shift=(0,0), offset=(0,0), unitary=True, out=Non
         ``F.shape = (shape[0], shape[1])``. If :attr:`shape` is a scalar,
         ``F.shape = (shape, shape)``. Default is ``F.shape``
     shift : array_like, optional
-        Number of pixels in (x,y) to shift the DC pixel in the output plane with
-        the origin centrally located in the plane. Default is `[0,0]`.
+        Number of pixels in (x,y) to shift the DC pixel in the output plane
+        with the origin centrally located in the plane. Default is `[0,0]`.
+    offset : array_like, optional
+        Number of pixels in (r,c) that the input plane is shifted relative to
+        the origin. Default is ``(0, 0)``.
+    axes : (2,) array_like of ints, optional
+        Axes over which to compute the DFT. If not given, the last two axes are
+        used.
     unitary : bool, optional
         Normalization flag. If ``True``, a normalization is performed on the
         output such that the DFT operation is unitary and energy is conserved
         through the Fourier transform operation (Parseval's theorem). In this
         way, the energy in in a limited-area DFT is a fraction of the total
         energy corresponding to the limited area. Default is ``True``.
+    out : ndarray or None
+        A location into which the result is stored. If provided, ``out.shape ==
+        shape`` and ``out.dtype == np.complex``. If not provided or None, a
+        freshly-allocated array is returned.
 
     Returns
     -------
@@ -205,13 +238,15 @@ def idft2(F, alpha, shape=None, shift=(0,0), offset=(0,0), unitary=True, out=Non
 
     * If the y-axis shift behavior is not what you are expecting, you most
       likely have your plotting axes flipped (matplotlib's default behavior is
-      to place [0,0] in the upper left corner of the axes). This may be resolved
-      by either flipping the sign of the y component of ``shift`` or by passing
-      ``origin = 'lower'`` to ``imshow()``.
+      to place [0,0] in the upper left corner of the axes). This may be
+      resolved by either flipping the sign of the y component of ``shift`` or
+      by passing ``origin = 'lower'`` to ``imshow()``.
 
     References
     ----------
-    [1] Soummer, et. al. Fast computation of Lyot-style coronagraph propagation (2007)
-    
+    [1] Soummer, et. al. Fast computation of Lyot-style coronagraph
+    propagation (2007)
+
     """
-    return _dftcore(F, alpha, shape, shift, offset,  unitary, out, forward=False)
+    return _dftcore(F, alpha, shape, shift, offset, axes, unitary,
+                    forward=False, out=out)
