@@ -3,6 +3,7 @@ import warnings
 from prtools import __backend__
 from prtools.backend import numpy as np
 from prtools.backend import scipy
+import prtools.jax
 
 
 def centroid(a, where=None, kind='absolute', indexing='ij'):
@@ -300,11 +301,14 @@ def rebin(img, factor):
         raise ValueError('rebin is not defined for complex data')
 
     if img.ndim == 3:
-        rebinned_shape = (img.shape[0], img.shape[1]//factor, img.shape[2]//factor)
-        img_rebinned = np.zeros(rebinned_shape, dtype=img.dtype)
-        for i in range(img.shape[0]):
-            img_rebinned[i] = img[i].reshape(rebinned_shape[1], factor,
-                                             rebinned_shape[2], factor).sum(-1).sum(1)
+        if __backend__ == 'jax':
+            return prtools.jax._ndrebin(img, factor)
+        else:
+            rebinned_shape = (img.shape[0], img.shape[1]//factor, img.shape[2]//factor)
+            img_rebinned = np.zeros(rebinned_shape, dtype=img.dtype)
+            for i in range(img.shape[0]):
+                img_rebinned[i] = img[i].reshape(rebinned_shape[1], factor,
+                                                 rebinned_shape[2], factor).sum(-1).sum(1)
     else:
         img_rebinned = img.reshape(img.shape[0]//factor, factor, img.shape[1]//factor,
                                    factor).sum(-1).sum(1)

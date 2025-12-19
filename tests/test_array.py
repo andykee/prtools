@@ -65,3 +65,17 @@ def test_boundary(backend):
     x = np.zeros((10, 10))
     x[3:7, 2:8] = 1
     assert np.array_equal(prtools.boundary(x), (3, 6, 2, 7))
+
+
+@pytest.mark.parametrize('backend', BACKENDS)
+def test_rebin(backend):
+    prtools.use(backend)
+    x = np.ones((10, 10))
+    assert np.array_equal(prtools.rebin(x, 2), 4*np.ones((5, 5)))
+
+
+@pytest.mark.parametrize('backend', BACKENDS)
+def test_ndrebin(backend):
+    prtools.use(backend)
+    x = np.ones((3, 10, 10))
+    assert np.array_equal(prtools.rebin(x, 2), 4*np.ones((3, 5, 5)))

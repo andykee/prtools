@@ -132,3 +132,10 @@ def lbfgs(fn, x0, gtol=None, maxiter=None, callback=None, fn_args=None,
 
     return res
 
+
+def _ndrebin(a, f):
+    return jax.vmap(_rebin, in_axes=[0, None])(a, f)
+
+
+def _rebin(a, f):
+        return jax.numpy.reshape(a, (a.shape[0]//f, f, a.shape[1]//f, f)).sum(-1).sum(1)
