@@ -104,7 +104,7 @@ def pixelate(img, oversample=1):
     img : array_like
         Input image
     oversample : float, optional
-        Oversampling factor of `img`. Default is 1.
+        Oversampling factor of ``img``. Default is 1.
 
     Returns
     -------
@@ -115,33 +115,11 @@ def pixelate(img, oversample=1):
     -----
     To avoid the introduction of numerical artifacts, this function should be
     performed on data that is at least 2x oversampled.
-
-    Examples
-    --------
-    .. plot::
-        :include-source:
-        :context: reset
-        :scale: 50
-
-        >>> img = prtools.circle((17,17), 5)
-        >>> img_pixelate = prtools.pixelate(img)
-        >>> fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(5,2))
-        >>> ax[0].imshow(img, cmap='gray')
-        >>> ax[0].set_title('Input image')
-        >>> ax[1].imshow(img_pixelate, cmap='gray')
-        >>> ax[1].set_title('Pixelated image')
-
-    Note that the pixelation process preserves image power:
-
-    .. code:: pycon
-
-        >>> print(np.sum(img), np.sum(img_pixelate))
-        64.0, 64.0
     """
     img = np.asarray(img)
     kernel = pixel_kernel(img.shape, oversample=oversample, fftshift=False)
     return fftconv(img, kernel, normalize_kernel=False, fft_array=True,
-                   fft_kernel=False)
+                   fft_kernel=False, fftshift_kernel=False)
 
 
 def gauss(x1, x2, sigma, indexing='ij', normalize=False):
@@ -308,7 +286,7 @@ def gauss_kernel(shape, sigma, oversample=1, pixelscale=1.0, fftshift=False):
         return k
 
 
-def pixel_kernel(shape, oversample=1, fftshift=True):
+def pixel_kernel(shape, oversample=1, pixelscale=1.0, fftshift=False):
     r"""2D pixel MTF filter kernel
     
     This function returns a normalized 2D sinc function sized to represent
@@ -320,8 +298,12 @@ def pixel_kernel(shape, oversample=1, fftshift=True):
         Shape of the kernel
     oversample : float, optional
         Oversampling factor to represent in the kernel. Default is 1.
+    pixelscale : scalar or tuple of scalars, optional
+        Sample spacing. Providing two values defines non-symmetric sampling
+        interpreted as ``(pixelscale_row, pixelscale_col)``. Default is 1.
     fftshift : bool, optional
-        If True (default), the kernel is FFT-shifted before it is returned.
+        If True, the kernel is FFT-shifted so that the zero-frequency (DC)
+        term is placed at the center of the returned array. Default is False.
 
     Returns
     -------
@@ -340,25 +322,14 @@ def pixel_kernel(shape, oversample=1, fftshift=True):
         :context: reset
         :scale: 50
 
-        >>> pixel_mtf = prtools.pixel_kernel((256,256), 1)
-        >>> plt.imshow(pixel_mtf, cmap='gray', vmin=0)
-
-    Note this is functionally equivalent to
-
-    .. plot::
-        :include-source:
-        :context: reset
-        :scale: 50
-
-        >>> r = np.fft.fftfreq(256)
-        >>> c = np.fft.fftfreq(256)
-        >>> pixel_mtf = np.fft.fftshift(np.abs(prtools.sinc(r, c)))
+        >>> pixel_mtf = prtools.pixel_kernel((256,256), 1, fftshift=True)
         >>> plt.imshow(pixel_mtf, cmap='gray', vmin=0)
     """
     shape = np.broadcast_to(shape, (2,))
+    pixelscale = np.broadcast_to(pixelscale, (2,))
 
-    x1 = np.fft.fftfreq(shape[0]) / oversample
-    x2 = np.fft.fftfreq(shape[1]) / oversample
+    x1 = np.fft.fftfreq(n=shape[0], d=pixelscale[0]) * oversample
+    x2 = np.fft.fftfreq(n=shape[1], d=pixelscale[1]) * oversample
 
     k = np.abs(sinc(x1, x2, indexing='ij'))
 

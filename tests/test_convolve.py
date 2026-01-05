@@ -59,3 +59,17 @@ def test_gauss_kernel_oversample(backend, shape):
                               fftshift=False)
     
     assert np.allclose(G[0:100,0:100], Go[0:100,0:100])
+
+
+@pytest.mark.parametrize('backend', BACKENDS)
+@pytest.mark.parametrize('shape', ((255,255), (256,256)))
+def test_pixel_kernel_oversample(backend, shape):
+    prtools.use(backend)
+
+    oversample = 3
+
+    P = prtools.pixel_kernel(shape, fftshift=False)
+    Po = prtools.pixel_kernel((shape[0]*oversample, shape[1]*oversample),
+                              oversample=oversample, fftshift=False)
+    
+    assert np.allclose(P[0:100,0:100], Po[0:100,0:100])
