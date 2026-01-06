@@ -31,12 +31,7 @@ class JaxOptimizeResult:
     state: Any  #: Optimizer state
 
 
-<<<<<<< HEAD
-def lbfgs(fn, x0, gtol=None, maxiter=None, callback=None, fn_args=None,
-          fn_kwargs=None):
-=======
 def lbfgs(fn, x0, gtol=None, maxiter=None, callback=None, fn_kwargs=None):
->>>>>>> 34f0bce (lbfgs only accepts args)
     """Minimize a scalar function of one or more variables using the L-BFGS
     algorithm
 
@@ -47,17 +42,10 @@ def lbfgs(fn, x0, gtol=None, maxiter=None, callback=None, fn_kwargs=None):
 
         .. code:: python
 
-<<<<<<< HEAD
-            fn(x, *fn_args, **fn_kwargs)
-
-        where ``x`` is a 1-D array with shape (n,) and ``fn_args`` and
-        ``fn_kwargs`` are optional positional and keyword arguments.
-=======
             fn(x, **fn_kwargs)
-        
-        where ``x`` is a 1-D array with shape (n,) and ``fn_kwargs`` are 
+
+        where ``x`` is a 1-D array with shape (n,) and ``fn_kwargs`` are
         optional keyword arguments.
->>>>>>> 34f0bce (lbfgs only accepts args)
     x0 : jax.Array
         Initial guess
     gtol : float
@@ -73,7 +61,7 @@ def lbfgs(fn, x0, gtol=None, maxiter=None, callback=None, fn_kwargs=None):
 
         where ``intermediate_result`` is a :class:`JaxOptimizeResult`.
     fn_kwargs : dict or None
-        Extra keyword arguments passed to the objective function as 
+        Extra keyword arguments passed to the objective function as
         ``fn(x, **fn_kwargs)``
 
     Returns
@@ -102,16 +90,10 @@ def lbfgs(fn, x0, gtol=None, maxiter=None, callback=None, fn_kwargs=None):
         params, state = carry
         # NOTE: passing *args and **kwargs to value_and_grad_fun is very
         # poorly documented in optax (as of v0.2.6 - 10/2025) but this
-<<<<<<< HEAD
-        # seems to work for now
-        value, grad = value_and_grad_fn(params, *fn_args, state=state,
-                                        **fn_kwargs)
-=======
         # seems to work for now.
         value, grad = value_and_grad_fn(params, state=state, **fn_kwargs)
         # NOTE: opt.update() doesn't have any mechanism for accepting *args so
         # we're limited to using **kwargs here
->>>>>>> 34f0bce (lbfgs only accepts args)
         updates, state = opt.update(
             grad, state, params, value=value, grad=grad, value_fn=fn, **fn_kwargs)
         if callback:
@@ -167,9 +149,10 @@ def _multi_dot_three(a, b, c, axes, out):
         iter_axis = _iter_axis(axes)
         return jax.vmap(_multi_dot, in_axes=[None, iter_axis, None], out_axes=iter_axis)(a, b, c)
 
+
 def _multi_dot(a, b, c):
-        # wrapper function to support vmap call signature
-        return jax.numpy.linalg.multi_dot((a, b, c))
+    # wrapper function to support vmap call signature
+    return jax.numpy.linalg.multi_dot((a, b, c))
 
 
 def _iter_axis(axes):
