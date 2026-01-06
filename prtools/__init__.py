@@ -64,6 +64,8 @@ from prtools.stats import (
     ee,
     pv,
     rms,
+    nanpv,
+    nanrms,
     radial_avg
 )
 

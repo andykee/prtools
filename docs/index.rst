@@ -76,7 +76,9 @@ Array metrics
    :nosignatures:
    
    rms
+   nanrms
    pv
+   nanpv
    radial_avg
    ee
 

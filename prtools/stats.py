@@ -91,7 +91,7 @@ def ee(a, energy=0.8, center=None):
 
 
 def pv(a, axis=None):
-    """Compute peak-to-valley or max(a) - min(a)
+    """Compute range of values (max - min)
 
     Parameters
     ----------
@@ -105,9 +105,14 @@ def pv(a, axis=None):
     Returns
     -------
     ndarray
+
+    See also
+    --------
+    :func:`nanpv`
+
     """
     a = np.asarray(a)
-    return np.amax(a, axis=axis) - np.min(a, axis=axis)
+    return np.max(a, axis=axis) - np.min(a, axis=axis)
 
 
 def rms(a, axis=None):
@@ -126,9 +131,64 @@ def rms(a, axis=None):
     -------
     ndarray
 
+    See also
+    --------
+    :func:`nanrms`
+
     """
     a = np.asarray(a)
     return np.std(a[np.nonzero(a)], axis=axis)
+
+
+def nanpv(a, axis=None):
+    """Compute range of values (max - min), ignoring any NaNs.
+
+    Parameters
+    ----------
+    a : array_like
+        Input array
+    axis: None or int, optional
+        Axis or axes along which the peak-to-valley is computed. The
+        default is to compute the peak-to-valley of the flattened
+        array.
+
+    Returns
+    -------
+    ndarray
+
+    See also
+    --------
+    :func:`pv`
+
+    """
+    a = np.asarray(a)
+    return np.nanmax(a, axis=axis) - np.nanmin(a, axis=axis)
+
+
+def nanrms(a, axis=None):
+    """Compute the root-mean-square of the nonzero entries, ignoring any NaNs.
+
+    Parameters
+    ----------
+    a : array_like
+        Input array
+    axis: None or int, optional
+        Axis or axes along which the standard deviation is computed. The
+        default is to compute the standard deviation of the flattened
+        array.
+
+    Returns
+    -------
+    ndarray
+
+    See also
+    --------
+    :func:`rms`
+
+    """
+    a = np.array(a, copy=True)
+    a[np.isnan(a)] = 0
+    return rms(a, axis)
 
 
 def radial_avg(a, center=None):
