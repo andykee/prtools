@@ -164,7 +164,7 @@ def gauss(x1, x2, sigma, indexing='ij', normalize=False, xp=None):
     """
     xp = np if xp is None else xp
     xx1, xx2 = xp.meshgrid(x1, x2, indexing=indexing)
-    sigma = xp.broadcast_to(sigma, (2,))
+    sigma = xp.broadcast_to(xp.asarray(sigma), (2,))
     g = xp.exp(-((xx1**2/(2*sigma[0]**2)) + (xx2**2/(2*sigma[1]**2))))
     if normalize:
         g = g / (2*xp.pi * xp.prod(sigma))
@@ -287,7 +287,7 @@ def gauss_kernel(shape, sigma, oversample=1, pixelscale=1.0, fftshift=False,
     xp = np if xp is None else xp
     shape = np.broadcast_to(shape, (2,))
     pixelscale = np.broadcast_to(pixelscale, (2,))
-    sigma = np.broadcast_to(sigma, (2,))
+    sigma = xp.broadcast_to(xp.asarray(sigma), (2,)) # may want to backprop sigma
 
     x1 = xp.fft.fftfreq(shape[0], d=pixelscale[0])
     x2 = xp.fft.fftfreq(shape[1], d=pixelscale[1])
