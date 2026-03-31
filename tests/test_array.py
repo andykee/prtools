@@ -78,3 +78,35 @@ def test_rebin(xp):
 def test_ndrebin(xp):
     x = xp.ones((3, 10, 10))
     assert xp.array_equal(prtools.rebin(x, 2), 4*xp.ones((3, 5, 5)))
+
+
+@pytest.mark.parametrize('xp', BACKENDS)
+def test_shift(xp):
+    x1 = np.zeros((5,5))
+    x1[2,2] = 1
+
+    xs = np.zeros((5,5))
+    xs[3,3] = 1
+
+    x1 = xp.asarray(x1)
+    xs = xp.asarray(xs)
+
+    x2 = prtools.shift(x1, (1,1))
+
+    assert(xp.allclose(x2, xs, atol=1e-6))
+
+
+@pytest.mark.parametrize('xp', BACKENDS)
+def test_register(xp):
+    x1 = np.zeros((5,5))
+    x1[2,2] = 1
+
+    x2 = np.zeros((5,5))
+    x2[3,3] = 1
+
+    x1 = xp.asarray(x1)
+    x2 = xp.asarray(x2)
+
+    s = prtools.register(x2, x1, oversample=2)
+
+    assert(xp.allclose(xp.asarray(s), xp.asarray((-1,-1))))
