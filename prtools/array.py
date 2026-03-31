@@ -638,13 +638,13 @@ def register(x1, x2, oversample, return_error=False):
     peak = xcorr[maxima]
 
     # compute shifts
-    center = xp.array([xp.fix(x/2) for x in x1.shape])
+    center = xp.array([xp.trunc(x/2) for x in x1.shape])
     shift = maxima - center
     if oversample != 1:
         # now we can set up and perform the oversampled dft on an oversampled
         # 1.5 x 1.5 pixel region about the peak
         npix_dft = xp.ceil(oversample*1.5)
-        dft_shift = xp.fix(npix_dft/2)
+        dft_shift = xp.trunc(npix_dft/2)
         rs = dft_shift - shift[0] * oversample
         cs = dft_shift - shift[1] * oversample
 
