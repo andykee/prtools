@@ -1,5 +1,8 @@
 __version__ = '2.0.0'
 
+
+from prtools._array_api import use
+
 from prtools.array import (
     centroid,
     pad,

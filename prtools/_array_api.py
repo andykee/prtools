@@ -1,8 +1,17 @@
 import enum
+import warnings
 
 import array_api_compat
 from array_api_compat import is_jax_namespace as is_jax
 import numpy as np
+
+
+def use(backend):
+    msg = 'prtools.use() was deprecated in prtools v2.0.0. The numerical ' \
+          'backend is now selected automatically depending on input array ' \
+          'type or by specifying the xp argument (when available). '
+    warnings.warn(msg + 'In a future prtools release this will be an error.',
+                  category=DeprecationWarning, stacklevel=2)
 
 
 class _ArrayCoerce(enum.Enum):
