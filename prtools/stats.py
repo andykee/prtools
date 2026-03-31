@@ -1,5 +1,6 @@
+import numpy as np
+
 import prtools
-from prtools.backend import numpy as np
 
 
 def ee(a, energy=0.8, center=None):
@@ -243,21 +244,3 @@ def radial_avg(a, center=None):
     nr = np.bincount(rho.ravel())
 
     return tbin/nr
-
-
-# A good way to measure strehl is through MTF. Strehl is the ratio of the
-# integral of whatever your MTF is to the integral of the diffraction limited
-# MTF.
-#
-# Because MTF is normalized, the "bulk flux" so to speak (DC component) is
-# removed as something that can produce error in your measurement.
-#
-# The low frequencies carry a "large amount" of the energy in the MTF, and to
-# accurately measure them you need a pretty large "field of view" of the
-# PSF -- many airy radii (many meaning several tens of them, say ~50 of them).
-#
-# N.b., no free lunch; it removes any notion of "DC accuracy" but requires
-# good knowledge of the F/# (really, aperture shape) and wavelength so you can
-# compute the diffraction limited MTF.
-# def strehl(a):
-#    pass

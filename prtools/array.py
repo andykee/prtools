@@ -1,17 +1,17 @@
 import warnings
 
-from prtools import __backend__
-from prtools.backend import numpy as np
-from prtools.backend import scipy
-import prtools.jax
+from array_api_compat import is_jax_namespace as is_jax
+import numpy as np
+
+from prtools._array_api import array_namespace, scipy_namespace
 
 
-def centroid(a, where=None, kind='absolute', indexing='ij'):
+def centroid(x, where=None, kind='absolute', indexing='ij'):
     """Compute array centroid location.
 
     Parameters
     ----------
-    a : array_like
+    x : array_like
         Input array.
     where: array_like of bool, optional
         Elements to include in the centroid calculation. If None (default),
@@ -48,35 +48,36 @@ def centroid(a, where=None, kind='absolute', indexing='ij'):
         (50.0, 79.99999999999997)
 
     """
+    xp = array_namespace(x)
+    x = xp.asarray(x)
+
     if kind not in ('absolute', 'center'):
         raise ValueError(f'Unknown kind {kind}')
 
     if indexing not in ('ij', 'xy'):
         raise ValueError("Valid values for indexing are 'xy' and 'ij'.")
 
-    a = np.asarray(a)
-
     if where is None:
-        where = np.isfinite(a)
+        where = xp.isfinite(x)
     else:
-        where = np.asarray(where, dtype=bool)
+        where = xp.asarray(where, dtype=bool)
 
-    if np.isnan(a[where]).any():
+    if np.isnan(x[where]).any():
         warnings.warn('Unmasked NaN in input', RuntimeWarning,
                       stacklevel=2)
 
-    anorm = a[where]/np.sum(a[where])
+    anorm = x[where]/xp.sum(x[where])
 
-    nr, nc = a.shape
-    rr, cc = np.mgrid[0:nr, 0:nc]
+    nr, nc = x.shape
+    rr, cc = xp.mgrid[0:nr, 0:nc]
 
-    r = np.dot(rr[where].ravel(), anorm.ravel())
-    c = np.dot(cc[where].ravel(), anorm.ravel())
+    r = xp.dot(rr[where].ravel(), anorm.ravel())
+    c = xp.dot(cc[where].ravel(), anorm.ravel())
 
     if kind == 'center':
-        rc, cc = np.array(a.shape)/2
-        r -= rc
-        c -= cc
+        rc, cc = np.array(x.shape)/2
+        r = r - rc
+        c = c - cc
 
     if indexing == 'xy':
         r, c = c, -r
@@ -84,14 +85,14 @@ def centroid(a, where=None, kind='absolute', indexing='ij'):
     return r, c
 
 
-def pad(a, shape, fill=0):
+def pad(x, shape, fill=0):
     """Zero-pad an array.
 
     Note that pad works accepts both two and three dimensional arrays.
 
     Parameters
     ----------
-    a : array_like
+    x : array_like
         Array to be padded.
     shape : array_like of ints
         Shape of output array in ``(nrows, ncols)``.
@@ -101,7 +102,7 @@ def pad(a, shape, fill=0):
     Returns
     -------
     padded_array : ndarray
-        Zero-padded array with shape ``(nrows, ncols)``. If ``a`` has a
+        Zero-padded array with shape ``(nrows, ncols)``. If ``x`` has a
         third dimension, the return shape will be ``(depth, nrows, ncols)``.
 
     Examples
@@ -133,35 +134,43 @@ def pad(a, shape, fill=0):
         >>> ax[1].set_title('Padded array')
 
     """
-    a = np.atleast_2d(a)
+    xp = array_namespace(x)
+    x = xp.atleast_2d(x)
     shape = np.broadcast_to(np.asarray(shape, dtype=int), (2,))
 
-    if a.ndim == 2:
-        shape = np.append(1, shape)
-        a = a[np.newaxis, :]
+    if x.ndim == 2:
+        out_shape = (1, int(shape[0]), int(shape[1]))
+        x = x[np.newaxis, :]
     else:  # a.ndim == 3
-        shape = np.append(a.shape[0], shape)
+        out_shape = (x.shape[0], int(shape[0]), int(shape[1]))
 
-    out = np.ones(shape, dtype=a.dtype) * fill
 
     # The row and col indices here are 1 and 2 respectively since we've
     # forced both a and out to have a 3rd dimension
-    rmin = np.min([a.shape[1]//2, out.shape[1]//2])
-    rmax = np.min([a.shape[1]-a.shape[1]//2, out.shape[1]-out.shape[1]//2])
-    cmin = np.min([a.shape[2]//2, out.shape[2]//2])
-    cmax = np.min([a.shape[2]-a.shape[2]//2, out.shape[2]-out.shape[2]//2])
+    rmin = min(x.shape[1] // 2, out_shape[1] // 2)
+    rmax = min(x.shape[1] - x.shape[1] // 2, out_shape[1] - out_shape[1] // 2)
+    cmin = min(x.shape[2] // 2, out_shape[2] // 2)
+    cmax = min(x.shape[2] - x.shape[2] // 2, out_shape[2] - out_shape[2] // 2)
 
-    a_slc_r = slice(a.shape[1]//2-rmin, a.shape[1]//2+rmax)
-    a_slc_c = slice(a.shape[2]//2-cmin, a.shape[2]//2+cmax)
+    # Extract the overlapping region from the source array
+    a_slc_r = slice(x.shape[1] // 2 - rmin, x.shape[1] // 2 + rmax)
+    a_slc_c = slice(x.shape[2] // 2 - cmin, x.shape[2] // 2 + cmax)
+    cropped = x[:, a_slc_r, a_slc_c]
 
-    out_slc_r = slice(out.shape[1]//2-rmin, out.shape[1]//2+rmax)
-    out_slc_c = slice(out.shape[2]//2-cmin, out.shape[2]//2+cmax)
+    # Pad the cropped region to the output shape
+    pad_r_before = out_shape[1] // 2 - rmin
+    pad_r_after = out_shape[1] - out_shape[1] // 2 - rmax
+    pad_c_before = out_shape[2] // 2 - cmin
+    pad_c_after = out_shape[2] - out_shape[2] // 2 - cmax
 
-    out[:, out_slc_r, out_slc_c] = a[:, a_slc_r, a_slc_c]
-    return np.squeeze(out)
+    out = xp.pad(cropped,
+                 ((0, 0), (pad_r_before, pad_r_after), (pad_c_before, pad_c_after)),
+                 mode='constant', constant_values=fill)
+
+    return xp.squeeze(out)
 
 
-def subarray(a, shape, shift=(0, 0)):
+def subarray(x, shape, shift=(0, 0)):
     """Extract a contiguous subarray from a larger array.
 
     The subarray is extracted about the center of the source array unless
@@ -169,7 +178,7 @@ def subarray(a, shape, shift=(0, 0)):
 
     Parameters
     ----------
-    a : array_like
+    x : array_like
         Source array
     shape : array_like of ints
         Shape of subarray array in ``(nrows, ncols)``.
@@ -208,21 +217,20 @@ def subarray(a, shape, shift=(0, 0)):
         >>> ax[0].set_title('Original array')
         >>> ax[1].imshow(circ_subarray, cmap='gray')
         >>> ax[1].set_title('Subarray')
-
     """
-
-    a = np.asarray(a)
+    xp = array_namespace(x)
+    x = xp.asarray(x)
     shape = np.asarray(shape)
 
-    rmin = a.shape[0]//2 - shape[0]//2 + shift[0]
-    cmin = a.shape[1]//2 - shape[1]//2 + shift[1]
+    rmin = x.shape[0]//2 - shape[0]//2 + shift[0]
+    cmin = x.shape[1]//2 - shape[1]//2 + shift[1]
     rmax = rmin + shape[0]
     cmax = cmin + shape[1]
 
-    if any((rmin<0, cmin<0, rmax>a.shape[0], cmax>a.shape[1])):
+    if any((rmin<0, cmin<0, rmax>x.shape[0], cmax>x.shape[1])):
         raise ValueError('window lies outside of array')
 
-    return a[rmin:rmax, cmin:cmax]
+    return x[rmin:rmax, cmin:cmax]
 
 
 def boundary(x, threshold=0):
@@ -258,27 +266,27 @@ def boundary(x, threshold=0):
 
         >>> prtools.boundary(circ)
         (50, 150, 50, 150)
-
     """
-    x = np.asarray(x)
+    xp = array_namespace(x)
+    x = xp.asarray(x)
     x = (x > threshold)
 
-    rows = np.any(x, axis=1)
-    cols = np.any(x, axis=0)
+    rows = xp.any(x, axis=1)
+    cols = xp.any(x, axis=0)
 
     idx = np.array((0, -1))  # https://github.com/andykee/prtools/issues/6
-    rmin, rmax = np.where(rows)[0][idx]
-    cmin, cmax = np.where(cols)[0][idx]
+    rmin, rmax = xp.where(rows)[0][idx]
+    cmin, cmax = xp.where(cols)[0][idx]
 
     return rmin, rmax, cmin, cmax
 
 
-def rebin(img, factor):
-    """Rebin an image by an integer factor.
+def rebin(x, factor):
+    """Rebin an array by an integer factor.
 
     Parameters
     ----------
-    img : array_like
+    x : array_like
         Array or cube of arrays to rebin. If a cube is provided, the first
         dimension should index the image slices.
 
@@ -287,33 +295,36 @@ def rebin(img, factor):
 
     Returns
     -------
-    img : ndarray
-        Rebinned image
+    x : ndarray
+        Rebinned array
 
     See Also
     --------
     :func:`rescale`
 
     """
-    img = np.asarray(img)
+    xp = array_namespace(x)
+    x = xp.asarray(x)
 
-    if np.iscomplexobj(img):
+    if xp.iscomplexobj(x):
         raise ValueError('rebin is not defined for complex data')
 
-    if img.ndim == 3:
-        if __backend__ == 'jax':
-            return prtools.jax._ndrebin(img, factor)
+    if x.ndim == 3:
+        if is_jax(xp):
+            import jax
+            fun = lambda a, f: xp.reshape(a, (a.shape[0]//f, f, a.shape[1]//f, f)).sum(-1).sum(1)
+            xr = jax.vmap(fun, in_axes=[0, None])(x, factor)
         else:
-            rebinned_shape = (img.shape[0], img.shape[1]//factor, img.shape[2]//factor)
-            img_rebinned = np.zeros(rebinned_shape, dtype=img.dtype)
-            for i in range(img.shape[0]):
-                img_rebinned[i] = img[i].reshape(rebinned_shape[1], factor,
-                                                 rebinned_shape[2], factor).sum(-1).sum(1)
+            rebinned_shape = (x.shape[0], x.shape[1]//factor, x.shape[2]//factor)
+            xr = np.zeros(rebinned_shape, dtype=x.dtype)
+            for i in range(x.shape[0]):
+                xr[i] = x[i].reshape(rebinned_shape[1], factor,
+                                     rebinned_shape[2], factor).sum(-1).sum(1)
     else:
-        img_rebinned = img.reshape(img.shape[0]//factor, factor, img.shape[1]//factor,
-                                   factor).sum(-1).sum(1)
+        xr = x.reshape(x.shape[0]//factor, factor, 
+                       x.shape[1]//factor, factor).sum(-1).sum(1)
 
-    return img_rebinned
+    return xr
 
 
 def rescale(img, scale, shape=None, mask=None, order=3, mode='nearest',
@@ -368,8 +379,10 @@ def rescale(img, scale, shape=None, mask=None, order=3, mode='nearest',
     :func:`rebin`
 
     """
+    xp = array_namespace(img)
+    scipy = scipy_namespace(xp)
 
-    img = np.asarray(img)
+    img = xp.asarray(img)
     scale = np.broadcast_to(scale, (2,))
 
     if shape is None:
@@ -382,6 +395,7 @@ def rescale(img, scale, shape=None, mask=None, order=3, mode='nearest',
         # will be real
         mask = np.zeros_like(img).real
         mask[img != 0] = 1
+        mask = xp.asarray(mask)
 
     r = (np.arange(shape[0], dtype=np.float64) - shape[0]/2.)/scale[0] + img.shape[0]/2.
     c = (np.arange(shape[1], dtype=np.float64) - shape[1]/2.)/scale[1] + img.shape[1]/2.
@@ -392,21 +406,21 @@ def rescale(img, scale, shape=None, mask=None, order=3, mode='nearest',
     mask[mask < np.finfo(mask.dtype).eps] = 0
 
     if np.iscomplexobj(img):
-        out = np.zeros(shape, dtype=np.complex128)
-        out.real = scipy.ndimage.map_coordinates(img.real, [rr, cc], order=order, mode=mode)
-        out.imag = scipy.ndimage.map_coordinates(img.imag, [rr, cc], order=order, mode=mode)
+        out_real = scipy.ndimage.map_coordinates(img.real, [rr, cc], order=order, mode=mode)
+        out_imag = scipy.ndimage.map_coordinates(img.imag, [rr, cc], order=order, mode=mode)
+        out = out_real + 1j*out_imag
     else:
         out = scipy.ndimage.map_coordinates(img, [rr, cc], order=order, mode=mode)
 
     if unitary:
-        out *= np.sum(img)/np.sum(out)
+        out = out * xp.sum(img)/xp.sum(out)
 
-    out *= mask
+    out = out * mask
 
     return out
 
 
-def normpow(array, power=1):
+def normpow(x, power=1):
     r"""Normalizie the power in an array.
 
     The total power in an array is given by
@@ -426,7 +440,7 @@ def normpow(array, power=1):
 
     Parameters
     ----------
-    array : array_like
+    x : array_like
         Array to be normalized
 
     power : float, optional
@@ -434,15 +448,16 @@ def normpow(array, power=1):
 
     Returns
     -------
-    array : ndarray
+    x : ndarray
         Normalized array
 
     """
-    array = np.asarray(array)
-    return array * np.sqrt(power/np.sum(np.abs(array)**2))
+    xp = array_namespace(x)
+    x = xp.asarray(x)
+    return x * xp.sqrt(power/xp.sum(xp.abs(x)**2))
 
 
-def shift(a, shift, mode='wrap', fill=0.0):
+def shift(x, shift, mode='wrap', fill=0.0):
     """Shift an array via FFT.
 
     Shift an array by (row, column). The shifts may be non-integer as the
@@ -451,7 +466,7 @@ def shift(a, shift, mode='wrap', fill=0.0):
 
     Parameters
     ----------
-    a : array_like
+    x : array_like
         The input array.
     shift : (2,) sequence
         The shift specified as (row, column).
@@ -477,7 +492,7 @@ def shift(a, shift, mode='wrap', fill=0.0):
         Value to fill past edges if `mode` is 'constant'. Default is 0.0
     Returns
     -------
-    shifted : ndarray
+    x : ndarray
         The shifted input array.
 
     Example
@@ -496,67 +511,75 @@ def shift(a, shift, mode='wrap', fill=0.0):
                [-1.16747372e-16,  1.00000000e+00,  2.14548192e-16],
                [-3.12823642e-17,  2.22044605e-16, -4.18468327e-17]])
     """
-    a = np.asarray(a)
-    r, c = a.shape
+    xp = array_namespace(x)
+    x = xp.asarray(x)
+    r, c = x.shape
     dr, dc = shift
 
-    a = _extend(a, shift, mode, fill)
+    x = _extend(x, shift, mode, fill, xp=xp)
 
-    R = dr * np.fft.fftfreq(a.shape[0])
-    C = dc * np.fft.fftfreq(a.shape[1])
+    R = dr * xp.fft.fftfreq(x.shape[0])
+    C = dc * xp.fft.fftfreq(x.shape[1])
 
-    RR, CC = np.meshgrid(R, C, indexing='ij')
-    K = np.exp(-1j*2*np.pi*(RR+CC))
-    shifted = np.fft.ifft2(np.fft.fft2(a)*K)
+    RR, CC = xp.meshgrid(R, C, indexing='ij')
+    K = xp.exp(-1j*2*xp.pi*(RR+CC))
+    shifted = xp.fft.ifft2(xp.fft.fft2(x)*K)
 
     shifted = pad(shifted, (r, c))  # crop back to original size
 
-    if np.any(np.iscomplex(a)):
+    if xp.any(xp.iscomplex(x)):
         return shifted
     else:
         return shifted.real
 
 
-def _extend(a, shift, mode, fill):
+def _extend(a, shift, mode, fill, xp):
     r, c = a.shape
     dr, dc = np.ceil(np.abs(shift)).astype(int)
 
-    if mode == 'wrap':  # (a b c d | a b c d | a b c d)
-        # no need to do anything since the Fourier transform
-        # already does this
-        out = a
-    else:
-        # pad the array to accomodate for
-        out = pad(a, shape=(r+2*dr, c+2*dc), fill=fill)
+    if mode == 'wrap':
+        return a
 
-        if mode == 'constant':  # (k k k k | a b c d | k k k k)
-            pass
-        elif mode == 'reflect':  # (d c b a | a b c d | d c b a)
-            out[0:dr, 0:dc] = np.flip(a[0:dr, 0:dc])  # upper left
-            out[0:dr, dc:c+dc] = np.flip(a[0:dr, :], axis=0)  # top
-            out[0:dr, c+dc:] = np.flip(a[0:dr, c-dc:])  # upper right
-            out[dr:r+dr, 0:dc] = np.flip(a[:, 0:dc], axis=1)  # left
-            out[dr:r+dr, c+dc:] = np.flip(a[:, c-dc:], axis=1)  # right
-            out[r+dr:, 0:dc] = np.flip(a[r-dr:r, 0:dc])  # lower left
-            out[r+dr:, dc:c+dc] = np.flip(a[r-dr:r, :], axis=0)  # bottom
-            out[r+dr:, c+dc:] = np.flip(a[r-dr:r, c-dc:c])  # lower right
-        elif mode == 'mirror':  # (d c b | a b c d | c b a)
-            out[0:dr, 0:dc] = np.flip(a[1:dr+1, 1:dc+1])  # upper left
-            out[0:dr, dc:c+dc] = np.flip(a[1:dr+1, :], axis=0)  # top
-            out[0:dr, c+dc:] = np.flip(a[1:dr+1, c-dc-1:c-1])  # upper right
-            out[dr:r+dr, 0:dc] = np.flip(a[:, 1:dc+1], axis=1)  # left
-            out[dr:r+dr, c+dc:] = np.flip(a[:, c-dc-1:c-1], axis=1)  # right
-            out[r+dr:, 0:dc] = np.flip(a[r-dr-1:r-1, 1:dc+1])  # lower left
-            out[r+dr:, dc:c+dc] = np.flip(a[r-dr-1:r-1, :], axis=0)  # bottom
-            out[r+dr:, c+dc:] = np.flip(a[r-dr-1:r-1, c-dc-1:c-1])  # lower right
-        else:
-            raise ValueError(f'Unknown mode {mode}')
-    return out
+    if mode == 'constant':
+        return pad(a, shape=(r + 2*dr, c + 2*dc), fill=fill)
+
+    if mode in ('reflect', 'mirror'):
+        # mirror excludes the boundary element; reflect includes it
+        o = 1 if mode == 'mirror' else 0
+
+        # Source slices for the border regions
+        tr = slice(o, dr + o)              # top rows
+        br = slice(r - dr - o, r - o)      # bottom rows
+        lc = slice(o, dc + o)              # left cols
+        rc = slice(c - dc - o, c - o)      # right cols
+
+        # Build the 3x3 grid of regions and concatenate
+        top_row = xp.concat([
+            xp.flip(a[tr, lc]),                 # upper-left corner
+            xp.flip(a[tr, :], axis=0),          # top edge
+            xp.flip(a[tr, rc]),                 # upper-right corner
+        ], axis=1)
+
+        mid_row = xp.concat([
+            xp.flip(a[:, lc], axis=1),          # left edge
+            a,                                   # center
+            xp.flip(a[:, rc], axis=1),          # right edge
+        ], axis=1)
+
+        bot_row = xp.concat([
+            xp.flip(a[br, lc]),                 # lower-left corner
+            xp.flip(a[br, :], axis=0),          # bottom edge
+            xp.flip(a[br, rc]),                 # lower-right corner
+        ], axis=1)
+
+        return xp.concat([top_row, mid_row, bot_row], axis=0)
+
+    raise ValueError(f'Unknown mode {mode}')
 
 
-def register(arr, ref, oversample, return_error=False):
-    """Compute the subpixel image translation to register the input array to a
-    reference array.
+def register(x1, x2, oversample, return_error=False):
+    """Compute the subpixel image translation to register the input array 
+    ``x1`` to a reference array ``x2``.
 
     The registration shift is computed in two steps: first a coarse estimate
     is computed from the FFT-based cross-correlation of the two input arrays.
@@ -566,9 +589,9 @@ def register(arr, ref, oversample, return_error=False):
 
     Parameters
     ----------
-    arr : array_like
+    x1 : array_like
         Array to register.
-    ref : array_like
+    x2 : array_like
         Target array.
     oversample : float
         Oversampling factor for subpixel registration. Registration accuracy
@@ -605,56 +628,56 @@ def register(arr, ref, oversample, return_error=False):
         (-1.0, -1.0)
 
     """
-    F = np.fft.fft2(arr)
-    G = np.fft.fft2(ref)
-    xcorr = np.fft.fftshift(np.fft.ifft2(G*np.conj(F)))
+    xp = array_namespace(x1, x2)
+    x1 = xp.fft.fft2(x1)
+    x2 = xp.fft.fft2(x2)
+    xcorr = xp.fft.fftshift(xp.fft.ifft2(x2*xp.conj(x1)))
 
     # find peak
-    maxima = np.unravel_index(np.argmax(np.abs(xcorr)), xcorr.shape)
+    maxima = xp.asarray(xp.unravel_index(xp.argmax(xp.abs(xcorr)), xcorr.shape))
     peak = xcorr[maxima]
 
     # compute shifts
-    center = np.array([np.fix(x/2) for x in arr.shape])
+    center = xp.array([xp.fix(x/2) for x in x1.shape])
     shift = maxima - center
     if oversample != 1:
         # now we can set up and perform the oversampled dft on an oversampled
         # 1.5 x 1.5 pixel region about the peak
-        npix_dft = np.ceil(oversample*1.5)
-        dft_shift = np.fix(npix_dft/2)
+        npix_dft = xp.ceil(oversample*1.5)
+        dft_shift = xp.fix(npix_dft/2)
         rs = dft_shift - shift[0] * oversample
         cs = dft_shift - shift[1] * oversample
 
         # Compute DFT
-        X = np.arange(arr.shape[1]) - np.floor(arr.shape[1]/2)
-        Y = np.arange(arr.shape[0]) - np.floor(arr.shape[0]/2)
-        U = np.arange(npix_dft) - cs
-        V = np.arange(npix_dft) - rs
-        E1 = np.exp(-2*np.pi*1j/(arr.shape[0]*oversample)*np.outer(V, Y))
-        E2 = np.exp(-2*np.pi*1j/(arr.shape[1]*oversample)*np.outer(X, U))
-        xcorr = np.dot(np.dot(E1, np.conj(np.fft.ifftshift(G*np.conj(F)))), E2)
+        X = xp.arange(x1.shape[1]) - xp.floor(x1.shape[1]/2)
+        Y = xp.arange(x1.shape[0]) - xp.floor(x1.shape[0]/2)
+        U = xp.arange(npix_dft) - cs
+        V = xp.arange(npix_dft) - rs
+        E1 = xp.exp(-2*xp.pi*1j/(x1.shape[0]*oversample)*xp.outer(V, Y))
+        E2 = xp.exp(-2*xp.pi*1j/(x1.shape[1]*oversample)*xp.outer(X, U))
+        xcorr = xp.dot(xp.dot(E1, xp.conj(xp.fft.ifftshift(x2*xp.conj(x1)))), E2)
 
-        maxima_subpx = np.unravel_index(np.argmax(np.abs(xcorr)), xcorr.shape)
+        maxima_subpx = xp.asarray(xp.unravel_index(xp.argmax(xp.abs(xcorr)), xcorr.shape))
         peak = xcorr[maxima_subpx]
 
         # Combine subpixel peak coordinates with integer pixel peak coords
-        maxima_subpx -= dft_shift
-        shift[0] += maxima_subpx[0]/oversample
-        shift[1] += maxima_subpx[1]/oversample
+        maxima_subpx = maxima_subpx - dft_shift
+        shift = shift + maxima_subpx/oversample
 
     shift = tuple(shift)
 
     # Compute normalized RMS error
     if return_error:
-        arr_amp = np.sum(np.abs(F)**2)
-        ref_amp = np.sum(np.abs(G)**2)
-        err = 1-np.abs(peak)**2/(arr_amp*ref_amp)
-        err = np.sqrt(np.abs(err))
+        x1_amp = xp.sum(xp.abs(x1)**2)
+        ref_amp = xp.sum(xp.abs(x2)**2)
+        err = 1-xp.abs(peak)**2/(x1_amp*ref_amp)
+        err = xp.sqrt(xp.abs(err))
         return shift, err
 
     return shift
 
 
-def medfix(input, mask, kernel=(3, 3), nanwarn=False):
+def medfix(x, mask, kernel=(3, 3), nanwarn=False):
     """Fix masked entries in a 2-dimensional array via median filtering.
 
     Parameters
@@ -682,38 +705,38 @@ def medfix(input, mask, kernel=(3, 3), nanwarn=False):
     the output.
 
     """
-    # force a copy by calling array instead of asarray
-    input = np.array(input, dtype=float)
-    mask = np.asarray(mask, dtype=bool)
+    xp = array_namespace(x)
+    x = xp.array(x, dtype=float, copy=True)  # force a copy
+    mask = xp.asarray(mask, dtype=bool)
 
     if not mask.any():
         # nothing to do
-        return input
+        return x
 
-    kernel = np.asarray(kernel)
+    kernel = xp.asarray(kernel)
     if kernel.shape == ():
-        kernel = np.repeat(kernel, 2)
+        kernel = xp.repeat(kernel, 2)
     if np.any(kernel % 2 == 0):
         raise ValueError("Kernel must be odd sized")
 
-    if __backend__ == 'jax':
-        input = input.at[mask].set(np.nan)
+    if is_jax(xp):
+        x = x.at[mask].set(xp.nan)
     else:
-        input[mask] = np.nan
+        x[mask] = xp.nan
 
     pw = (kernel - 1)//2
     pad_width = ((pw[0], pw[0]), (pw[1], pw[1]))
 
-    input_pad = np.pad(input, pad_width=pad_width, mode='constant',
-                       constant_values=np.nan)
+    x_pad = xp.pad(x, pad_width=pad_width, mode='constant',
+                       constant_values=xp.nan)
 
-    i, j = np.nonzero(mask)  # indices of bad pixels
+    i, j = xp.nonzero(mask)  # indices of bad pixels
     i_pad, j_pad = i + pw[0], j + pw[1]  # indices offset by padding width
 
     # define neighborhood offsets
-    di = np.arange(kernel[0]) - pw[0]
-    dj = np.arange(kernel[1]) - pw[1]
-    window = np.stack(np.meshgrid(di, dj, indexing='ij'), axis=-1).reshape(-1, 2)  # shape (prod(kernel), 2)
+    di = xp.arange(kernel[0]) - pw[0]
+    dj = xp.arange(kernel[1]) - pw[1]
+    window = xp.stack(xp.meshgrid(di, dj, indexing='ij'), axis=-1).reshape(-1, 2)  # shape (prod(kernel), 2)
 
     # compute all neighborhood coordinates
     rows = i_pad[:, None] + window[:, 0]  # shape (num_bad_px, prod(kernel))
@@ -721,19 +744,19 @@ def medfix(input, mask, kernel=(3, 3), nanwarn=False):
 
     # extract neighborhoods using advanced indexing and compute replacement
     # values
-    bad_px_kernel = input_pad[rows, cols]
+    bad_px_kernel = x_pad[rows, cols]
 
     with warnings.catch_warnings():
         warnings.simplefilter('ignore', category=RuntimeWarning)
-        bad_px_vals = np.nanmedian(bad_px_kernel, axis=1)
+        bad_px_vals = xp.nanmedian(bad_px_kernel, axis=1)
 
-    if __backend__ == 'jax':
-        input = input.at[i, j].set(bad_px_vals)
+    if is_jax(xp):
+        x = x.at[i, j].set(bad_px_vals)
     else:
-        input[i, j] = bad_px_vals
+        x[i, j] = bad_px_vals
 
-    if nanwarn and np.isnan(input).any():
+    if nanwarn and xp.isnan(x).any():
         warnings.warn('Result contains NaNs', RuntimeWarning,
                       stacklevel=2)
 
-    return input
+    return x

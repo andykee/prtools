@@ -24,31 +24,19 @@ Install :mod:`prtools` with pip:
 
 .. currentmodule:: prtools
 
-:mod:`prtools` supports different numerical backends for representing
-N-dimensional data and performing numerical calculations. The backend is
-configured by the :func:`prtools.use` function. Currently 
-`Numpy <https://numpy.org>`_ (the default backend) and 
-`JAX <https://docs.jax.dev>`_ are supported. The table below shows how to use
-and optionally install each of the available backends:
 
-========== ============================ ========================
-Backend    Install                      Use
-========== ============================ ========================
-numpy [1]_ ``pip install prtools``      ``prtools.use('numpy')``
-jax        ``pip install prtools[jax]`` ``prtools.use('jax')``  
-========== ============================ ========================
-
-The current backend name is given in the ``prtools.__backend__`` attribute.
+Array API support
+-----------------
+:mod:`prtools` supports the `Python array API standard 
+<https://data-apis.org/array-api/latest/index.html>`_. This means that 
+:mod:`prtools` functions should work seamlessly with any array API-compatible
+ararys like those provided by NumPy, CuPy, PyTorch, and JAX. 
 
 .. note::
 
-   The :mod:`prtools` API remains the same regardless of which backend is in
-   use, but different backends may expose additional functionality. See the
-   :ref:`backend-specific documentation <backends>` below for more details.
+   Only NumPy and JAX interoperability has been tested to date. Future backend
+   libraries may be tested in the future.
 
-.. [1] The Numpy backend is initialized by default when :mod:`prtools` is
-   imported. No additional steps are required to use :mod:`prtools` with the
-   Numpy backend.
 
 Array manipulation
 ------------------
@@ -180,27 +168,16 @@ Miscellaneous
    translation_defocus
    find_wrapped
 
-Numerical backends
-------------------
-.. autosummary::
-   :toctree: generated
-   :caption: Numerical backends
-   :nosignatures:
+``jax`` module
+--------------
+The ``jax`` module has the following additional dependencies:
 
-   use
-
-.. _backends:
-
-JAX backend
------------
-The JAX backend has the following additional dependencies:
-
-* `JAX <https://docs.jax.dev/>`__
+* `JAX <https://docs.jax.dev/>`_
 * `Optax <https://optax.readthedocs.io/en/latest/>`_
 
 .. autosummary::
    :toctree: generated
-   :caption: JAX backend
+   :caption: jax module
    :nosignatures:
 
    jax.lbfgs

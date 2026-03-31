@@ -1,4 +1,6 @@
-from prtools.backend import numpy as np
+import numpy as np
+
+from prtools._array_api import array_namespace
 
 
 def fftconv(array, kernel, normalize_kernel=True, fft_array=True,
@@ -42,15 +44,16 @@ def fftconv(array, kernel, normalize_kernel=True, fft_array=True,
     :func:`~prtools.gauss_blur`
     :func:`~prtools.pixelate`
     """
+    xp = array_namespace(array)
 
-    a = np.fft.fft2(array) if fft_array else array
-    k = np.fft.fftshift(kernel) if fftshift_kernel else kernel
-    k = np.fft.fft2(k) if fft_kernel else k
+    a = xp.fft.fft2(array) if fft_array else array
+    k = xp.fft.fftshift(kernel) if fftshift_kernel else kernel
+    k = xp.fft.fft2(k) if fft_kernel else k
 
     if normalize_kernel:
-        k /= np.sum(k)
+        k = k / xp.sum(k)
 
-    return np.fft.ifft2(a*k).real
+    return xp.fft.ifft2(a*k).real
 
 
 def gauss_blur(img, sigma, oversample=1):
@@ -89,8 +92,9 @@ def gauss_blur(img, sigma, oversample=1):
         >>> ax[1].imshow(img_blurred, cmap='gray')
         >>> ax[1].set_title('Blurred image')
     """
-    img = np.asarray(img)
-    kernel = gauss_kernel(img.shape, sigma, oversample, fftshift=False)
+    xp = array_namespace(img)
+    img = xp.asarray(img)
+    kernel = gauss_kernel(img.shape, sigma, oversample, fftshift=False, xp=xp)
     # gauss_kernel always returns a normalized kernel
     return fftconv(img, kernel, normalize_kernel=False, fft_array=True,
                    fft_kernel=False, fftshift_kernel=False)
@@ -116,13 +120,15 @@ def pixelate(img, oversample=1):
     To avoid the introduction of numerical artifacts, this function should be
     performed on data that is at least 2x oversampled.
     """
-    img = np.asarray(img)
-    kernel = pixel_kernel(img.shape, oversample=oversample, fftshift=False)
+    xp = array_namespace(img)
+    img = xp.asarray(img)
+    kernel = pixel_kernel(img.shape, oversample=oversample, fftshift=False,
+                          xp=xp)
     return fftconv(img, kernel, normalize_kernel=False, fft_array=True,
                    fft_kernel=False, fftshift_kernel=False)
 
 
-def gauss(x1, x2, sigma, indexing='ij', normalize=False):
+def gauss(x1, x2, sigma, indexing='ij', normalize=False, xp=None):
     """2D Gaussian function
 
     Parameters
@@ -137,6 +143,8 @@ def gauss(x1, x2, sigma, indexing='ij', normalize=False):
     normalize : bool, optional
         If True, the output is normalized such that its sum is equal to 1.
         If False (default), the output has max equal to one.
+    xp : array_namespace, optional
+        The namespace for the return array. If None (default), Numpy is used.
 
     Returns
     -------
@@ -154,15 +162,16 @@ def gauss(x1, x2, sigma, indexing='ij', normalize=False):
         >>> g = prtools.gauss(r, c, sigma=20)
         >>> plt.imshow(g, cmap='gray')
     """
-    xx1, xx2 = np.meshgrid(x1, x2, indexing=indexing)
-    sigma = np.broadcast_to(sigma, (2,))
-    g = np.exp(-((xx1**2/(2*sigma[0]**2)) + (xx2**2/(2*sigma[1]**2))))
+    xp = np if xp is None else xp
+    xx1, xx2 = xp.meshgrid(x1, x2, indexing=indexing)
+    sigma = xp.broadcast_to(sigma, (2,))
+    g = xp.exp(-((xx1**2/(2*sigma[0]**2)) + (xx2**2/(2*sigma[1]**2))))
     if normalize:
-        g = g / (2*np.pi * np.prod(sigma))
+        g = g / (2*xp.pi * xp.prod(sigma))
     return g
 
 
-def sinc(x1, x2, indexing='ij'):
+def sinc(x1, x2, indexing='ij', xp=None):
     r"""2D sinc function
 
     Parameters
@@ -174,6 +183,8 @@ def sinc(x1, x2, indexing='ij'):
     normalize : bool, optional
         If True, the output is normalized such that its sum is equal to 1.
         If False (default), the output has max equal to one.
+    xp : array_namespace, optional
+        The namespace for the return array. If None (default), Numpy is used.
 
     Returns
     -------
@@ -202,11 +213,13 @@ def sinc(x1, x2, indexing='ij'):
         >>> s = prtools.sinc(r, c)
         >>> plt.imshow(s, cmap='gray', extent=[r.min(), r.max(), c.min(), c.max()])
     """
-    xx1, xx2 = np.meshgrid(x1, x2, indexing=indexing)
-    return np.sinc(xx1) * np.sinc(xx2)
+    xp = np if xp is None else xp
+    xx1, xx2 = xp.meshgrid(x1, x2, indexing=indexing)
+    return xp.sinc(xx1) * xp.sinc(xx2)
 
 
-def gauss_kernel(shape, sigma, oversample=1, pixelscale=1.0, fftshift=False):
+def gauss_kernel(shape, sigma, oversample=1, pixelscale=1.0, fftshift=False,
+                 xp=None):
     """2D Gaussian filter kernel
 
     This function returns the Fourier transform of a normalized 2D Gaussian
@@ -227,6 +240,8 @@ def gauss_kernel(shape, sigma, oversample=1, pixelscale=1.0, fftshift=False):
     fftshift : bool, optional
         If True, the kernel is FFT-shifted so that the zero-frequency (DC)
         term is placed at the center of the returned array. Default is False.
+    xp : array_namespace, optional
+        The namespace for the return array. If None (default), Numpy is used.
 
     Returns
     -------
@@ -269,24 +284,25 @@ def gauss_kernel(shape, sigma, oversample=1, pixelscale=1.0, fftshift=False):
         ...                          fftshift=True)
         >>> plt.imshow(G, cmap='gray')
     """
-    
+    xp = np if xp is None else xp
     shape = np.broadcast_to(shape, (2,))
     pixelscale = np.broadcast_to(pixelscale, (2,))
     sigma = np.broadcast_to(sigma, (2,))
 
-    x1 = np.fft.fftfreq(n=shape[0], d=pixelscale[0])
-    x2 = np.fft.fftfreq(n=shape[1], d=pixelscale[1])
+    x1 = xp.fft.fftfreq(shape[0], d=pixelscale[0])
+    x2 = xp.fft.fftfreq(shape[1], d=pixelscale[1])
 
     k = gauss(x1, x2, sigma=1/(2*np.pi*sigma*oversample), indexing='ij',
-              normalize=False)
+              normalize=False, xp=xp)
 
     if fftshift:
-        return np.fft.fftshift(k)
+        return xp.fft.fftshift(k)
     else:
         return k
 
 
-def pixel_kernel(shape, oversample=1, pixelscale=1.0, fftshift=False):
+def pixel_kernel(shape, oversample=1, pixelscale=1.0, fftshift=False, 
+                 xp=None):
     r"""2D pixel MTF filter kernel
     
     This function returns a normalized 2D sinc function sized to represent
@@ -304,6 +320,8 @@ def pixel_kernel(shape, oversample=1, pixelscale=1.0, fftshift=False):
     fftshift : bool, optional
         If True, the kernel is FFT-shifted so that the zero-frequency (DC)
         term is placed at the center of the returned array. Default is False.
+    xp : array_namespace, optional
+        The namespace for the return array. If None (default), Numpy is used.
 
     Returns
     -------
@@ -325,15 +343,16 @@ def pixel_kernel(shape, oversample=1, pixelscale=1.0, fftshift=False):
         >>> pixel_mtf = prtools.pixel_kernel((256,256), 1, fftshift=True)
         >>> plt.imshow(pixel_mtf, cmap='gray', vmin=0)
     """
+    xp = np if xp is None else xp
     shape = np.broadcast_to(shape, (2,))
     pixelscale = np.broadcast_to(pixelscale, (2,))
 
-    x1 = np.fft.fftfreq(n=shape[0], d=pixelscale[0]) * oversample
-    x2 = np.fft.fftfreq(n=shape[1], d=pixelscale[1]) * oversample
+    x1 = xp.fft.fftfreq(shape[0], d=pixelscale[0]) * oversample
+    x2 = xp.fft.fftfreq(shape[1], d=pixelscale[1]) * oversample
 
-    k = np.abs(sinc(x1, x2, indexing='ij'))
+    k = xp.abs(sinc(x1, x2, indexing='ij', xp=xp))
 
     if fftshift:
-        return np.fft.fftshift(k)
+        return xp.fft.fftshift(k)
     else:
         return k

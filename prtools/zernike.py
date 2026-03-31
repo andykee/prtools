@@ -1,7 +1,8 @@
 from math import factorial
 
+import numpy as np
+
 import prtools
-from prtools.backend import numpy as np
 
 
 def zernike(mask, index, normalize=True, order='noll', rho=None, theta=None):
@@ -455,11 +456,7 @@ def zernike_coordinates(mask, shift=None, angle=0, indexing='ij'):
     rho = r/np.max(r*mask)  # rho is defined to be 1 on the edge of the aperture
     theta = np.angle(xx + 1j*yy)
     
-    if prtools.__backend__ == 'jax':
-        rho = rho.at[np.where(rho==0)].set(1e-99)
-        theta = theta.at[np.where(theta==0)].set(1e-99)
-    else:
-        rho[np.where(rho==0)] = 1e-99
-        theta[np.where(theta==0)] = 1e-99
+    rho[np.where(rho==0)] = 1e-99
+    theta[np.where(theta==0)] = 1e-99
 
     return rho, theta

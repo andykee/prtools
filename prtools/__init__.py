@@ -1,6 +1,4 @@
-__version__ = '1.4.2'
-
-from prtools.backend import __backend__, use
+__version__ = '2.0.0'
 
 from prtools.array import (
     centroid,

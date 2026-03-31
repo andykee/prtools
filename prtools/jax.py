@@ -1,22 +1,14 @@
 from dataclasses import dataclass
 from typing import Any
 
-from prtools import __backend__
-from prtools.backend import JAX_AVAILABLE
-
-if JAX_AVAILABLE:
-    import jax
-    import optax
-    import optax.tree_utils as otu
-
 
 def register_dataclass(cls):
-    if JAX_AVAILABLE:
-        data_fields = ['x', 'n', 'grad', 'value', 'state']
-        meta_fields = []
-        cls = jax.tree_util.register_dataclass(cls,
-                                               data_fields=data_fields,
-                                               meta_fields=meta_fields)
+    import jax
+    data_fields = ['x', 'n', 'grad', 'value', 'state']
+    meta_fields = []
+    cls = jax.tree_util.register_dataclass(cls,
+                                           data_fields=data_fields,
+                                           meta_fields=meta_fields)
     return cls
 
 
@@ -71,12 +63,9 @@ def lbfgs(fn, x0, gtol=None, maxiter=None, callback=None, fn_kwargs=None):
         description of attributes.
 
     """
-    if not JAX_AVAILABLE:
-        message = "jax and optax must be installed to use method `lbfgs`."
-        raise ModuleNotFoundError(message)
-
-    if __backend__ != 'jax':
-        raise RuntimeError('JAX backend must be selected')
+    import jax
+    import optax
+    import optax.tree_utils as otu
 
     if not any((gtol, maxiter)):
         raise ValueError('At least one termination tolerance must be specified.')
@@ -129,43 +118,3 @@ def lbfgs(fn, x0, gtol=None, maxiter=None, callback=None, fn_kwargs=None):
         jax.debug.callback(callback, res)
 
     return res
-
-
-def _multi_dot_three(a, b, c, axes, out):
-    # compute the matrix triple product
-    #
-    # a few notes:
-    # * while numpy-based implementation of this method is based on
-    #   np.matmul, jax.numpy.matmul doesn't implement the axes argument so
-    #   we have to use jax.numpy.linalg.multi_dot instead
-    # * the implementation used here supports b with ndim in (2, 3)
-    #   iterating over any of the 3 axes when b.ndim == 3
-    # * jax.vmap handles the case when b.ndim == 3 compared with the numpy
-    #   equivalent of this function which does everything within the
-    #   confines of matmul using the axes argument
-    if b.ndim == 2:
-        return jax.numpy.linalg.multi_dot((a, b, c))
-    else:
-        iter_axis = _iter_axis(axes)
-        return jax.vmap(_multi_dot, in_axes=[None, iter_axis, None], out_axes=iter_axis)(a, b, c)
-
-
-def _multi_dot(a, b, c):
-    # wrapper function to support vmap call signature
-    return jax.numpy.linalg.multi_dot((a, b, c))
-
-
-def _iter_axis(axes):
-    # pure Python to avoid dealing with JAX array mutability issues
-    mask = [0, 1, 2]
-    for ax in axes:
-        mask[ax] = None
-    return [ax for ax in mask if ax is not None][0]
-
-
-def _ndrebin(a, f):
-    return jax.vmap(_rebin, in_axes=[0, None])(a, f)
-
-
-def _rebin(a, f):
-        return jax.numpy.reshape(a, (a.shape[0]//f, f, a.shape[1]//f, f)).sum(-1).sum(1)
