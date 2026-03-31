@@ -34,7 +34,7 @@ ararys like those provided by NumPy, CuPy, PyTorch, and JAX.
 
 .. note::
 
-   Only NumPy and JAX interoperability has been tested to date. Future backend
+   Only NumPy and JAX interoperability is currently tested. Future backend
    libraries may be tested in the future.
 
 
@@ -117,6 +117,18 @@ Convolution and filtering
    sinc
    gauss_kernel
    pixel_kernel
+
+Morphology
+----------
+.. autosummary::
+   :toctree: generated
+   :caption: Morphology
+   :nosignatures:
+
+   binary_dilation
+   binary_erosion
+   binary_opening
+   binary_closing
 
 Sparse matrices
 ---------------
