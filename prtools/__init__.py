@@ -38,6 +38,11 @@ from prtools.misc import (
     find_wrapped
 )
 
+from prtools.morphology import (
+    binary_dilation,
+    binary_erosion
+)
+
 from prtools.segmented import hex_segments
 
 from prtools.shape import (
