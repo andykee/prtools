@@ -40,7 +40,9 @@ from prtools.misc import (
 
 from prtools.morphology import (
     binary_dilation,
-    binary_erosion
+    binary_erosion,
+    binary_opening,
+    binary_closing
 )
 
 from prtools.segmented import hex_segments
