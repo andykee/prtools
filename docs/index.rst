@@ -69,6 +69,7 @@ Array metrics
    nanpv
    radial_avg
    ee
+   teng
 
 Shapes
 ------

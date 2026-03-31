@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.ndimage import sobel
 
 import prtools
 
@@ -244,3 +245,46 @@ def radial_avg(a, center=None):
     nr = np.bincount(rho.ravel())
 
     return tbin/nr
+
+
+def teng(image, normalize=True):
+    r"""The Tenengrad function computes image sharpness as the mean squared
+    Sobel gradient magnitude.
+
+    The Tenengrad function measures image sharpness by analyzing the magnitude
+    of the gradient at each pixel. Strong gradient magnitudes indicate sharper
+    edges while weaker magnitudes indicate blur, The total sharpness of the
+    image is calculated as the mean squared gradient magnitude of all pixels:
+
+    .. math::
+
+        T[g(i,j)] = {G_x}^2(i,j) + {G_y}^2(i,j)\\
+        \\
+        F_T = \frac{1}{MN} \sum_{m}\sum_{n} T[g(i,j)]
+
+    Parameters
+    ----------
+    image : ndarray
+        2d image
+    normalize : bool, optional
+        If True (default), divide the Sobel responses by 8 to convert to units
+        of intensity change per pixel.
+
+    Returns
+    -------
+    float
+        Mean of squared gradient magnitudes across all pixels.
+    """
+    if image.ndim != 2:
+        raise ValueError("Image must be 2D (grayscale).")
+
+    img = image.astype(np.float64)
+
+    Gx = sobel(img, axis=1)
+    Gy = sobel(img, axis=0)
+
+    if normalize:
+        Gx /= 8.0
+        Gy /= 8.0
+
+    return float(np.mean(Gx**2 + Gy**2))

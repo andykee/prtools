@@ -74,7 +74,8 @@ from prtools.stats import (
     rms,
     nanpv,
     nanrms,
-    radial_avg
+    radial_avg,
+    teng
 )
 
 from prtools.zernike import (
