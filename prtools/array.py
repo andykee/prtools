@@ -6,7 +6,7 @@ import numpy as np
 from prtools._array_api import array_namespace, scipy_namespace
 
 
-def centroid(x, where=None, kind='absolute', indexing='ij'):
+def centroid(x, where=None, mode='absolute', indexing='ij'):
     """Compute array centroid location.
 
     Parameters
@@ -16,8 +16,8 @@ def centroid(x, where=None, kind='absolute', indexing='ij'):
     where: array_like of bool, optional
         Elements to include in the centroid calculation. If None (default),
         all finite and non-NaN values are used.
-    kind : {'absolute', 'center'}, optional
-        Specifies the kind of centroid as a string. If 'absolute' (default),
+    mode : {'absolute', 'center'}, optional
+        Specifies how the centroid is computed. If 'absolute' (default),
         the absolute centroid within the input is returned. If 'center', the
         centroid relative to the center of the input is returned.
     indexing : {'ij', 'xy'}, optional
@@ -42,17 +42,17 @@ def centroid(x, where=None, kind='absolute', indexing='ij'):
 
         >>> prtools.centroid(circ)
         (48.00000000000002, 178.0)
-        >>> prtools.centroid(circ, kind='center')
+        >>> prtools.centroid(circ, mode='center')
         (-79.99999999999997, 50.0)
-        >>> prtools.centroid(circ, kind='center', indexing='xy')
+        >>> prtools.centroid(circ, mode='center', indexing='xy')
         (50.0, 79.99999999999997)
 
     """
     xp = array_namespace(x)
     x = xp.asarray(x)
 
-    if kind not in ('absolute', 'center'):
-        raise ValueError(f'Unknown kind {kind}')
+    if mode not in ('absolute', 'center'):
+        raise ValueError(f'Unknown kind {mode}')
 
     if indexing not in ('ij', 'xy'):
         raise ValueError("Valid values for indexing are 'xy' and 'ij'.")
@@ -74,7 +74,7 @@ def centroid(x, where=None, kind='absolute', indexing='ij'):
     r = xp.dot(rr[where].ravel(), anorm.ravel())
     c = xp.dot(cc[where].ravel(), anorm.ravel())
 
-    if kind == 'center':
+    if mode == 'center':
         rc, cc = np.array(x.shape)/2
         r = r - rc
         c = c - cc
@@ -170,7 +170,7 @@ def pad(x, shape, fill=0):
     return xp.squeeze(out)
 
 
-def subarray(x, shape, shift=(0, 0)):
+def subarray(x, shape, shift=None, mode='absolute', indexing='ij'):
     """Extract a contiguous subarray from a larger array.
 
     The subarray is extracted about the center of the source array unless
@@ -182,8 +182,16 @@ def subarray(x, shape, shift=(0, 0)):
         Source array
     shape : array_like of ints
         Shape of subarray array in ``(nrows, ncols)``.
-    shift : array_like of ints
-        Relative shift of the center of the subarray in ``(row, col)``.
+    shift : array_like of ints, optional
+        Subarray center shift. Default is None (subarray is extracted about
+        the center of the source array).
+    mode : {'absolute', 'center'}, optional
+        Specifies how the subarray center located. If 'absolute' (default)
+        the subarray is extracted about the location given by ``shift``. If
+        'center', the subarray is extracted about the center of the source
+        array shifted by ``shift``.
+    indexing : {'ij', 'xy'}, optional
+        Matrix ('ij', default) or cartesian ('xy') indexing of shift.
 
     Returns
     -------
@@ -217,10 +225,39 @@ def subarray(x, shape, shift=(0, 0)):
         >>> ax[0].set_title('Original array')
         >>> ax[1].imshow(circ_subarray, cmap='gray')
         >>> ax[1].set_title('Subarray')
+
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
+
+        >>> circ = prtools.circle(shape=(128,128), radius=64)
+        >>> circ_subarray = prtools.subarray(circ, shape=(64,64), shift=(-32,-32), 
+        ...                                  mode='center')
+        >>> fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(5,2))
+        >>> ax[0].imshow(circ, cmap='gray')
+        >>> ax[0].set_title('Original array')
+        >>> ax[1].imshow(circ_subarray, cmap='gray')
+        >>> ax[1].set_title('Subarray')
     """
     xp = array_namespace(x)
     x = xp.asarray(x)
     shape = np.asarray(shape)
+
+    if mode not in ('absolute', 'center'):
+        raise ValueError(f'Unknown kind {mode}')
+
+    if indexing not in ('ij', 'xy'):
+        raise ValueError("Valid values for indexing are 'xy' and 'ij'.")
+
+    if shift is not None:
+        shift = np.asarray(shift, dtype=int)
+        if indexing == 'xy':
+            shift = (-shift[1], shift[0])
+        if mode == 'absolute':
+            shift = np.array(shift - np.array(x.shape)//2)
+    else:
+        shift = (0,0)
 
     rmin = x.shape[0]//2 - shape[0]//2 + shift[0]
     cmin = x.shape[1]//2 - shape[1]//2 + shift[1]
