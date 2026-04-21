@@ -115,7 +115,7 @@ def translation_defocus(f_number, dz):
 # function to convert between pv tip/tilt and focal plane position
 
 def fft_shape(dx, du, z, wavelength, oversample):
-    """Compute FFT pad shape to satisfy requested sampling condition
+    """Compute FFT pad shape to satisfy sampling constraints
 
     Parameters
     ----------

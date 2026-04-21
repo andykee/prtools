@@ -34,7 +34,7 @@ ararys like those provided by NumPy, CuPy, PyTorch, and JAX.
 
 .. note::
 
-   Only NumPy and JAX interoperability is currently tested. Future backend
+   Only NumPy and JAX interoperability is currently tested. Additional backend
    libraries may be tested in the future.
 
 
@@ -181,17 +181,27 @@ Miscellaneous
    translation_defocus
    find_wrapped
 
-``jax`` module
---------------
-The ``jax`` module has the following additional dependencies:
-
-* `JAX <https://docs.jax.dev/>`_
-* `Optax <https://optax.readthedocs.io/en/latest/>`_
-
+``prtools.jax``
+---------------
 .. autosummary::
    :toctree: generated
-   :caption: jax module
+   :caption: prtools.jax
    :nosignatures:
 
    jax.lbfgs
    jax.JaxOptimizeResult
+
+
+.. note::
+
+   The ``jax`` module has the following additional dependencies:
+
+   * `JAX <https://docs.jax.dev/>`_
+   * `Optax <https://optax.readthedocs.io/en/latest/>`_
+
+   :mod:`prtools` can be installed with the additional ``jax``
+   dependencies with
+
+   .. code::
+
+      pip install prtools[jax]
