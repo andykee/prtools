@@ -47,7 +47,7 @@ Array manipulation
    
    centroid
    pad
-   subarray
+   crop
    boundary
    rebin
    rescale

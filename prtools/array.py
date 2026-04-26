@@ -41,11 +41,11 @@ def centroid(x, where=None, mode='absolute', indexing='ij'):
     .. code:: pycon
 
         >>> prtools.centroid(circ)
-        (48.00000000000002, 178.0)
+        (48.0, 178.0)
         >>> prtools.centroid(circ, mode='center')
-        (-79.99999999999997, 50.0)
+        (-80.0, 50.0)
         >>> prtools.centroid(circ, mode='center', indexing='xy')
-        (50.0, 79.99999999999997)
+        (50.0, -80.0)
 
     """
     xp = array_namespace(x)
@@ -80,7 +80,7 @@ def centroid(x, where=None, mode='absolute', indexing='ij'):
         c = c - cc
 
     if indexing == 'xy':
-        r, c = c, -r
+        r, c = c, r
 
     return r, c
 
@@ -104,6 +104,10 @@ def pad(x, shape, fill=0):
     padded_array : ndarray
         Zero-padded array with shape ``(nrows, ncols)``. If ``x`` has a
         third dimension, the return shape will be ``(depth, nrows, ncols)``.
+
+    See Also
+    --------
+    :func:`crop`
 
     Examples
     --------
@@ -170,7 +174,7 @@ def pad(x, shape, fill=0):
     return xp.squeeze(out)
 
 
-def subarray(x, shape, shift=None, mode='absolute', indexing='ij'):
+def crop(x, shape, shift=None, mode='absolute', indexing='ij'):
     """Extract a contiguous subarray from a larger array.
 
     The subarray is extracted about the center of the source array unless
@@ -198,6 +202,10 @@ def subarray(x, shape, shift=None, mode='absolute', indexing='ij'):
     out : ndarray
         Subarray extracted from the source array.
 
+    See Also
+    --------
+    :func:`pad`
+
     Examples
     --------
     .. plot::
@@ -206,11 +214,11 @@ def subarray(x, shape, shift=None, mode='absolute', indexing='ij'):
         :scale: 50
 
         >>> circ = prtools.circle(shape=(128,128), radius=64)
-        >>> circ_subarray = prtools.subarray(circ, shape=(110,110))
+        >>> circ_crop = prtools.crop(circ, shape=(110,110))
         >>> fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(5,2))
         >>> ax[0].imshow(circ, cmap='gray')
         >>> ax[0].set_title('Original array')
-        >>> ax[1].imshow(circ_subarray, cmap='gray')
+        >>> ax[1].imshow(circ_crop, cmap='gray')
         >>> ax[1].set_title('Subarray')
 
     .. plot::
@@ -219,11 +227,11 @@ def subarray(x, shape, shift=None, mode='absolute', indexing='ij'):
         :scale: 50
 
         >>> circ = prtools.circle(shape=(128,128), radius=64)
-        >>> circ_subarray = prtools.subarray(circ, shape=(64,64), shift=(32,32))
+        >>> circ_crop = prtools.crop(circ, shape=(64,64), shift=(32,32))
         >>> fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(5,2))
         >>> ax[0].imshow(circ, cmap='gray')
         >>> ax[0].set_title('Original array')
-        >>> ax[1].imshow(circ_subarray, cmap='gray')
+        >>> ax[1].imshow(circ_crop, cmap='gray')
         >>> ax[1].set_title('Subarray')
 
     .. plot::
@@ -232,12 +240,12 @@ def subarray(x, shape, shift=None, mode='absolute', indexing='ij'):
         :scale: 50
 
         >>> circ = prtools.circle(shape=(128,128), radius=64)
-        >>> circ_subarray = prtools.subarray(circ, shape=(64,64), shift=(-32,-32), 
+        >>> circ_crop = prtools.crop(circ, shape=(64,64), shift=(-32,-32), 
         ...                                  mode='center')
         >>> fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(5,2))
         >>> ax[0].imshow(circ, cmap='gray')
         >>> ax[0].set_title('Original array')
-        >>> ax[1].imshow(circ_subarray, cmap='gray')
+        >>> ax[1].imshow(circ_crop, cmap='gray')
         >>> ax[1].set_title('Subarray')
     """
     xp = array_namespace(x)
@@ -494,7 +502,7 @@ def normpow(x, power=1):
     return x * xp.sqrt(power/xp.sum(xp.abs(x)**2))
 
 
-def shift(x, shift, mode='wrap', fill=0.0):
+def shift(x, shift, extend='wrap', fill=0.0):
     """Shift an array via FFT.
 
     Shift an array by (row, column). The shifts may be non-integer as the
@@ -507,7 +515,7 @@ def shift(x, shift, mode='wrap', fill=0.0):
         The input array.
     shift : (2,) sequence
         The shift specified as (row, column).
-    mode : {'wrap', 'reflect', 'mirror', 'constant'}, optional
+    extend : {'wrap', 'reflect', 'mirror', 'constant'}, optional
         Determines how the input array is extended beyond its boundaries.
         Default is 'wrap'.
 
@@ -544,16 +552,17 @@ def shift(x, shift, mode='wrap', fill=0.0):
                [0., 0., 1.]])
         >>> arr_shift = prtools.shift(arr, shift=(-1,-1))
         >>> arr_shift
-        array([[ 0.00000000e+00, -7.40148683e-17, -2.46716228e-17],
-               [-1.16747372e-16,  1.00000000e+00,  2.14548192e-16],
-               [-3.12823642e-17,  2.22044605e-16, -4.18468327e-17]])
+        array([[ 0., 0., 0.],
+               [ 0., 1., 0.],
+               [ 0., 0., 0.]])
+
     """
     xp = array_namespace(x)
     x = xp.asarray(x)
     r, c = x.shape
     dr, dc = shift
 
-    x = _extend(x, shift, mode, fill, xp=xp)
+    x = _extend(x, shift, extend, fill, xp=xp)
 
     R = dr * xp.fft.fftfreq(x.shape[0])
     C = dc * xp.fft.fftfreq(x.shape[1])

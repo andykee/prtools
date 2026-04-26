@@ -6,7 +6,7 @@ from prtools._array_api import use
 from prtools.array import (
     centroid,
     pad,
-    subarray,
+    crop,
     boundary,
     rebin,
     rescale,

@@ -32,12 +32,15 @@ def mesh(shape, shift=(0, 0), angle=0, indexing='ij'):
 
 
 def _meshxy(shape, shift, angle):
-    xx, yy = np.meshgrid((np.arange(shape[1])-np.floor(shape[1]/2))-shift[0],
-                         (np.floor(shape[0]/2)-np.arange(shape[0])-shift[1]))
-
+    #xx, yy = np.meshgrid((np.arange(shape[1])-np.floor(shape[1]/2))-shift[0],
+    #                     (np.floor(shape[0]/2)-np.arange(shape[0])-shift[1]))
+    nx = shape[1]
+    ny = shape[0]
+    xx, yy = np.meshgrid(np.arange(nx) - np.floor(nx/2.0) - shift[1],
+                         np.arange(ny) - np.floor(ny/2.0) - shift[0],
+                         indexing='xy')
     x = xx * np.cos(angle) + yy * np.sin(angle)
     y = xx * -np.sin(angle) + yy * np.cos(angle)
-
     return x, y
 
 
