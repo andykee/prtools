@@ -3,8 +3,8 @@ import numpy as np
 from prtools._array_api import array_namespace
 
 
-def fftconv(array, kernel, normalize_kernel=True, fft_array=True,
-            fft_kernel=False, fftshift_kernel=False):
+def fftconv(array, kernel, axes=(-2, -1), normalize_kernel=True,
+            fft_array=True, fft_kernel=False, fftshift_kernel=False):
     r"""Convolve an array with a kernel using the FFT.
 
     The colvolution is computed as
@@ -19,6 +19,9 @@ def fftconv(array, kernel, normalize_kernel=True, fft_array=True,
         Array to be convolved with ``kernel``.
     kernel : array_like
         Convolution kernel. Should have the same shape as ``array``.
+    axes : sequence of ints, optional
+        Axes over which to apply the convolution. If not given, the last two
+        axes are used.
     normalize_kernel : bool, optional
         If True (default), kernel is normalized so that  ``sum(kernel) == 1``.
     fft_array : bool, optional
@@ -46,18 +49,18 @@ def fftconv(array, kernel, normalize_kernel=True, fft_array=True,
     """
     xp = array_namespace(array)
 
-    a = xp.fft.fft2(array) if fft_array else array
+    a = xp.fft.fft2(array, axes=axes) if fft_array else array
     k = xp.fft.fftshift(kernel) if fftshift_kernel else kernel
     k = xp.fft.fft2(k) if fft_kernel else k
 
     if normalize_kernel:
         k = k / xp.sum(k)
 
-    return xp.fft.ifft2(a*k).real
+    return xp.fft.ifft2(a*k, axes=axes).real
 
 
-def gauss_blur(img, sigma, oversample=1):
-    """Blur an image using a Gaussian filter using the FFT. 
+def gauss_blur(img, sigma, axes=(-2, -1), oversample=1):
+    """Blur an image using a Gaussian filter using the FFT.
 
     Parameters
     ----------
@@ -67,9 +70,12 @@ def gauss_blur(img, sigma, oversample=1):
         Standard deviation for the Gaussian kernel. Providing two values
         allows for non-symmetric Gaussian interpreted as `(sigma_row,
         sigma_col)`
+    axes : sequence of ints, optional
+        Axes over which to apply the blur. If not given, the last two axes are
+        used.
     oversample : float, optional
         Oversampling factor of `img`. Default is 1.
-    
+
     Returns
     -------
     ndarray
@@ -94,19 +100,23 @@ def gauss_blur(img, sigma, oversample=1):
     """
     xp = array_namespace(img)
     img = xp.asarray(img)
-    kernel = gauss_kernel(img.shape, sigma, oversample, fftshift=False, xp=xp)
+    kernel_shape = np.array(img.shape).take(axes)
+    kernel = gauss_kernel(kernel_shape, sigma, oversample, fftshift=False, xp=xp)
     # gauss_kernel always returns a normalized kernel
-    return fftconv(img, kernel, normalize_kernel=False, fft_array=True,
-                   fft_kernel=False, fftshift_kernel=False)
+    return fftconv(img, kernel, axes=axes, normalize_kernel=False,
+                   fft_array=True, fft_kernel=False, fftshift_kernel=False)
 
 
-def pixelate(img, oversample=1):
+def pixelate(img, axes=(-2, -1), oversample=1):
     """Apply the aperture effects of an idealized square pixel using the FFT.
 
     Parameters
     ----------
     img : array_like
         Input image
+    axes : sequence of ints, optional
+        Axes over which to apply the effect. If not given, the last two axes
+        are used.
     oversample : float, optional
         Oversampling factor of ``img``. Default is 1.
 
@@ -122,10 +132,11 @@ def pixelate(img, oversample=1):
     """
     xp = array_namespace(img)
     img = xp.asarray(img)
-    kernel = pixel_kernel(img.shape, oversample=oversample, fftshift=False,
+    kernel_shape = np.array(img.shape).take(axes)
+    kernel = pixel_kernel(kernel_shape, oversample=oversample, fftshift=False,
                           xp=xp)
-    return fftconv(img, kernel, normalize_kernel=False, fft_array=True,
-                   fft_kernel=False, fftshift_kernel=False)
+    return fftconv(img, kernel, axes=axes, normalize_kernel=False,
+                   fft_array=True, fft_kernel=False, fftshift_kernel=False)
 
 
 def gauss(x1, x2, sigma, indexing='ij', normalize=False, xp=None):
