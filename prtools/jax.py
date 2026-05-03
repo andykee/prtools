@@ -1,20 +1,7 @@
-from dataclasses import dataclass
-from typing import Any
+from typing import NamedTuple, Any
 
 
-def register_dataclass(cls):
-    import jax
-    data_fields = ['x', 'n', 'grad', 'value', 'state']
-    meta_fields = []
-    cls = jax.tree_util.register_dataclass(cls,
-                                           data_fields=data_fields,
-                                           meta_fields=meta_fields)
-    return cls
-
-
-@register_dataclass
-@dataclass
-class JaxOptimizeResult:
+class JaxOptimizeResult(NamedTuple):
     """Represents the optimization result."""
     x: Any  #: The solution of the optimization
     n: Any  #: Number of iterations performed by the optimizer
