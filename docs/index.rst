@@ -8,6 +8,12 @@
 `Issue Tracker <https://github.com/andykee/prtools/issues>`_ |
 `Releases <https://github.com/andykee/prtools/releases>`_
 
+**Installation**: install :mod:`prtools` with pip
+
+.. code-block:: bash
+
+    pip install prtools
+
 The :mod:`prtools` library provides functionality and tools that may be
 useful when performing image-based phase retrieval including:
 
@@ -16,13 +22,14 @@ useful when performing image-based phase retrieval including:
 * Drawing various shapes in arrays
 * Computing statistics and optical simulation parameters
 
-Install :mod:`prtools` with pip:
+.. note::
 
-.. code-block:: bash
+   Many :mod:`prtools` functions support both matrix (``ij``) and Cartesian 
+   (``xy``) indexing conventions via the ``indexing`` parameter. The default is
+   matrix (``indexing='ij'``) for all functions.
 
-    pip install prtools
 
-.. currentmodule:: prtools
+   .. currentmodule:: prtools
 
 
 Array API support
@@ -86,13 +93,6 @@ Shapes
    sin
    waffle
    mesh
-
-.. note::
-
-   The shape functions support both Cartesian (``xy``) and matrix (``ij``)
-   indexing conventions for specifying the shift parameter via the 
-   ``indexing`` parameter. The default is matrix (``indexing='ij'``) for 
-   all functions.
 
 Fourier transforms
 ------------------
