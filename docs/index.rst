@@ -89,6 +89,7 @@ Shapes
    rectangle
    hexagon
    hex_segments
+   ellipse
    spider
    sin
    waffle

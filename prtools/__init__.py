@@ -55,6 +55,7 @@ from prtools.shape import (
     circle,
     hexagon,
     rectangle,
+    ellipse,
     spider,
     sin,
     waffle

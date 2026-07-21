@@ -219,6 +219,68 @@ def rectangle(shape, width, height, shift=(0, 0), angle=0, antialias=True,
     return rect
 
 
+def ellipse(shape, xradius, yradius, shift=(0,0), angle=0, antialias=True,
+            indexing='ij'):
+    """Draw an ellipse
+
+    Parameters
+    ----------
+    shape : array_like
+        Size of output in pixels (nrows, ncols)
+    xradius : float
+        Semi-axis of the ellipse in pixels in the x (horizontal) direction.
+    yradius : float
+        Semi-axis of the ellipse in pixels in the y (vertical) direction.
+    shift : (2,) array_like, optional
+        How far to shift center in float (rows, cols). Default is (0, 0).
+    angle : float, optional
+        Rotation of the ellipse in degrees counterclockwise from horizontal.
+        Default is 0.
+    antialias : bool, optional
+        If True (default), the shape edges are antialiased.
+    indexing : {'ij', 'xy'}, optional
+        Matrix ('ij', default) or cartesian ('xy') indexing of output.
+
+    Returns
+    -------
+    ndarray
+
+    Examples
+    --------
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
+
+        >>> ell = prtools.ellipse(shape=(256, 256), xradius=100, yradius=50)
+        >>> plt.imshow(ell, cmap='gray')
+
+    .. plot::
+        :include-source:
+        :context: reset
+        :scale: 50
+
+        >>> ell = prtools.ellipse(shape=(256, 256), xradius=100, yradius=50, angle=30)
+        >>> plt.imshow(ell, cmap='gray')
+
+    """
+    a, b = yradius, xradius
+    rr, cc = mesh(shape, shift, angle, indexing=indexing)
+
+    rho = np.sqrt((rr / a)**2 + (cc / b)**2)
+    grad = np.sqrt((rr / a**2)**2 + (cc / b**2)**2)
+
+    with np.errstate(divide='ignore', invalid='ignore'):
+        dist = (1 - rho) * rho / grad
+    dist = np.where(grad == 0, 1.0, dist)  # center is always interior
+    ell = np.clip(dist + 0.5, 0.0, 1.0)
+
+    if not antialias:
+        ell[ell > 0] = 1
+
+    return ell
+
+
 def spider(shape, width, angle=0, shift=(0, 0), antialias=True, indexing='ij'):
     """Draw a spider
 
@@ -259,10 +321,6 @@ def spider(shape, width, angle=0, shift=(0, 0), antialias=True, indexing='ij'):
     shift_col = shift_dist * np.cos(np.deg2rad(angle))
     shift = (shift[0] + shift_row, shift[1] + shift_col)
     return 1 - rectangle(shape, len, width, shift, angle, antialias, indexing)
-
-
-def ellipse():
-    pass
 
 
 def gauss(shape, sigma, shift=(0, 0), indexing='ij'):
