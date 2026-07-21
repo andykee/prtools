@@ -14,7 +14,7 @@ def zernike(mask, index, normalize=True, order='noll', rho=None, theta=None):
         Binary mask defining the extent to compute the Zernike polynomial
         over.
     index : int
-        Noll Zernike index as defined in [1]
+        Zernike mode index
     normalize : bool, optional
         If True (default), the output is normalized according to [1]. If False,
         the output value ranges [-1, 1] over the mask.
@@ -112,8 +112,8 @@ def zernike_compose(mask, coeffs, normalize=True, order='noll', rho=None, theta=
     mask : array_like
         Binary mask defining the extent to compute the Zernike polynomial over.
     coeffs : array_like
-        List of coefficients corresponding to Zernike indices (Noll ordering)
-        used to create the OPD.
+        List of coefficients corresponding to Zernike indices used to create
+        the OPD.
     normalize : bool, optional
         If True (default), the output is normalized according to [1]. If False,
         the output value ranges [-1, 1] over the mask.
@@ -177,7 +177,7 @@ def zernike_basis(mask, modes, vectorize=False, normalize=True, order='noll',
     mask : array_like
         Binary mask defining the extent to compute the Zernike polynomial over.
     modes : array_like
-        List of modes (Noll ordering) to return.
+        List of modes to return.
     vectorize : bool, optional
         If True, the output is returned as a
         ``(length(modes), modes.shape[0]*modes.shape[1])`` array If False
@@ -228,11 +228,11 @@ def zernike_fit(opd, mask, modes, normalize=True, order='noll', rho=None,
     Parameters
     ----------
     opd : array_like
-        OPD to fit.
+        OPD to fit. NaN values in ``opd`` are excluded from the fit.
     mask : array_like
         Binary mask defining the extent to compute the Zernike basis over.
     modes : array_like
-        List of modes (Noll ordering) to fit.
+        List of modes to fit.
     normalize : bool, optional
         If True (default), the output is normalized according to [1]. If False,
         the output value ranges [-1, 1] over the mask.
@@ -271,14 +271,16 @@ def zernike_fit(opd, mask, modes, normalize=True, order='noll', rho=None,
     [1] Noll, RJ. Zernike polynomials and atmospheric turbulence. J Opt Soc Am 66, 207-211  (1976).
 
     """
-    opd = np.asarray(opd)
+    opd = np.asarray(opd).ravel()
     mask = np.asarray(mask)
-
     basis = zernike_basis(mask, modes, True, normalize, order, rho, theta)
+    
+    # valid data includes all non-NaN values inside the mask
+    valid = np.isfinite(opd) & mask.ravel().astype(bool)
+    
+    coeff, *_ = np.linalg.lstsq(basis[:, valid].T, opd[valid], rcond=None)
 
-    basis = np.linalg.pinv(basis)
-
-    return np.einsum('ij,i->j', basis, opd.ravel())
+    return coeff
 
 
 def zernike_remove(opd, mask, modes, order='noll', rho=None, theta=None):
@@ -291,7 +293,7 @@ def zernike_remove(opd, mask, modes, order='noll', rho=None, theta=None):
     mask : array_like
         Binary mask defining the extent to compute the Zernike basis over.
     modes : array_like
-        List of modes (Noll ordering) to remove.
+        List of modes to remove.
     order : {'noll', 'fringe', 'ansi'}, optional
         Zernike ordering scheme. Default is 'noll'.
     rho : array_like, optional
