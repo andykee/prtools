@@ -56,6 +56,7 @@ Array manipulation
    pad
    crop
    boundary
+   sample
    rebin
    rescale
    medfix

@@ -109,4 +109,45 @@ def test_register(xp):
 
     s = prtools.register(x2, x1, oversample=2)
 
-    assert(xp.allclose(xp.asarray(s), xp.asarray((-1,-1))))
+    assert xp.allclose(xp.asarray(s), xp.asarray((-1, -1)))
+
+
+@pytest.mark.parametrize('xp', BACKENDS)
+@pytest.mark.parametrize('shape, oversample, offset, result', [
+    ((2, 2), 1, 0, [[0, 1], [2, 3]]),
+    ((2, 2), 2, 0, [3]),
+    ((2, 2), 2, (-1, 0), [1]),
+    ((2, 2), 2, (0, -1), [2]),
+    ((2, 2), 2, (-1, -1), [0]),
+    ((3, 3), 1, 0, [[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
+    ((3, 3), 3, 0, [4]),
+    ((3, 3), 3, (-1, 0), [1]),
+    ((3, 3), 3, (1, 0), [7]),
+    ((3, 3), 3, (0, -1), [3]),
+    ((3, 3), 3, (0, 1), [5]),
+    ((3, 3), 3, (-1, -1), [0]),
+    ((3, 3), 3, (-1, 1), [2]),
+    ((3, 3), 3, (1, -1), [6]),
+    ((3, 3), 3, (1, 1), [8]),
+    ((4, 4), 1, 0, [[0, 1, 2, 3], [4, 5, 6, 7],
+                    [8, 9, 10, 11], [12, 13, 14, 15]]),
+    ((4, 4), 2, 0, [[5, 7], [13, 15]]),
+    ])
+def test_sample(xp, shape, oversample, offset, result):
+    x = np.arange(np.prod(shape)).reshape(shape)
+    assert np.all(prtools.sample(x, oversample, offset) == result)
+
+@pytest.mark.parametrize('xp', BACKENDS)
+@pytest.mark.parametrize('shape, oversample, offset', [
+    ((2, 2), 1, 1),
+    ((2, 2), 1, -2),
+    ((2, 2), 2, 1),
+    ((3, 3), 3, -2),
+    ((3, 3), 3, 2),
+    ((4, 4), 2, 1),
+    ((4, 4), 2, -2)
+    ])
+def test_sample_value_error(xp, shape, oversample, offset):
+    x = np.arange(np.prod(shape)).reshape(shape)
+    with pytest.raises(ValueError):
+        prtools.sample(x, oversample, offset)

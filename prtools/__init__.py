@@ -8,6 +8,7 @@ from prtools.array import (
     pad,
     crop,
     boundary,
+    sample,
     rebin,
     rescale,
     normpow,
