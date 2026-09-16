@@ -7,7 +7,7 @@ def fftconv(array, kernel, axes=(-2, -1), normalize_kernel=True,
             fft_array=True, fft_kernel=False, fftshift_kernel=False):
     r"""Convolve an array with a kernel using the FFT.
 
-    The colvolution is computed as
+    The convolution is computed as
 
     .. math::
 
@@ -18,12 +18,13 @@ def fftconv(array, kernel, axes=(-2, -1), normalize_kernel=True,
     array : array_like
         Array to be convolved with ``kernel``.
     kernel : array_like
-        Convolution kernel. Should have the same shape as ``array``.
+        Convolution kernel. Should have the same shape as ``array``. May be
+        given in either the frequency or spatial domain, as indicated by
+        ``fft_kernel``. The kernel is applied exactly as supplied. See Notes
+        for normalization details.
     axes : sequence of ints, optional
         Axes over which to apply the convolution. If not given, the last two
         axes are used.
-    normalize_kernel : bool, optional
-        If True (default), kernel is normalized so that  ``sum(kernel) == 1``.
     fft_array : bool, optional
         If True (default), the array is assumed to be provided in the spatial
         domain and its FFT will be computed by this function. If False, the
@@ -46,15 +47,30 @@ def fftconv(array, kernel, axes=(-2, -1), normalize_kernel=True,
     --------
     :func:`~prtools.gauss_blur`
     :func:`~prtools.pixelate`
+
+    Notes
+    -----
+    **Kernel normalization** This function does not normalize or scale the
+    supplied kernel in any way.
+
+    The sum of ``array`` is conserved when the kernel's transfer function is
+    unity at zero frequency. Depending on which domain the kernel is supplied
+    in, the kernel normaliztion approach is different:
+
+    * A frequency-domain kernel (``fft_kernel=False``) should be scaled such
+      that ``kernel[0,0] == 1``. Note that ``kernel[0,0]`` is the
+      zero-frequency term only for a kernel in standard (unshifted) FFT layout.
+      If the kernel origin lies at the center of the array
+      (``fftshift_kernel=True``), the DC term is at ``kernel[nr//2, nc//2]``.
+
+    * A spatial-domain kernal(``fft_kernel=True``) should have
+    ``sum(kernel) == 1``.
     """
     xp = array_namespace(array)
 
     a = xp.fft.fft2(array, axes=axes) if fft_array else array
     k = xp.fft.fftshift(kernel) if fftshift_kernel else kernel
     k = xp.fft.fft2(k) if fft_kernel else k
-
-    if normalize_kernel:
-        k = k / xp.sum(k)
 
     return xp.fft.ifft2(a*k, axes=axes).real
 
@@ -312,10 +328,10 @@ def gauss_kernel(shape, sigma, oversample=1, pixelscale=1.0, fftshift=False,
         return k
 
 
-def pixel_kernel(shape, oversample=1, pixelscale=1.0, fftshift=False, 
+def pixel_kernel(shape, oversample=1, pixelscale=1.0, fftshift=False,
                  xp=None):
     r"""2D pixel MTF filter kernel
-    
+
     This function returns a normalized 2D sinc function sized to represent
     the transfer function of an idealized square pixel.
 
@@ -361,7 +377,7 @@ def pixel_kernel(shape, oversample=1, pixelscale=1.0, fftshift=False,
     x1 = xp.fft.fftfreq(shape[0], d=pixelscale[0]) * oversample
     x2 = xp.fft.fftfreq(shape[1], d=pixelscale[1]) * oversample
 
-    k = xp.abs(sinc(x1, x2, indexing='ij', xp=xp))
+    k = sinc(x1, x2, indexing='ij', xp=xp)
 
     if fftshift:
         return xp.fft.fftshift(k)
