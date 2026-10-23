@@ -80,7 +80,12 @@ def centroid(x, where=None, mode='absolute', indexing='ij'):
         c = c - cc
 
     if indexing == 'xy':
-        r, c = c, r
+        if mode == 'center':
+            # Cartesian offset from center: +x right, +y up
+            r, c = c, -r
+        else:
+        # absolute pixel coordinates: +y down
+            r, c = c, r
 
     return r, c
 
