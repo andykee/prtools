@@ -3,6 +3,7 @@ from math import factorial
 import numpy as np
 
 import prtools
+from prtools.shape import _shift_ij
 
 
 def zernike(mask, index, normalize=True, order='noll', rho=None, theta=None):
@@ -46,7 +47,7 @@ def zernike(mask, index, normalize=True, order='noll', rho=None, theta=None):
     [1] Noll, RJ. Zernike polynomials and atmospheric turbulence. J Opt Soc Am 66, 207-211  (1976).
 
     """
-    mask = np.asarray(mask)
+    mask = np.asarray(mask, dtype=bool)
 
     if order == 'noll':
         n, m = noll_to_nm(index)
@@ -65,7 +66,7 @@ def zernike(mask, index, normalize=True, order='noll', rho=None, theta=None):
 
     if m == 0:
         if n == 0:
-            Z = mask
+            Z = mask.astype(float)
         else:
             if normalize:
                 Z = np.sqrt(n+1) * R(m, n, rho) * mask
@@ -80,9 +81,9 @@ def zernike(mask, index, normalize=True, order='noll', rho=None, theta=None):
 
     else:
         if normalize:
-            Z = np.sqrt(2) * np.sqrt(n+1) * R(m, n, rho) * np.sin(m*theta) * mask
+            Z = np.sqrt(2) * np.sqrt(n+1) * R(m, n, rho) * np.sin(-m*theta) * mask
         else:
-            Z = R(m, n, rho) * np.sin(m*theta) * mask
+            Z = R(m, n, rho) * np.sin(-m*theta) * mask
 
     #out[mask_slice] = Z
     out = Z
@@ -428,35 +429,42 @@ def zernike_coordinates(mask, shift=None, angle=0, indexing='ij'):
     Parameters
     ----------
     mask : array_like
-        Binary mask defining the extent to compute the Zernike polynomial 
-        over.
+        Binary mask defining the extent to compute the Zernike polynomial
+        over. Nonzero values are treated as inside the mask.
     shift : (2,) array_like, optional
-        How far to shift center in float (rows, cols). If None (default),
-        shift is computed automatically to locate the origin at the mask
-        centroid.
+        How far to shift the origin from the center of the array. (rows,
+        cols) for 'ij', (x, y) for 'xy'. If None (default), the
+        origin is placed at the mask centroid.
     angle: float, optional
-        Angle to rotate coordinate system by in degrees. rotate is specified 
-        relative to the x-axis. Default is 0.
+        Angle to rotate coordinate system by in degrees, from the +x axis
+        toward the +y axis. Default is 0.
     indexing : {'ij', 'xy'}, optional
-        Matrix ('ij', default) or cartesian ('xy') indexing of output.
-    
+        Matrix ('ij', default) or cartesian ('xy') indexing of ``shift``.
+
     Returns
     -------
     rho, theta : ndarrays
-    
+        Normalized radius and angle. theta is measured from +x (increasing
+        column) toward +y (increasing row), which is counterclockwise when
+        displayed with ``origin='lower'``.
+
     """
-    mask = np.asarray(mask)
+    mask = np.asarray(mask, dtype=bool)
 
     if shift is None:
-        center = np.asarray(mask.shape)/2
-        centroid = prtools.centroid(mask)
-        shift = (centroid[0]-center[0], centroid[1]-center[1])
+        # (row, col) offset of the mask centroid from the mesh origin
+        shift = prtools.centroid(mask, mode='center')
+    else:
+        shift = _shift_ij(shift, indexing)
 
-    yy, xx = prtools.mesh(shape=mask.shape, shift=shift, angle=angle, indexing=indexing)
+    # an xy rotation from +x toward +y is a negative ij rotation
+    rr, cc = prtools.mesh(shape=mask.shape, shift=shift, angle=-angle,
+                          indexing='ij')
+    x, y = cc, rr  # xy frame: x increases with column, y with row
 
-    r = np.abs(xx+1j*yy)
+    r = np.hypot(x, y)
     rho = r/np.max(r*mask)  # rho is defined to be 1 on the edge of the aperture
-    theta = np.angle(xx + 1j*yy)
+    theta = np.arctan2(y, x)
     
     rho[np.where(rho==0)] = 1e-99
     theta[np.where(theta==0)] = 1e-99
