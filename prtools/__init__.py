@@ -86,5 +86,6 @@ from prtools.zernike import (
     zernike_basis,
     zernike_fit,
     zernike_remove,
-    zernike_coordinates
+    zernike_coordinates,
+    zernike_coeff_legacy
 )

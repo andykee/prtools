@@ -1,3 +1,5 @@
+import warnings
+
 import numpy as np
 import pytest
 
@@ -71,12 +73,13 @@ def test_zernike_orientation(index, positive_at):
     assert z[positive_at] > 0.5
 
 
-def _zernike_reference(mask, j, origin):
+def _zernike_reference(mask, j, origin, ysign=1):
     # Noll-normalized Zernike evaluated directly in the xy frame (x increasing
-    # with column, y increasing with row) about the (row, col) origin
+    # with column, y increasing with row) about the (row, col) origin. ysign=-1
+    # mirrors the frame top-to-bottom, as in the legacy convention
     n, m = noll_to_nm(j)
     rr, cc = np.mgrid[0:mask.shape[0], 0:mask.shape[1]].astype(float)
-    x, y = cc - origin[1], rr - origin[0]
+    x, y = cc - origin[1], ysign * (rr - origin[0])
     r = np.hypot(x, y)
     rho = r / np.max(r * mask)
     theta = np.arctan2(y, x)
@@ -136,3 +139,108 @@ def test_zernike_coordinates_angle():
     rho, theta = prtools.zernike_coordinates(mask, angle=90)
     assert np.allclose(prtools.zernike(mask, 2, rho=rho, theta=theta),
                        prtools.zernike(mask, 3))
+
+
+def test_zernike_coeff_legacy_noll_signs():
+    # sin terms (m < 0) flip; cos terms and m = 0 are unchanged
+    expected = [1, 1, -1, 1, -1, 1, -1, 1, -1, 1, 1]
+    assert np.array_equal(prtools.zernike_coeff_legacy(np.ones(11)), expected)
+
+
+def test_zernike_coeff_legacy_involution():
+    coeffs = np.random.default_rng(0).normal(size=15)
+    assert np.array_equal(
+        prtools.zernike_coeff_legacy(prtools.zernike_coeff_legacy(coeffs)), coeffs)
+
+
+@pytest.mark.parametrize('order, modes', [
+    ('noll', range(1, 16)),
+    ('fringe', range(1, 17)),
+    ('ansi', range(0, 15)),
+])
+def test_zernike_coeff_legacy_matches_mirror(order, modes):
+    # legacy convention == current convention mirrored top-to-bottom (y -> -y)
+    mask = prtools.circle((128, 128), 60, antialias=False)
+    rho, theta = prtools.zernike_coordinates(mask)
+    for j in modes:
+        mirrored = prtools.zernike(mask, j, order=order, rho=rho, theta=-theta)
+        sign = prtools.zernike_coeff_legacy([1.0], modes=[j], order=order)[0]
+        assert np.allclose(mirrored, sign * prtools.zernike(mask, j, order=order))
+
+
+@pytest.mark.filterwarnings('ignore::FutureWarning')
+@pytest.mark.parametrize('order, modes', [
+    ('noll', range(1, 16)),
+    ('fringe', range(1, 17)),
+    ('ansi', range(0, 15)),
+])
+def test_zernike_coeff_legacy_matches_legacy_flag(order, modes):
+    # exact for even-sized binary masks; odd sizes also had a half-pixel
+    # origin offset
+    mask = prtools.circle((128, 128), 60, antialias=False)
+    for j in modes:
+        legacy = prtools.zernike(mask, j, order=order, legacy=True)
+        sign = prtools.zernike_coeff_legacy([1.0], modes=[j], order=order)[0]
+        assert np.allclose(legacy, sign * prtools.zernike(mask, j, order=order))
+
+
+@pytest.mark.filterwarnings('ignore::FutureWarning')
+@pytest.mark.parametrize('n', [256, 255])
+def test_zernike_legacy_matches_reference(n):
+    # legacy frame: y mirrored, origin measured from shape/2 instead of the
+    # mesh origin at floor(shape/2), so odd sizes sit half a pixel off
+    mask = prtools.circle((n, n), n//2 - 4, antialias=False)
+    centroid = np.asarray(prtools.centroid(mask))
+    origin = np.floor(np.asarray(mask.shape)/2) + centroid - np.asarray(mask.shape)/2
+    for j in range(1, 37):
+        assert np.allclose(prtools.zernike(mask, j, legacy=True),
+                           _zernike_reference(mask, j, origin, ysign=-1),
+                           atol=1e-9)
+
+
+@pytest.mark.filterwarnings('ignore::FutureWarning')
+def test_zernike_legacy_binary_mask():
+    # legacy only changes orientation; masks are still treated as binary
+    mask = prtools.circle((64, 64), 30, antialias=False)
+    rng = np.random.default_rng(0)
+    random_mask = rng.uniform(low=0.1, high=1, size=mask.shape) * mask
+    for j in range(1, 12):
+        assert np.array_equal(prtools.zernike(mask, j, legacy=True),
+                              prtools.zernike(random_mask, j, legacy=True))
+
+
+LEGACY_CALLS = {
+    'zernike':         lambda m, **kw: prtools.zernike(m, 4, **kw),
+    'zernike_compose': lambda m, **kw: prtools.zernike_compose(m, [0, 1e-8], **kw),
+    'zernike_basis':   lambda m, **kw: prtools.zernike_basis(m, [2, 3], **kw),
+    'zernike_fit':     lambda m, **kw: prtools.zernike_fit(np.zeros(m.shape), m, [2, 3], **kw),
+    'zernike_remove':  lambda m, **kw: prtools.zernike_remove(np.zeros(m.shape), m, [2, 3], **kw),
+}
+
+
+@pytest.mark.parametrize('name', LEGACY_CALLS)
+def test_zernike_legacy_warns(name):
+    mask = prtools.circle((32, 32), 14, antialias=False)
+    with pytest.warns(FutureWarning, match='prtools 2.0.2'):
+        LEGACY_CALLS[name](mask, legacy=True)
+    with warnings.catch_warnings():
+        warnings.simplefilter('error')
+        LEGACY_CALLS[name](mask)
+
+
+def test_zernike_coeff_legacy_stacked():
+    out = prtools.zernike_coeff_legacy(np.ones((5, 11)))
+    assert out.shape == (5, 11)
+    assert np.array_equal(out[0], out[-1])
+
+
+def test_zernike_coeff_legacy_modes_length_mismatch():
+    with pytest.raises(ValueError):
+        prtools.zernike_coeff_legacy([1, 2], modes=[1])
+
+
+def test_zernike_coeff_legacy_bad_input():
+    with pytest.raises(ValueError):
+        prtools.zernike_coeff_legacy(1.0)
+    with pytest.raises(ValueError):
+        prtools.zernike_coeff_legacy([1.0], order='zemax')
