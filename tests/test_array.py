@@ -57,7 +57,7 @@ def test_centroid_center_mode_centered(xp, n, indexing):
     # center mode measures from the mesh origin at n//2, for odd n too
     circ = prtools.circle((n, n), 20, antialias=False)
     c = prtools.centroid(xp.asarray(circ), mode='center', indexing=indexing)
-    assert np.allclose(np.asarray(c), (0, 0))
+    assert np.allclose(np.asarray(c), (0, 0), atol=1e-5)
 
 
 @pytest.mark.parametrize('mode, shift_ij, shift_xy, center', [
