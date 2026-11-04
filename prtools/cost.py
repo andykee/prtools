@@ -4,39 +4,61 @@ from prtools._array_api import array_namespace
 def sserror(data, est, mask=None, gain_bias_invariant=False, ghat=None):
     r"""Compute the normalized sum squared error between two arrays.
 
-    The normalized sum squared error between ideal data `f` and estimated data
-    `g` is given by
+    The error between measured data :math:`\tilde{s}` and estimated data
+    :math:`\hat{s}` is computed as the gain invariant error metric
 
     .. math::
 
-        \mbox{error} = \frac{1}{N}\sum_n \frac{\sum{\left|g(n,x,y)-f(n,x,y)\right|^2}}{\sum{\left|f(n,x,y)\right|^2}}
+        \Phi = \frac{1}{K}\sum_k
+        \frac{\sum_{x,y} w(x,y,k)\left[\alpha_k\hat{s}(x,y,k) -
+        \tilde{s}(x,y,k)\right]^2}{\sum_{x,y} w(x,y,k)\tilde{s}^2(x,y,k)}
 
-    for :math:`n = 1, 2, ... N` independent measurements.
+    for :math:`k = 1, 2, ... K` independent measurements, where
+    :math:`w` is a weighting function given by `mask` and each
+    :math:`\alpha_k` is chosen to minimize the error. The result is
+    independent of any relative scaling (gain) difference between the inputs.
 
-    If `gain_bias_invariant` is ``True``, the error metric is computed such
-    that the result is independent of relative scaling (gain) and offset
-    (bias) differences between `f` and  `g` [1].
+    If `gain_bias_invariant` is ``True``, the gain and bias invariant error
+    metric is computed instead
+
+    .. math::
+
+        \Phi = \frac{1}{K}\sum_k
+        \frac{\sum_{x,y} w(x,y,k)\left[\alpha_k\hat{g}(x,y,k) -
+        \tilde{g}(x,y,k)\right]^2}{\sum_{x,y} w(x,y,k)\tilde{s}^2(x,y,k)}
+
+    where :math:`\hat{g}` and :math:`\tilde{g}` are :math:`\hat{s}` and
+    :math:`\tilde{s}` with their weighted means subtracted and each
+    :math:`\alpha_k` is chosen to minimize the error. The result is
+    independent of any relative scaling (gain) and offset (bias) differences
+    between the inputs.
 
     Parameters
     ----------
     data : array_like
-        Ideal or measured data
+        Ideal or measured data with shape (M, N) or (K, M, N)
     est : array_like
-        Estimated or modeled data
+        Estimated or modeled data with the same shape as `data`
     mask : array_like, optional
-        Mask applied to the inputs where a True value indicates that the
-        corresponding element of the array is invalid. Mask must either have
-        the same shape as the inputs or be broadcastable to the same shape and
-        contain entries that are castable to bool. If None (default), the
-        inputs are not masked.
+        Weighting function :math:`w` applied to the inputs. Entries equal to
+        1 (or True) are fully included in the error computation and entries
+        equal to 0 (or False) are ignored. Intermediate values partially
+        weight the corresponding elements. Mask must either have the same
+        shape as the inputs or be broadcastable to the same shape. If None
+        (default), all elements are equally weighted.
     gain_bias_invariant : bool, optional
-        If True, the error is computed to be independent of any
-        gain or bias differences between the inputs. Default is False.
+        If True, the error is computed to be independent of any gain or bias
+        differences between the inputs. If False (default), the error is
+        computed to be independent of any gain differences between the inputs.
+    ghat : array_like, optional
+        Precomputed bias-subtracted estimate :math:`\hat{g}`. Only used if
+        `gain_bias_invariant` is True. If None (default), :math:`\hat{g}`
+        is computed from `est`.
 
     Returns
     -------
     error : float
-        Normalized root mean squared error
+        Normalized sum squared error
 
     References
     ----------
@@ -46,41 +68,31 @@ def sserror(data, est, mask=None, gain_bias_invariant=False, ghat=None):
 
     """
     xp = array_namespace(data, est)
-    shat = est  # estimated
-    stil = data   # measured
-
-    if shat.ndim == 3:
-        K = shat.shape[0]
-    else:
-        K = 1
-
-    if ghat is None:
-        ghat = g(shat, mask, xp)
-    gtil = g(stil, mask, xp)
-    alpha = _a(gtil, ghat, mask, xp)
 
     if gain_bias_invariant:
-        s = 'abcdefghijklmnopqrstuvwxyz'
-        subs = f'{s[0:ghat.ndim]},{s[0:alpha.ndim]}->{s[0:ghat.ndim]}'
-
-        if mask is None:
-            resid = xp.einsum(subs, ghat, alpha) - gtil
-            sse = 1/K * xp.sum(xp.square(resid))/xp.sum(xp.square(stil))
-        else:
-            resid = mask * (xp.einsum(subs, ghat, alpha) - gtil)
-            sse = 1/K * xp.sum(mask * xp.square(resid))/xp.sum(mask * xp.square(stil))
-
+        if ghat is None:
+            ghat = g(est, mask, xp)  # Eq. 12
+        mtil = g(data, mask, xp)  # Eq. 13
+        mhat = ghat
     else:
-        if mask is None:
-            resid = ghat - gtil
-            num = xp.sum(xp.square(ghat - gtil), axis=(-2, -1))
-            den = xp.sum(xp.square(stil), axis=(-2, -1))
-        else:
-            num = xp.sum(mask * xp.square(ghat - gtil), axis=(-2, -1))
-            den = xp.sum(mask * xp.square(stil), axis=(-2, -1))
-        sse = 1/K * xp.sum(num/den)
+        mtil = data
+        mhat = est
 
-    return sse
+    alpha = _a(mtil, mhat, mask, xp)  # Eq. 4 or Eq. 14
+    alpha = alpha[..., xp.newaxis, xp.newaxis]
+
+    num = _wsum(xp.square(alpha * mhat - mtil), mask, xp)
+    den = _wsum(xp.square(data), mask, xp)
+
+    # Eq. 3 or Eq. 11
+    return xp.mean(num/den)
+
+
+def _wsum(x, mask, xp):
+    # Weighted sum over the last two axes
+    if mask is not None:
+        x = mask * x
+    return xp.sum(x, axis=(-2, -1))
 
 
 def g(data, mask, xp):
@@ -98,18 +110,11 @@ def g(data, mask, xp):
 
 
 def _a(gtil, ghat, mask, xp):
-    # Eq. 14 in [1]
+    # Eq. 4 or Eq. 14 in [1]
     try:
-        if mask is None:
-            num = gtil * ghat
-            den = xp.square(ghat)
-        else:
-            num = mask * gtil * ghat
-            den = mask * xp.square(ghat)
-        return xp.sum(num, axis=(-2, -1))/xp.sum(den, axis=(-2, -1))
-
+        return _wsum(gtil * ghat, mask, xp)/_wsum(xp.square(ghat), mask, xp)
     except FloatingPointError as e:
-        if xp.all(ghat) == 0:
+        if xp.all(ghat == 0):
             raise ZeroDivisionError('ghat must be nonzero')
         else:
             raise e
