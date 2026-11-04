@@ -64,7 +64,7 @@ def fftconv(array, kernel, axes=(-2, -1), normalize_kernel=True,
       (``fftshift_kernel=True``), the DC term is at ``kernel[nr//2, nc//2]``.
 
     * A spatial-domain kernal(``fft_kernel=True``) should have
-    ``sum(kernel) == 1``.
+      ``sum(kernel) == 1``.
     """
     xp = array_namespace(array)
 
