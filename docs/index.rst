@@ -159,6 +159,7 @@ Zernike polynomials
    zernike_compose
    zernike_basis
    zernike_coordinates
+   zernike_coeff_legacy
 
 Cost functions
 --------------
