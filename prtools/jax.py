@@ -87,7 +87,7 @@ def lbfgs(fn, x0, gtol=None, maxiter=None, callback=None, fn_kwargs=None):
         _, state = carry
         iter_num = otu.tree_get(state, 'count')
         grad = otu.tree_get(state, 'grad')
-        grad_norm = otu.tree_l2_norm(grad)
+        grad_norm = otu.tree_norm(grad)
         return (iter_num == 0) | ((iter_num < maxiter) & (grad_norm >= gtol))
 
     init_carry = (x0, opt.init(x0))

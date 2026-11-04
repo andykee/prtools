@@ -35,7 +35,7 @@ Documentation = "https://andykee.github.io/prtools/"
 "Bug Tracker" = "https://github.com/andykee/prtools/issues"
 
 [project.optional-dependencies]
-jax = ["jax", "optax"]
+jax = ["jax", "optax>=0.2.5"]
 
 [tool.setuptools.dynamic]
 version = {attr = "prtools.__version__"} 
