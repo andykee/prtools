@@ -4,7 +4,6 @@ import warnings
 import numpy as np
 
 import prtools
-from prtools.shape import _shift_ij
 
 
 def _warn_legacy(legacy):
@@ -52,12 +51,11 @@ def zernike(mask, index, normalize=True, order='noll', rho=None, theta=None,
     Warnings
     --------
     prtools 2.0.2 and earlier computed Zernike polynomials in a coordinate
-    system mirrored top-to-bottom (y -> -y) relative to the current one. This
-    results in modes with negative azimuthal order (sine terms: y tilt, 45
-    degree astigmatism, y coma, ...) having a flipped sign. Modes with zero
-    or positive azimuthal order are unaffected. The
-    :func:`zernike_coeff_legacy` function converts between current and legacy
-    conventions.
+    system mirrored top-to-bottom (y -> -y). This results in modes with
+    negative azimuthal order (sine terms: y tilt, 45 degree astigmatism, y
+    coma, ...) having a flipped sign. Modes with zero or positive azimuthal
+    order are unaffected. The :func:`zernike_coeff_legacy` function converts
+    between current and legacy conventions.
 
     Notes
     -----
@@ -126,9 +124,9 @@ def _zernike(mask, index, normalize, order, rho, theta, legacy):
         else:
             Z = R(m, n, rho) * sin_m_theta * mask
 
-    #out[mask_slice] = Z
     out = Z
     return out
+
 
 def R(m, n, rho):
 
@@ -144,7 +142,7 @@ def R(m, n, rho):
                   (factorial(k) * factorial((n+m)//2-k) * factorial((n-m)//2-k)))
             R += Rk * rho ** (n-2*k)
         return R
-    
+
 
 def zernike_compose(mask, coeffs, normalize=True, order='noll', rho=None,
                     theta=None, legacy=False):
@@ -178,12 +176,11 @@ def zernike_compose(mask, coeffs, normalize=True, order='noll', rho=None,
     Warnings
     --------
     prtools 2.0.2 and earlier computed Zernike polynomials in a coordinate
-    system mirrored top-to-bottom (y -> -y) relative to the current one. This
-    results in modes with negative azimuthal order (sine terms: y tilt, 45
-    degree astigmatism, y coma, ...) having a flipped sign. Modes with zero
-    or positive azimuthal order are unaffected. The
-    :func:`zernike_coeff_legacy` function converts between current and legacy
-    conventions.
+    system mirrored top-to-bottom (y -> -y). This results in modes with
+    negative azimuthal order (sine terms: y tilt, 45 degree astigmatism, y
+    coma, ...) having a flipped sign. Modes with zero or positive azimuthal
+    order are unaffected. The :func:`zernike_coeff_legacy` function converts
+    between current and legacy conventions.
 
     Examples
     --------
@@ -230,6 +227,7 @@ def _zernike_compose(mask, coeffs, normalize, order, rho, theta, legacy):
 
     return opd
 
+
 def zernike_basis(mask, modes, vectorize=False, normalize=True, order='noll',
                   rho=None, theta=None, legacy=False):
     """Compute a Zernike basis set for a given mask.
@@ -266,12 +264,11 @@ def zernike_basis(mask, modes, vectorize=False, normalize=True, order='noll',
     Warnings
     --------
     prtools 2.0.2 and earlier computed Zernike polynomials in a coordinate
-    system mirrored top-to-bottom (y -> -y) relative to the current one. This
-    results in modes with negative azimuthal order (sine terms: y tilt, 45
-    degree astigmatism, y coma, ...) having a flipped sign. Modes with zero
-    or positive azimuthal order are unaffected. The
-    :func:`zernike_coeff_legacy` function converts between current and legacy
-    conventions.
+    system mirrored top-to-bottom (y -> -y). This results in modes with
+    negative azimuthal order (sine terms: y tilt, 45 degree astigmatism, y
+    coma, ...) having a flipped sign. Modes with zero or positive azimuthal
+    order are unaffected. The :func:`zernike_coeff_legacy` function converts
+    between current and legacy conventions.
 
     References
     ----------
@@ -337,12 +334,11 @@ def zernike_fit(opd, mask, modes, normalize=True, order='noll', rho=None,
     Warnings
     --------
     prtools 2.0.2 and earlier computed Zernike polynomials in a coordinate
-    system mirrored top-to-bottom (y -> -y) relative to the current one. This
-    results in modes with negative azimuthal order (sine terms: y tilt, 45
-    degree astigmatism, y coma, ...) having a flipped sign. Modes with zero
-    or positive azimuthal order are unaffected. The
-    :func:`zernike_coeff_legacy` function converts between current and legacy
-    conventions.
+    system mirrored top-to-bottom (y -> -y). This results in modes with
+    negative azimuthal order (sine terms: y tilt, 45 degree astigmatism, y
+    coma, ...) having a flipped sign. Modes with zero or positive azimuthal
+    order are unaffected. The :func:`zernike_coeff_legacy` function converts
+    between current and legacy conventions.
 
     Example
     -------
@@ -376,10 +372,10 @@ def _zernike_fit(opd, mask, modes, normalize, order, rho, theta, legacy):
     mask = np.asarray(mask)
     basis = _zernike_basis(mask, modes, True, normalize, order, rho, theta,
                            legacy)
-    
+
     # valid data includes all non-NaN values inside the mask
     valid = np.isfinite(opd) & mask.ravel().astype(bool)
-    
+
     coeff, *_ = np.linalg.lstsq(basis[:, valid].T, opd[valid], rcond=None)
 
     return coeff
@@ -415,12 +411,11 @@ def zernike_remove(opd, mask, modes, order='noll', rho=None, theta=None,
     Warnings
     --------
     prtools 2.0.2 and earlier computed Zernike polynomials in a coordinate
-    system mirrored top-to-bottom (y -> -y) relative to the current one. This
-    results in modes with negative azimuthal order (sine terms: y tilt, 45
-    degree astigmatism, y coma, ...) having a flipped sign. Modes with zero
-    or positive azimuthal order are unaffected. The
-    :func:`zernike_coeff_legacy` function converts between current and legacy
-    conventions.
+    system mirrored top-to-bottom (y -> -y). This results in modes with
+    negative azimuthal order (sine terms: y tilt, 45 degree astigmatism, y
+    coma, ...) having a flipped sign. Modes with zero or positive azimuthal
+    order are unaffected. The :func:`zernike_coeff_legacy` function converts
+    between current and legacy conventions.
 
     See Also
     --------
@@ -506,7 +501,7 @@ def ansi_to_nm(j):
     """
     if j < 0:
         raise ValueError('ANSI index must be zero or larger')
-    
+
     # https://en.wikipedia.org/wiki/Zernike_polynomials
     n = np.floor((np.sqrt(8 * j + 1) - 1) / 2)
     m = 2*j - n*(n + 2)
@@ -530,7 +525,7 @@ def fringe_to_nm(j):
     """
     if j < 1:
         raise ValueError('Fringe index must be greater than zero')
-    
+
     # https://github.com/arielmission-space/PAOS/blob/main/paos/classes/zernike.py
     m_n = 2 * (np.ceil(np.sqrt(j)) - 1)
     g_s = (m_n / 2) ** 2 + 1
@@ -541,16 +536,16 @@ def fringe_to_nm(j):
 
 def zernike_coordinates(mask, shift=None, angle=0, indexing='ij'):
     """Compute the Zernike coordinate system for a given mask.
-    
+
     Parameters
     ----------
     mask : array_like
         Binary mask defining the extent to compute the Zernike polynomial
         over. Nonzero values are treated as inside the mask.
     shift : (2,) array_like, optional
-        How far to shift the origin from the center of the array. (rows,
-        cols) for 'ij', (x, y) for 'xy'. If None (default), the
-        origin is placed at the mask centroid.
+        How far to shift the origin from the center of the array. If None
+        (default), shift is computed automatically to locate the origin at the
+        mask centroid.
     angle: float, optional
         Angle to rotate coordinate system by in degrees, from the +x axis
         toward the +y axis. Default is 0.
@@ -561,29 +556,26 @@ def zernike_coordinates(mask, shift=None, angle=0, indexing='ij'):
     -------
     rho, theta : ndarrays
         Normalized radius and angle. theta is measured from +x (increasing
-        column) toward +y (increasing row), which is counterclockwise when
-        displayed with ``origin='lower'``.
+        column) toward +y (increasing row).
 
     """
     mask = np.asarray(mask, dtype=bool)
 
     if shift is None:
-        # (row, col) offset of the mask centroid from the mesh origin
-        shift = prtools.centroid(mask, mode='center')
-    else:
-        shift = _shift_ij(shift, indexing)
+        shift = prtools.centroid(mask, mode='center', indexing='xy')
+    elif indexing == 'ij':
+        shift = np.flip(shift)
 
     # an xy rotation from +x toward +y is a negative ij rotation
-    rr, cc = prtools.mesh(shape=mask.shape, shift=shift, angle=-angle,
-                          indexing='ij')
-    x, y = cc, rr  # xy frame: x increases with column, y with row
+    x1, x2 = prtools.mesh(shape=mask.shape, shift=shift, angle=angle,
+                          indexing='xy')
 
-    r = np.hypot(x, y)
+    r = np.hypot(x1, x2)
     rho = r/np.max(r*mask)  # rho is defined to be 1 on the edge of the aperture
-    theta = np.arctan2(y, x)
-    
-    rho[np.where(rho==0)] = 1e-99
-    theta[np.where(theta==0)] = 1e-99
+    theta = np.arctan2(x2, x1)
+
+    rho[np.where(rho == 0)] = 1e-99
+    theta[np.where(theta == 0)] = 1e-99
 
     return rho, theta
 
@@ -611,10 +603,10 @@ def zernike_coeff_legacy(coeffs, modes=None, order='noll'):
     orientation conventions.
 
     prtools 2.0.2 and earlier computed Zernike polynomials in a coordinate
-    system mirrored top-to-bottom (y -> -y) relative to the current one. This
-    results in modes with negative azimuthal order (sine terms: y tilt, 45
-    degree astigmatism, y coma, ...) having a flipped sign. Modes with zero
-    or positive azimuthal order are unaffected.
+    system mirrored top-to-bottom (y -> -y). This results in modes with
+    negative azimuthal order (sine terms: y tilt, 45 degree astigmatism, y
+    coma, ...) having a flipped sign. Modes with zero or positive azimuthal
+    order are unaffected.
 
     This conversion is involutory so it converts legacy coefficients to the
     current convention and current coefficients to the legacy convention.
@@ -644,7 +636,7 @@ def zernike_coeff_legacy(coeffs, modes=None, order='noll'):
     dimension. Along any dimension with an odd number of pixels, the legacy
     coordinate origin was also offset half a pixel from the mask centroid.
     The effect of that offset on fitted coefficients is small but is not a
-    sign change, so it is not undone by this function.
+    sign change, so it cannot be undone by this function.
 
     Examples
     --------
@@ -654,13 +646,6 @@ def zernike_coeff_legacy(coeffs, modes=None, order='noll'):
 
         >>> prtools.zernike_coeff_legacy([1e-8, 2e-8, 3e-8], modes=[2, 3, 4])
         array([ 1.e-08, -2.e-08,  3.e-08])
-
-    Convert a full coefficient vector as used by :func:`zernike_compose`:
-
-    .. code:: pycon
-
-        >>> coeffs = prtools.zernike_coeff_legacy(legacy_coeffs)
-        >>> opd = prtools.zernike_compose(mask, coeffs)
 
     See Also
     --------

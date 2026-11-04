@@ -33,6 +33,8 @@ from prtools.fourier import dft2, idft2
 
 import prtools.jax
 
+from prtools.mesh import mesh
+
 from prtools.misc import (
     calcpsf,
     translation_defocus,
