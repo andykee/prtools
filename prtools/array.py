@@ -75,17 +75,13 @@ def centroid(x, where=None, mode='absolute', indexing='ij'):
     c = xp.dot(cc[where].ravel(), anorm.ravel())
 
     if mode == 'center':
-        rc, cc = np.array(x.shape)/2
+        # measure from the same center used by mesh() and the shape functions
+        rc, cc = np.floor(np.array(x.shape)/2)
         r = r - rc
         c = c - cc
 
     if indexing == 'xy':
-        if mode == 'center':
-            # Cartesian offset from center: +x right, +y up
-            r, c = c, -r
-        else:
-        # absolute pixel coordinates: +y down
-            r, c = c, r
+        r, c = c, r
 
     return r, c
 
@@ -266,7 +262,7 @@ def crop(x, shape, shift=None, mode='absolute', indexing='ij'):
     if shift is not None:
         shift = np.asarray(shift, dtype=int)
         if indexing == 'xy':
-            shift = (-shift[1], shift[0])
+            shift = (shift[1], shift[0])
         if mode == 'absolute':
             shift = np.array(shift - np.array(x.shape)//2)
     else:
@@ -386,7 +382,7 @@ def sample(x, oversample, offset=0, axes=(-2, -1), indexing='ij'):
     axes = tuple(int(a) % x.ndim for a in axes)
 
     if indexing == 'xy':
-        offset = (-offset[1], offset[0])
+        offset = (offset[1], offset[0])
         oversample = (oversample[1], oversample[0])
 
     idx = [slice(None)] * x.ndim

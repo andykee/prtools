@@ -1,11 +1,26 @@
 from math import factorial
+import warnings
 
 import numpy as np
 
 import prtools
 
 
-def zernike(mask, index, normalize=True, order='noll', rho=None, theta=None):
+def _warn_legacy(legacy):
+    # Called once at the top of each public function. stacklevel=3 skips this
+    # helper and the public function so the warning points at the caller.
+    if legacy:
+        warnings.warn(
+            'legacy=True reproduces the Zernike orientation convention of '
+            'prtools 2.0.2 and earlier. Support for it may be removed in a '
+            'future release.',
+            FutureWarning,
+            stacklevel=3
+        )
+
+
+def zernike(mask, index, normalize=True, order='noll', rho=None, theta=None,
+            legacy=False):
     """Compute the circular Zernike polynomial for a given mask.
 
     Parameters
@@ -25,10 +40,22 @@ def zernike(mask, index, normalize=True, order='noll', rho=None, theta=None):
         origin and 1 at the edge of the circle.
     theta : array_like, optional
         Angular coordinates of the mask array in radians.
+    legacy : bool, optional
+        If True, reproduce the Zernike convention of prtools 2.0.2 and
+        earlier. Default is False. See the warning below for details.
 
     Returns
     -------
     ndarray
+
+    Warnings
+    --------
+    prtools 2.0.2 and earlier computed Zernike polynomials in a coordinate
+    system mirrored top-to-bottom (y -> -y). This results in modes with
+    negative azimuthal order (sine terms: y tilt, 45 degree astigmatism, y
+    coma, ...) having a flipped sign. Modes with zero or positive azimuthal
+    order are unaffected. The :func:`zernike_coeff_legacy` function converts
+    between current and legacy conventions.
 
     Notes
     -----
@@ -46,7 +73,12 @@ def zernike(mask, index, normalize=True, order='noll', rho=None, theta=None):
     [1] Noll, RJ. Zernike polynomials and atmospheric turbulence. J Opt Soc Am 66, 207-211  (1976).
 
     """
-    mask = np.asarray(mask)
+    _warn_legacy(legacy)
+    return _zernike(mask, index, normalize, order, rho, theta, legacy)
+
+
+def _zernike(mask, index, normalize, order, rho, theta, legacy):
+    mask = np.asarray(mask, dtype=bool)
 
     if order == 'noll':
         n, m = noll_to_nm(index)
@@ -58,14 +90,17 @@ def zernike(mask, index, normalize=True, order='noll', rho=None, theta=None):
         raise ValueError('Unknown order', order)
     
     if rho is None:
-        rho, theta = zernike_coordinates(mask)
+        if legacy:
+            rho, theta = _zernike_coordinates_legacy(mask)
+        else:
+            rho, theta = zernike_coordinates(mask)
     else:
         if theta is None:
             raise ValueError("Both rho and theta must be specified")
 
     if m == 0:
         if n == 0:
-            Z = mask
+            Z = mask.astype(float)
         else:
             if normalize:
                 Z = np.sqrt(n+1) * R(m, n, rho) * mask
@@ -79,14 +114,19 @@ def zernike(mask, index, normalize=True, order='noll', rho=None, theta=None):
             Z = R(m, n, rho) * np.cos(m*theta) * mask
 
     else:
-        if normalize:
-            Z = np.sqrt(2) * np.sqrt(n+1) * R(m, n, rho) * np.sin(m*theta) * mask
+        if legacy:
+            sin_m_theta = np.sin(m*theta)
         else:
-            Z = R(m, n, rho) * np.sin(m*theta) * mask
+            sin_m_theta = np.sin(np.abs(m)*theta)
 
-    #out[mask_slice] = Z
+        if normalize:
+            Z = np.sqrt(2) * np.sqrt(n+1) * R(m, n, rho) * sin_m_theta * mask
+        else:
+            Z = R(m, n, rho) * sin_m_theta * mask
+
     out = Z
     return out
+
 
 def R(m, n, rho):
 
@@ -102,9 +142,10 @@ def R(m, n, rho):
                   (factorial(k) * factorial((n+m)//2-k) * factorial((n-m)//2-k)))
             R += Rk * rho ** (n-2*k)
         return R
-    
 
-def zernike_compose(mask, coeffs, normalize=True, order='noll', rho=None, theta=None):
+
+def zernike_compose(mask, coeffs, normalize=True, order='noll', rho=None,
+                    theta=None, legacy=False):
     """Create an OPD based on the supplied Zernike coefficients.
 
     Parameters
@@ -124,10 +165,22 @@ def zernike_compose(mask, coeffs, normalize=True, order='noll', rho=None, theta=
         origin and 1 at the edge of the circle.
     theta : array_like, optional
         Angular coordinates of the mask array in radians.
+    legacy : bool, optional
+        If True, reproduce the Zernike convention of prtools 2.0.2 and
+        earlier. Default is False. See the warning below for details.
 
     Returns
     -------
     ndarray
+
+    Warnings
+    --------
+    prtools 2.0.2 and earlier computed Zernike polynomials in a coordinate
+    system mirrored top-to-bottom (y -> -y). This results in modes with
+    negative azimuthal order (sine terms: y tilt, 45 degree astigmatism, y
+    coma, ...) having a flipped sign. Modes with zero or positive azimuthal
+    order are unaffected. The :func:`zernike_coeff_legacy` function converts
+    between current and legacy conventions.
 
     Examples
     --------
@@ -159,17 +212,24 @@ def zernike_compose(mask, coeffs, normalize=True, order='noll', rho=None, theta=
     [1] Noll, RJ. Zernike polynomials and atmospheric turbulence. J Opt Soc Am 66, 207-211  (1976).
 
     """
+    _warn_legacy(legacy)
+    return _zernike_compose(mask, coeffs, normalize, order, rho, theta, legacy)
+
+
+def _zernike_compose(mask, coeffs, normalize, order, rho, theta, legacy):
     mask = np.asarray(mask)
     coeffs = np.asarray(coeffs)
     opd = np.zeros(mask.shape)
 
     for index, coeff in enumerate(coeffs):
-        opd += coeff * zernike(mask, index+1, normalize, order, rho, theta)
+        opd += coeff * _zernike(mask, index+1, normalize, order, rho, theta,
+                                legacy)
 
     return opd
 
+
 def zernike_basis(mask, modes, vectorize=False, normalize=True, order='noll',
-                  rho=None, theta=None):
+                  rho=None, theta=None, legacy=False):
     """Compute a Zernike basis set for a given mask.
 
     Parameters
@@ -193,16 +253,35 @@ def zernike_basis(mask, modes, vectorize=False, normalize=True, order='noll',
         origin and 1 at the edge of the circle.
     theta : array_like, optional
         Angular coordinates of the mask array in radians.
+    legacy : bool, optional
+        If True, reproduce the Zernike convention of prtools 2.0.2 and
+        earlier. Default is False. See the warning below for details.
 
     Returns
     -------
     ndarray
+
+    Warnings
+    --------
+    prtools 2.0.2 and earlier computed Zernike polynomials in a coordinate
+    system mirrored top-to-bottom (y -> -y). This results in modes with
+    negative azimuthal order (sine terms: y tilt, 45 degree astigmatism, y
+    coma, ...) having a flipped sign. Modes with zero or positive azimuthal
+    order are unaffected. The :func:`zernike_coeff_legacy` function converts
+    between current and legacy conventions.
 
     References
     ----------
     [1] Noll, RJ. Zernike polynomials and atmospheric turbulence. J Opt Soc Am 66, 207-211  (1976).
 
     """
+    _warn_legacy(legacy)
+    return _zernike_basis(mask, modes, vectorize, normalize, order, rho, theta,
+                          legacy)
+
+
+def _zernike_basis(mask, modes, vectorize, normalize, order, rho, theta,
+                   legacy):
     modes = np.asarray(modes)
     if modes.shape == ():
         modes = modes[..., np.newaxis]
@@ -211,7 +290,8 @@ def zernike_basis(mask, modes, vectorize=False, normalize=True, order='noll',
 
     basis = []
     for index, mode in enumerate(modes):
-        basis.append(zernike(mask, mode, normalize, order, rho, theta))
+        basis.append(_zernike(mask, mode, normalize, order, rho, theta,
+                              legacy))
     basis = np.asarray(basis)
 
     if vectorize:
@@ -222,7 +302,7 @@ def zernike_basis(mask, modes, vectorize=False, normalize=True, order='noll',
 
 
 def zernike_fit(opd, mask, modes, normalize=True, order='noll', rho=None,
-                theta=None):
+                theta=None, legacy=False):
     """Fit a Zernike basis set to an OPD.
 
     Parameters
@@ -243,10 +323,22 @@ def zernike_fit(opd, mask, modes, normalize=True, order='noll', rho=None,
         origin and 1 at the edge of the circle.
     theta : array_like, optional
         Angular coordinates of the mask array in radians.
+    legacy : bool, optional
+        If True, reproduce the Zernike convention of prtools 2.0.2 and
+        earlier. Default is False. See the warning below for details.
 
     Returns
     -------
     ndarray
+
+    Warnings
+    --------
+    prtools 2.0.2 and earlier computed Zernike polynomials in a coordinate
+    system mirrored top-to-bottom (y -> -y). This results in modes with
+    negative azimuthal order (sine terms: y tilt, 45 degree astigmatism, y
+    coma, ...) having a flipped sign. Modes with zero or positive azimuthal
+    order are unaffected. The :func:`zernike_coeff_legacy` function converts
+    between current and legacy conventions.
 
     Example
     -------
@@ -271,19 +363,26 @@ def zernike_fit(opd, mask, modes, normalize=True, order='noll', rho=None,
     [1] Noll, RJ. Zernike polynomials and atmospheric turbulence. J Opt Soc Am 66, 207-211  (1976).
 
     """
+    _warn_legacy(legacy)
+    return _zernike_fit(opd, mask, modes, normalize, order, rho, theta, legacy)
+
+
+def _zernike_fit(opd, mask, modes, normalize, order, rho, theta, legacy):
     opd = np.asarray(opd).ravel()
     mask = np.asarray(mask)
-    basis = zernike_basis(mask, modes, True, normalize, order, rho, theta)
-    
+    basis = _zernike_basis(mask, modes, True, normalize, order, rho, theta,
+                           legacy)
+
     # valid data includes all non-NaN values inside the mask
     valid = np.isfinite(opd) & mask.ravel().astype(bool)
-    
+
     coeff, *_ = np.linalg.lstsq(basis[:, valid].T, opd[valid], rcond=None)
 
     return coeff
 
 
-def zernike_remove(opd, mask, modes, order='noll', rho=None, theta=None):
+def zernike_remove(opd, mask, modes, order='noll', rho=None, theta=None,
+                   legacy=False):
     """Fit and remove a Zernike basis set from an OPD.
 
     Parameters
@@ -301,10 +400,22 @@ def zernike_remove(opd, mask, modes, order='noll', rho=None, theta=None):
         origin and 1 at the edge of the circle.
     theta : array_like, optional
         Angular coordinates of the mask array in radians.
+    legacy : bool, optional
+        If True, reproduce the Zernike convention of prtools 2.0.2 and
+        earlier. Default is False. See the warning below for details.
 
     Returns
     -------
     ndarray
+
+    Warnings
+    --------
+    prtools 2.0.2 and earlier computed Zernike polynomials in a coordinate
+    system mirrored top-to-bottom (y -> -y). This results in modes with
+    negative azimuthal order (sine terms: y tilt, 45 degree astigmatism, y
+    coma, ...) having a flipped sign. Modes with zero or positive azimuthal
+    order are unaffected. The :func:`zernike_coeff_legacy` function converts
+    between current and legacy conventions.
 
     See Also
     --------
@@ -315,11 +426,12 @@ def zernike_remove(opd, mask, modes, order='noll', rho=None, theta=None):
     [1] Noll, RJ. Zernike polynomials and atmospheric turbulence. J Opt Soc Am 66, 207-211  (1976).
 
     """
+    _warn_legacy(legacy)
     opd = np.asarray(opd)
     mask = np.asarray(mask)
 
-    coeffs = zernike_fit(opd, mask, modes, True, order, rho, theta)
-    fit_opd = zernike_compose(mask, coeffs, True, order, rho, theta)
+    coeffs = _zernike_fit(opd, mask, modes, True, order, rho, theta, legacy)
+    fit_opd = _zernike_compose(mask, coeffs, True, order, rho, theta, legacy)
 
     residual = opd - fit_opd
 
@@ -389,7 +501,7 @@ def ansi_to_nm(j):
     """
     if j < 0:
         raise ValueError('ANSI index must be zero or larger')
-    
+
     # https://en.wikipedia.org/wiki/Zernike_polynomials
     n = np.floor((np.sqrt(8 * j + 1) - 1) / 2)
     m = 2*j - n*(n + 2)
@@ -413,7 +525,7 @@ def fringe_to_nm(j):
     """
     if j < 1:
         raise ValueError('Fringe index must be greater than zero')
-    
+
     # https://github.com/arielmission-space/PAOS/blob/main/paos/classes/zernike.py
     m_n = 2 * (np.ceil(np.sqrt(j)) - 1)
     g_s = (m_n / 2) ** 2 + 1
@@ -424,41 +536,145 @@ def fringe_to_nm(j):
 
 def zernike_coordinates(mask, shift=None, angle=0, indexing='ij'):
     """Compute the Zernike coordinate system for a given mask.
-    
+
     Parameters
     ----------
     mask : array_like
-        Binary mask defining the extent to compute the Zernike polynomial 
-        over.
+        Binary mask defining the extent to compute the Zernike polynomial
+        over. Nonzero values are treated as inside the mask.
     shift : (2,) array_like, optional
-        How far to shift center in float (rows, cols). If None (default),
-        shift is computed automatically to locate the origin at the mask
-        centroid.
+        How far to shift the origin from the center of the array. If None
+        (default), shift is computed automatically to locate the origin at the
+        mask centroid.
     angle: float, optional
-        Angle to rotate coordinate system by in degrees. rotate is specified 
-        relative to the x-axis. Default is 0.
+        Angle to rotate coordinate system by in degrees, from the +x axis
+        toward the +y axis. Default is 0.
     indexing : {'ij', 'xy'}, optional
-        Matrix ('ij', default) or cartesian ('xy') indexing of output.
-    
+        Matrix ('ij', default) or cartesian ('xy') indexing of ``shift``.
+
     Returns
     -------
     rho, theta : ndarrays
-    
+        Normalized radius and angle. theta is measured from +x (increasing
+        column) toward +y (increasing row).
+
     """
-    mask = np.asarray(mask)
+    mask = np.asarray(mask, dtype=bool)
 
     if shift is None:
-        center = np.asarray(mask.shape)/2
-        centroid = prtools.centroid(mask)
-        shift = (centroid[0]-center[0], centroid[1]-center[1])
+        shift = prtools.centroid(mask, mode='center', indexing='xy')
+    elif indexing == 'ij':
+        shift = np.flip(shift)
 
-    yy, xx = prtools.mesh(shape=mask.shape, shift=shift, angle=angle, indexing=indexing)
+    # an xy rotation from +x toward +y is a negative ij rotation
+    x1, x2 = prtools.mesh(shape=mask.shape, shift=shift, angle=angle,
+                          indexing='xy')
 
-    r = np.abs(xx+1j*yy)
+    r = np.hypot(x1, x2)
     rho = r/np.max(r*mask)  # rho is defined to be 1 on the edge of the aperture
-    theta = np.angle(xx + 1j*yy)
-    
-    rho[np.where(rho==0)] = 1e-99
-    theta[np.where(theta==0)] = 1e-99
+    theta = np.arctan2(x2, x1)
+
+    rho[np.where(rho == 0)] = 1e-99
+    theta[np.where(theta == 0)] = 1e-99
 
     return rho, theta
+
+
+def _zernike_coordinates_legacy(mask):
+    # Reproduces zernike_coordinates(mask) from prtools 2.0.2 and earlier:
+    # +y toward decreasing row (theta is measured toward increasing row and
+    # paired with sin(m*theta) for m < 0), and the origin measured from
+    # shape/2 rather than the mesh origin at floor(shape/2)
+    mask = np.asarray(mask, dtype=bool)
+    center = np.asarray(mask.shape)/2
+    centroid = prtools.centroid(mask)
+    shift = (centroid[0]-center[0], centroid[1]-center[1])
+    rr, cc = prtools.mesh(shape=mask.shape, shift=shift, indexing='ij')
+    r = np.abs(cc + 1j*rr)
+    rho = r/np.max(r*mask)
+    theta = np.angle(cc + 1j*rr)
+    rho[np.where(rho==0)] = 1e-99
+    theta[np.where(theta==0)] = 1e-99
+    return rho, theta
+
+
+def zernike_coeff_legacy(coeffs, modes=None, order='noll'):
+    """Convert Zernike coefficients between legacy and current
+    orientation conventions.
+
+    prtools 2.0.2 and earlier computed Zernike polynomials in a coordinate
+    system mirrored top-to-bottom (y -> -y). This results in modes with
+    negative azimuthal order (sine terms: y tilt, 45 degree astigmatism, y
+    coma, ...) having a flipped sign. Modes with zero or positive azimuthal
+    order are unaffected.
+
+    This conversion is involutory so it converts legacy coefficients to the
+    current convention and current coefficients to the legacy convention.
+
+    Parameters
+    ----------
+    coeffs : array_like
+        Zernike coefficients. The last axis indexes Zernike modes, so a
+        stack of coefficient vectors (e.g. a time series) can be converted
+        in a single call.
+    modes : array_like, optional
+        Zernike mode indices corresponding to the last axis of ``coeffs``,
+        e.g. the ``modes`` passed to :func:`zernike_fit`. If None
+        (default), ``coeffs[..., k]`` is taken to be the coefficient for
+        mode index ``k + 1``, matching :func:`zernike_compose`.
+    order : {'noll', 'fringe', 'ansi'}, optional
+        Zernike ordering scheme. Default is 'noll'.
+
+    Returns
+    -------
+    ndarray
+        Converted coefficients with the same shape as ``coeffs``.
+
+    Notes
+    -----
+    The conversion is exact for masks with an even number of pixels in each
+    dimension. Along any dimension with an odd number of pixels, the legacy
+    coordinate origin was also offset half a pixel from the mask centroid.
+    The effect of that offset on fitted coefficients is small but is not a
+    sign change, so it cannot be undone by this function.
+
+    Examples
+    --------
+    Convert tip, tilt, and focus coefficients fit with prtools 2.0.2:
+
+    .. code:: pycon
+
+        >>> prtools.zernike_coeff_legacy([1e-8, 2e-8, 3e-8], modes=[2, 3, 4])
+        array([ 1.e-08, -2.e-08,  3.e-08])
+
+    See Also
+    --------
+    :func:`zernike_compose`
+    :func:`zernike_fit`
+
+    """
+    coeffs = np.asarray(coeffs)
+    if coeffs.ndim == 0:
+        raise ValueError('coeffs must have at least one dimension')
+
+    if order == 'noll':
+        to_nm = noll_to_nm
+    elif order == 'fringe':
+        to_nm = fringe_to_nm
+    elif order == 'ansi':
+        to_nm = ansi_to_nm
+    else:
+        raise ValueError('Unknown order', order)
+
+    if modes is None:
+        modes = np.arange(1, coeffs.shape[-1] + 1)
+    else:
+        modes = np.atleast_1d(np.asarray(modes))
+        if modes.ndim != 1 or modes.shape[0] != coeffs.shape[-1]:
+            raise ValueError(
+                f'modes has {modes.size} entries but the last axis of '
+                f'coeffs has length {coeffs.shape[-1]}')
+
+    sign = np.array([-1 if to_nm(int(j))[1] < 0 else 1 for j in modes])
+
+    return coeffs * sign

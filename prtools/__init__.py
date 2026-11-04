@@ -33,6 +33,8 @@ from prtools.fourier import dft2, idft2
 
 import prtools.jax
 
+from prtools.mesh import mesh
+
 from prtools.misc import (
     calcpsf,
     translation_defocus,
@@ -86,5 +88,6 @@ from prtools.zernike import (
     zernike_basis,
     zernike_fit,
     zernike_remove,
-    zernike_coordinates
+    zernike_coordinates,
+    zernike_coeff_legacy
 )

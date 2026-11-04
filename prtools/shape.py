@@ -1,58 +1,6 @@
 import numpy as np
 
-
-def mesh(shape, shift=(0, 0), angle=0, indexing='ij'):
-    """Generate a standard mesh.
-
-    Parameters
-    ----------
-    shape : array_like
-        Size of output in pixels (nrows, ncols)
-    shift : (2,) array_like, optional
-        Coordinate translation from center of containing array.
-        Default is (0, 0)
-    indexing : {'ij', 'xy'}, optional
-        Matrix ('ij', default) or cartesian ('xy') indexing of mesh.
-
-    Returns
-    -------
-    list of ndarrays
-
-    """
-    shape = np.broadcast_to(np.asarray(shape), (2,))
-    angle = np.radians(angle)
-    if indexing == 'xy':
-        x1, x2 = _meshxy(shape, shift, angle)
-    elif indexing == 'ij':
-        x1, x2 = _meshij(shape, shift, angle)
-    else:
-        raise ValueError(
-            "Valid values for indexing are 'xy' and 'ij'.")
-    return x1, x2
-
-
-def _meshxy(shape, shift, angle):
-    #xx, yy = np.meshgrid((np.arange(shape[1])-np.floor(shape[1]/2))-shift[0],
-    #                     (np.floor(shape[0]/2)-np.arange(shape[0])-shift[1]))
-    nx = shape[1]
-    ny = shape[0]
-    xx, yy = np.meshgrid(np.arange(nx) - np.floor(nx/2.0) - shift[1],
-                         np.arange(ny) - np.floor(ny/2.0) - shift[0],
-                         indexing='xy')
-    x = xx * np.cos(angle) + yy * np.sin(angle)
-    y = xx * -np.sin(angle) + yy * np.cos(angle)
-    return x, y
-
-
-def _meshij(shape, shift, angle):
-    nr = shape[0]
-    nc = shape[1]
-    rr, cc = np.meshgrid(np.arange(nr) - np.floor(nr/2.0) - shift[0],
-                         np.arange(nc) - np.floor(nc/2.0) - shift[1],
-                         indexing='ij')
-    r = rr * np.cos(angle) + cc * np.sin(angle)
-    c = rr * -np.sin(angle) + cc * np.cos(angle)
-    return r, c
+from prtools.mesh import mesh
 
 
 def circle(shape, radius, shift=(0, 0), antialias=True, indexing='ij'):
@@ -65,11 +13,11 @@ def circle(shape, radius, shift=(0, 0), antialias=True, indexing='ij'):
     radius : float
         Radius of circle in pixels
     shift : (2,) array_like, optional
-        How far to shift center in float (rows, cols). Default is (0, 0).
+        How far to shift center. Default is (0, 0).
     antialias : bool, optional
         If True (default), the shape edges are antialiased.
     indexing : {'ij', 'xy'}, optional
-        Matrix ('ij', default) or cartesian ('xy') indexing of output.
+        Matrix ('ij', default) or cartesian ('xy') indexing of ``shift``.
 
     Returns
     -------
@@ -94,8 +42,8 @@ def circle(shape, radius, shift=(0, 0), antialias=True, indexing='ij'):
         >>> plt.imshow(circ, cmap='gray')
 
     """
-    rr, cc = mesh(shape, indexing=indexing)
-    r = np.sqrt(np.square(rr - shift[0]) + np.square(cc - shift[1]))
+    x1, x2 = mesh(shape, shift=shift, indexing=indexing)
+    r = np.sqrt(np.square(x1) + np.square(x2))
     mask = np.clip(radius + 0.5 - r, 0.0, 1.0)
     if not antialias:
         mask[mask > 0] = 1
@@ -106,7 +54,8 @@ def circle(shape, radius, shift=(0, 0), antialias=True, indexing='ij'):
     return mask
 
 
-def hexagon(shape, radius, shift=(0, 0), rotate=False, antialias=True):
+def hexagon(shape, radius, shift=(0, 0), rotate=False, antialias=True,
+            indexing='ij'):
     """Draw a hexagon
 
     Parameters
@@ -117,12 +66,14 @@ def hexagon(shape, radius, shift=(0, 0), rotate=False, antialias=True):
         Radius of outscribing circle (which also equals the side length) in
         pixels.
     shift : tuple of floats, optional
-        How far to shift center in (rows, cols). Default is (0, 0).
+        How far to shift center. Default is (0, 0).
     rotate : bool, optional
-        Rotate mask so that flat sides are aligned with the Y direction instead
-        of the default orientation which is aligned with the X direction.
+        If True(default), the mask is rotated so that the flat sides are
+        aligned with the horizontal direction.
     antialias : bool, optional
         If True (default), the shape edges are antialiased.
+    indexing : {'ij', 'xy'}, optional
+        Matrix ('ij', default) or cartesian ('xy') indexing of ``shift``.
 
     Returns
     -------
@@ -147,7 +98,11 @@ def hexagon(shape, radius, shift=(0, 0), rotate=False, antialias=True):
         >>> plt.imshow(hex, cmap='gray')
 
     """
-    r, c = mesh(shape, shift)
+    x1, x2 = mesh(shape, shift=shift, indexing=indexing)
+
+    if indexing == 'ij':
+        x1, x2 = x2, x1
+
     mask = np.ones(shape)
 
     inner_radius = radius * np.sqrt(3)/2
@@ -155,7 +110,7 @@ def hexagon(shape, radius, shift=(0, 0), rotate=False, antialias=True):
     for n in range(6):
 
         theta = n * np.pi/3 if rotate else n * np.pi/3 + np.pi/6
-        rho = r * np.sin(theta) + c * np.cos(theta)
+        rho = x1 * np.sin(theta) + x2 * np.cos(theta)
 
         if antialias:
             slc = np.clip(inner_radius + 0.5 - rho, 0.0, 1.0)
@@ -181,14 +136,17 @@ def rectangle(shape, width, height, shift=(0, 0), angle=0, antialias=True,
     height : float
         Height of rectangle in pixels
     shift : tuple of floats, optional
-        How far to shift center in (rows, cols). Default is (0, 0).
+        How far to shift center. Default is (0, 0).
     angle : float, optional
-        Rotation of rectangle in degrees counterclockwise from horizontal.
+        Mesh rotation in degrees. When ``indexing = 'xy'`` the rotation is
+        measured from the +x axis toward the +y axis. When ``indexing = 'ij'``
+        the rotation is measured from the +i axis toward the +j axis. Note
+        that rotations occur about the shifted center if ``shift`` is nonzero.
         Default is 0.
     antialias : bool, optional
         If True (default), the shape edges are antialiased.
     indexing : {'ij', 'xy'}, optional
-        Matrix ('ij', default) or cartesian ('xy') indexing of output.
+        Matrix ('ij', default) or cartesian ('xy') indexing of ``shift``.
 
     Returns
     -------
@@ -205,11 +163,16 @@ def rectangle(shape, width, height, shift=(0, 0), angle=0, antialias=True,
         >>> plt.imshow(rect, cmap='gray')
 
     """
-    rr, cc = mesh(shape, shift, angle)
+    x1, x2 = mesh(shape, shift=shift, angle=angle, indexing=indexing)
+
+    if indexing == 'xy':
+        # mesh returns (x, y) = (col, row) for 'xy' indexing
+        x1, x2 = x2, x1
+
     rect = np.ones(shape)
 
-    width_clip = np.clip(0.5 + (width/2) - np.abs(cc), 0, 1)
-    height_clip = np.clip(0.5 + (height/2) - np.abs(rr), 0, 1)
+    width_clip = np.clip(0.5 + (width/2) - np.abs(x2), 0, 1)
+    height_clip = np.clip(0.5 + (height/2) - np.abs(x1), 0, 1)
 
     rect = np.minimum(np.minimum(rect, width_clip), height_clip)
 
@@ -219,7 +182,7 @@ def rectangle(shape, width, height, shift=(0, 0), angle=0, antialias=True,
     return rect
 
 
-def ellipse(shape, xradius, yradius, shift=(0,0), angle=0, antialias=True,
+def ellipse(shape, xradius, yradius, shift=(0, 0), angle=0, antialias=True,
             indexing='ij'):
     """Draw an ellipse
 
@@ -232,14 +195,17 @@ def ellipse(shape, xradius, yradius, shift=(0,0), angle=0, antialias=True,
     yradius : float
         Semi-axis of the ellipse in pixels in the y (vertical) direction.
     shift : (2,) array_like, optional
-        How far to shift center in float (rows, cols). Default is (0, 0).
+        How far to shift center. Default is (0, 0).
     angle : float, optional
-        Rotation of the ellipse in degrees counterclockwise from horizontal.
+        Mesh rotation in degrees. When ``indexing = 'xy'`` the rotation is
+        measured from the +x axis toward the +y axis. When ``indexing = 'ij'``
+        the rotation is measured from the +i axis toward the +j axis. Note
+        that rotations occur about the shifted center if ``shift`` is nonzero.
         Default is 0.
     antialias : bool, optional
         If True (default), the shape edges are antialiased.
     indexing : {'ij', 'xy'}, optional
-        Matrix ('ij', default) or cartesian ('xy') indexing of output.
+        Matrix ('ij', default) or cartesian ('xy') indexing of ``shift``.
 
     Returns
     -------
@@ -264,11 +230,14 @@ def ellipse(shape, xradius, yradius, shift=(0,0), angle=0, antialias=True,
         >>> plt.imshow(ell, cmap='gray')
 
     """
-    a, b = yradius, xradius
-    rr, cc = mesh(shape, shift, angle, indexing=indexing)
+    if indexing == 'ij':
+        a, b = yradius, xradius
+    elif indexing == 'xy':
+        a, b = xradius, yradius
+    x1, x2 = mesh(shape, shift=shift, angle=angle, indexing=indexing)
 
-    rho = np.sqrt((rr / a)**2 + (cc / b)**2)
-    grad = np.sqrt((rr / a**2)**2 + (cc / b**2)**2)
+    rho =np.sqrt((x1 / a)**2 + (x2 / b)**2)
+    grad = np.sqrt((x1 / a**2)**2 + (x2 / b**2)**2)
 
     with np.errstate(divide='ignore', invalid='ignore'):
         dist = (1 - rho) * rho / grad
@@ -291,14 +260,17 @@ def spider(shape, width, angle=0, shift=(0, 0), antialias=True, indexing='ij'):
     width : float
         Width of rectangle in pixels
     angle : float, optional
-        Rotation of spider in degrees counterclockwise from horizontal.
+        Mesh rotation in degrees. When ``indexing = 'xy'`` the rotation is
+        measured from the +x axis toward the +y axis. When ``indexing = 'ij'``
+        the rotation is measured from the +i axis toward the +j axis. Note
+        that rotations occur about the shifted center if ``shift`` is nonzero.
         Default is 0.
     shift : tuple of floats, optional
-        How far to shift center in (rows, cols). Default is (0, 0).
+        How far to shift center. Default is (0, 0).
     antialias : bool, optional
         If True (default), the spider edges are antialiased.
     indexing : {'ij', 'xy'}, optional
-        Matrix ('ij', default) or cartesian ('xy') indexing of output.
+        Matrix ('ij', default) or cartesian ('xy') indexing of ``shift``.
 
     Returns
     -------
@@ -315,12 +287,21 @@ def spider(shape, width, angle=0, shift=(0, 0), antialias=True, indexing='ij'):
         >>> plt.imshow(spider, cmap='gray')
 
     """
-    len = np.sqrt(2) * np.max(shape)/2  # max length when angle is a multiple of 45 deg
+    shape = np.broadcast_to(shape, (2,))
+    len = 2*np.max(shape)
+    
+    if indexing == 'xy':
+            shift = [shift[1], shift[0]]
+            angle = -angle
+
     shift_dist = len / 2
     shift_row = -shift_dist * np.sin(np.deg2rad(angle))
     shift_col = shift_dist * np.cos(np.deg2rad(angle))
+    
     shift = (shift[0] + shift_row, shift[1] + shift_col)
-    return 1 - rectangle(shape, len, width, shift, angle, antialias, indexing)
+    return 1 - rectangle(shape, width=len, height=width, shift=shift,
+                         angle=angle, antialias=antialias,
+                         indexing='ij')
 
 
 def gauss(shape, sigma, shift=(0, 0), indexing='ij'):
@@ -336,7 +317,7 @@ def gauss(shape, sigma, shift=(0, 0), indexing='ij'):
     shift : (2,) array_like, optional
         Shape translation from center of containing array. Default is (0, 0)
     indexing : {'ij', 'xy'}, optional
-        Matrix ('ij', default) or cartesian ('xy') indexing of output.
+        Matrix ('ij', default) or cartesian ('xy') indexing of ``shift``.
 
     Returns
     -------
@@ -354,8 +335,8 @@ def gauss(shape, sigma, shift=(0, 0), indexing='ij'):
 
     """
     sigma = np.broadcast_to(np.asarray(sigma), (2,))
-    x, y = mesh(shape, shift=shift, angle=0, indexing=indexing)
-    G = np.exp(-((x**2/(2*sigma[0]**2)) + (y**2/(2*sigma[1]**2))))
+    r, c = mesh(shape, shift=shift, indexing=indexing, angle=0)
+    G = np.exp(-((c**2/(2*sigma[0]**2)) + (r**2/(2*sigma[1]**2))))
     G /= 2*np.pi * np.prod(sigma)  # normalization
     return G
 
@@ -372,9 +353,13 @@ def sin(shape, cycles, shift=(0, 0), angle=0, indexing='ij'):
     shift : (2,) array_like, optional
         Shape translation from center of containing array. Default is (0, 0)
     angle : float, optional
-        Rotation in degrees from horizontal. Default is 0.
+        Mesh rotation in degrees. When ``indexing = 'xy'`` the rotation is
+        measured from the +x axis toward the +y axis. When ``indexing = 'ij'``
+        the rotation is measured from the +i axis toward the +j axis. Note
+        that rotations occur about the shifted center if ``shift`` is nonzero.
+        Default is 0.
     indexing : {'ij', 'xy'}, optional
-        Matrix ('ij', default) or cartesian ('xy') indexing of output.
+        Matrix ('ij', default) or cartesian ('xy') indexing of ``shift``.
 
     Returns
     -------
@@ -399,14 +384,16 @@ def sin(shape, cycles, shift=(0, 0), angle=0, indexing='ij'):
     dy = cycles*2*np.pi/(shape[0]-1)
 
     if indexing == 'xy':
-        x -= shift[1] * dx
-        y += shift[0] * dy
+        shift_r, shift_c = shift[1], shift[0]
+        angle = -angle
     elif indexing == 'ij':
-        x -= shift[0] * dy
-        y -= shift[1] * dx
+        shift_r, shift_c = shift[0], shift[1]
     else:
         raise ValueError(
             "Valid values for indexing are 'xy' and 'ij'.")
+
+    x -= shift_c * dx
+    y -= shift_r * dy
 
     X, Y = np.meshgrid(x, y)
     Z = X*np.cos(-np.radians(angle)) + Y*np.sin(-np.radians(angle))
@@ -428,9 +415,13 @@ def waffle(shape, cycles, shift=(0, 0), angle=0, indexing='ij'):
     shift : (2,) array_like, optional
         Shape translation from center of containing array. Default is (0, 0)
     angle : float, optional
-        Rotation in degrees from horizontal. Default is 0.
+        Mesh rotation in degrees. When ``indexing = 'xy'`` the rotation is
+        measured from the +x axis toward the +y axis. When ``indexing = 'ij'``
+        the rotation is measured from the +i axis toward the +j axis. Note
+        that rotations occur about the shifted center if ``shift`` is nonzero.
+        Default is 0.
     indexing : {'ij', 'xy'}, optional
-        Matrix ('ij', default) or cartesian ('xy') indexing of output.
+        Matrix ('ij', default) or cartesian ('xy') indexing of ``shift``.
 
     Returns
     -------
@@ -448,7 +439,9 @@ def waffle(shape, cycles, shift=(0, 0), angle=0, indexing='ij'):
 
 
     """
-
-    a = sin(shape, cycles, shift, angle+45, indexing)
-    b = sin(shape, cycles, shift, angle+135, indexing)
+    if indexing == 'xy':
+        shift = np.flip(shift)
+        angle = - angle
+    a = sin(shape, cycles, shift, angle+45, indexing='ij')
+    b = sin(shape, cycles, shift, angle+135, indexing='ij')
     return a + b
