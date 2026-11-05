@@ -54,7 +54,7 @@ def circle(shape, radius, shift=(0, 0), antialias=True, indexing='ij'):
     return mask
 
 
-def hexagon(shape, radius, shift=(0, 0), rotate=False, antialias=True,
+def hexagon(shape, radius, shift=(0, 0), rotate=True, antialias=True,
             indexing='ij'):
     """Draw a hexagon
 
@@ -68,7 +68,7 @@ def hexagon(shape, radius, shift=(0, 0), rotate=False, antialias=True,
     shift : tuple of floats, optional
         How far to shift center. Default is (0, 0).
     rotate : bool, optional
-        If True(default), the mask is rotated so that the flat sides are
+        If True (default), the mask is rotated so that the flat sides are
         aligned with the horizontal direction.
     antialias : bool, optional
         If True (default), the shape edges are antialiased.
@@ -94,10 +94,11 @@ def hexagon(shape, radius, shift=(0, 0), rotate=False, antialias=True,
         :context: reset
         :scale: 50
 
-        >>> hex = prtools.hexagon(shape=(256,256), radius=75, rotate=True)
+        >>> hex = prtools.hexagon(shape=(256,256), radius=75, rotate=False)
         >>> plt.imshow(hex, cmap='gray')
 
     """
+    shape = np.broadcast_to(shape, (2,))
     x1, x2 = mesh(shape, shift=shift, indexing=indexing)
 
     if indexing == 'ij':
@@ -289,15 +290,15 @@ def spider(shape, width, angle=0, shift=(0, 0), antialias=True, indexing='ij'):
     """
     shape = np.broadcast_to(shape, (2,))
     len = 2*np.max(shape)
-    
+
     if indexing == 'xy':
-            shift = [shift[1], shift[0]]
-            angle = -angle
+        shift = [shift[1], shift[0]]
+        angle = -angle
 
     shift_dist = len / 2
     shift_row = -shift_dist * np.sin(np.deg2rad(angle))
     shift_col = shift_dist * np.cos(np.deg2rad(angle))
-    
+
     shift = (shift[0] + shift_row, shift[1] + shift_col)
     return 1 - rectangle(shape, width=len, height=width, shift=shift,
                          angle=angle, antialias=antialias,

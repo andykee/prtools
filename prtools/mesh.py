@@ -18,7 +18,7 @@ def mesh(shape, shift=(0, 0), angle=0, indexing='ij'):
         the rotation is measured from the +i axis toward the +j axis. Note
         that rotations occur about the shifted center if ``shift`` is nonzero.
         Default is 0.
-    indexing : {ij', 'xy'}, optional
+    indexing : {'ij', 'xy'}, optional
         Matrix ('ij', default) or Cartesian ('xy') indexing of mesh.
 
     Returns

@@ -84,11 +84,11 @@ def _zernike(mask, index, normalize, order, rho, theta, legacy):
         n, m = noll_to_nm(index)
     elif order == 'fringe':
         n, m = fringe_to_nm(index)
-    elif order =='ansi':
+    elif order == 'ansi':
         n, m = ansi_to_nm(index)
     else:
         raise ValueError('Unknown order', order)
-    
+
     if rho is None:
         if legacy:
             rho, theta = _zernike_coordinates_legacy(mask)
