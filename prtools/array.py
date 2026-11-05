@@ -75,7 +75,6 @@ def centroid(x, where=None, mode='absolute', indexing='ij'):
     c = xp.dot(cc[where].ravel(), anorm.ravel())
 
     if mode == 'center':
-        # measure from the same center used by mesh() and the shape functions
         rc, cc = np.floor(np.array(x.shape)/2)
         r = r - rc
         c = c - cc
