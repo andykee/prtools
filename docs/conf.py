@@ -13,6 +13,10 @@ path = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.normpath(os.path.join(path, '..', 'prtools', '__init__.py'))) as f:
     version = release = re.search("__version__ = '(.*?)'", f.read()).group(1)
 
+# Set by the docs workflow to the directory being published ('latest' or a
+# release number like '2.0.2') so the version switcher selects the right entry
+docs_version = os.environ.get('DOCS_VERSION', 'latest')
+
 # -- Project information -----------------------------------------------------
 
 project = 'prtools'
@@ -62,7 +66,11 @@ html_theme_options = {
     "github_url": "https://github.com/andykee/prtools",
     "navbar_start": ["navbar-logo"],
     "navbar_center": ["navbar-nav"],
-    "navbar_end": ["navbar-icon-links"],
+    "navbar_end": ["version-switcher", "navbar-icon-links"],
+    "switcher": {
+        "json_url": "https://andykee.github.io/prtools/versions.json",
+        "version_match": docs_version,
+    },
     "article_header_start": [],
     "secondary_sidebar_items": [],
     "footer_start": ["copyright"],
