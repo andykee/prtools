@@ -4,9 +4,6 @@ import pytest
 import prtools
 
 
-# Reference implementations written directly from Thurman and Fienup,
-# "Phase retrieval with signal bias", JOSA A 26(4) (2009)
-
 def phi1(stil, shat, w):
     # Eqs. 3 and 4
     out = []
@@ -37,7 +34,6 @@ def taper(shape):
 @pytest.fixture
 def frames():
     rng = np.random.default_rng(0)
-    # Planes with very different energy so per-plane averaging matters
     data = rng.random((3, 32, 32)) * np.array([1, 10, 100])[:, None, None]
     est = data + 0.05 * rng.standard_normal(data.shape) * data.mean()
     return data, est
