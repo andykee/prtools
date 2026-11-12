@@ -1,0 +1,6 @@
+﻿prtools.register
+================
+
+.. currentmodule:: prtools
+
+.. autofunction:: register

@@ -1,0 +1,6 @@
+﻿prtools.medfix
+==============
+
+.. currentmodule:: prtools
+
+.. autofunction:: medfix

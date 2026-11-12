@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" sizes="16x16" href="../_static/favicon/favicon-16x16.png" type="image/png">
+    <link rel="icon" sizes="32x32" href="../_static/favicon/favicon-32x32.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../_static/favicon/apple-touch-icon-180x180.png" color="#000000" type="image/png">
+    <title>prtools.centroid &#8212; prtools 1.4.2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=4b1efdef" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
+
+    <script src="../_static/documentation_options.js?v=02f2166e"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'generated/prtools.centroid';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="prtools.pad" href="prtools.pad.html" />
+    <link rel="prev" title="prtools — Utility functions for image-based phase retrieval" href="../index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.4.2" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="light">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../_static/logo.svg" class="logo__image only-light" alt="prtools 1.4.2 documentation - Home"/>
+    <img src="../_static/logo.svg" class="logo__image only-dark pst-js-only" alt="prtools 1.4.2 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/andykee/prtools" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/andykee/prtools" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Section navigation">
+  <!--<p class="bd-links__title" role="heading" aria-level="1">
+    Site Navigation
+  </p>-->
+  <div class="bd-toc-item navbar-nav">
+    <p aria-level="2" class="caption" role="heading"><span class="caption-text">Array manipulation</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">prtools.centroid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.pad.html">prtools.pad</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.subarray.html">prtools.subarray</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.boundary.html">prtools.boundary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.rebin.html">prtools.rebin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.rescale.html">prtools.rescale</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.medfix.html">prtools.medfix</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.normpow.html">prtools.normpow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.shift.html">prtools.shift</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.register.html">prtools.register</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Array metrics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="prtools.rms.html">prtools.rms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.pv.html">prtools.pv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.radial_avg.html">prtools.radial_avg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.ee.html">prtools.ee</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Shapes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="prtools.circle.html">prtools.circle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.rectangle.html">prtools.rectangle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.hexagon.html">prtools.hexagon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.hex_segments.html">prtools.hex_segments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.spider.html">prtools.spider</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.sin.html">prtools.sin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.waffle.html">prtools.waffle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.mesh.html">prtools.mesh</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Fourier transforms</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="prtools.dft2.html">prtools.dft2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.idft2.html">prtools.idft2</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Convolution and filtering</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="prtools.fftconv.html">prtools.fftconv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.gauss_blur.html">prtools.gauss_blur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.pixelate.html">prtools.pixelate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.gauss.html">prtools.gauss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.sinc.html">prtools.sinc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.gauss_kernel.html">prtools.gauss_kernel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.pixel_kernel.html">prtools.pixel_kernel</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sparse matrices</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="prtools.index.html">prtools.index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.sparse.html">prtools.sparse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.dense.html">prtools.dense</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.index_from_mask.html">prtools.index_from_mask</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.mask_from_index.html">prtools.mask_from_index</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Zernike polynomials</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="prtools.zernike.html">prtools.zernike</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.zernike_fit.html">prtools.zernike_fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.zernike_remove.html">prtools.zernike_remove</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.zernike_compose.html">prtools.zernike_compose</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.zernike_basis.html">prtools.zernike_basis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.zernike_coordinates.html">prtools.zernike_coordinates</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cost functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="prtools.sserror.html">prtools.sserror</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="prtools.calcpsf.html">prtools.calcpsf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.pixelscale_nyquist.html">prtools.pixelscale_nyquist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.min_sampling.html">prtools.min_sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.fft_shape.html">prtools.fft_shape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.translation_defocus.html">prtools.translation_defocus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.find_wrapped.html">prtools.find_wrapped</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Numerical backends</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="prtools.use.html">prtools.use</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">JAX backend</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="prtools.jax.lbfgs.html">prtools.jax.lbfgs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.jax.JaxOptimizeResult.html">prtools.jax.JaxOptimizeResult</a></li>
+</ul>
+
+  </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none"></div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="prtools-centroid">
+<h1>prtools.centroid<a class="headerlink" href="#prtools-centroid" title="Link to this heading">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="prtools.centroid">
+<span class="sig-name descname"><span class="pre">centroid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'absolute'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indexing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ij'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/prtools/array.html#centroid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#prtools.centroid" title="Link to this definition">#</a></dt>
+<dd><p>Compute array centroid location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<em>array_like</em>) – Input array.</p></li>
+<li><p><strong>where</strong> (<em>array_like</em><em> of </em><em>bool</em><em>, </em><em>optional</em>) – Elements to include in the centroid calculation. If None (default),
+all finite and non-NaN values are used.</p></li>
+<li><p><strong>kind</strong> (<em>{'absolute'</em><em>, </em><em>'center'}</em><em>, </em><em>optional</em>) – Specifies the kind of centroid as a string. If ‘absolute’ (default),
+the absolute centroid within the input is returned. If ‘center’, the
+centroid relative to the center of the input is returned.</p></li>
+<li><p><strong>indexing</strong> (<em>{'ij'</em><em>, </em><em>'xy'}</em><em>, </em><em>optional</em>) – Matrix (‘ij’, default) or cartesian (‘xy’) indexing of mesh.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>centroid</strong> – (r, c) or (x, y) centroid location</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">circ</span> <span class="o">=</span> <span class="n">prtools</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">),</span> <span class="n">radius</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">80</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">circ</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-default">
+<img alt="../_images/prtools-centroid-1.png" class="plot-directive" height="333" src="../_images/prtools-centroid-1.png" width="344" />
+</figure>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">prtools</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">circ</span><span class="p">)</span>
+<span class="go">(48.00000000000002, 178.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prtools</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">circ</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">'center'</span><span class="p">)</span>
+<span class="go">(-79.99999999999997, 50.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prtools</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">circ</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">'center'</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">'xy'</span><span class="p">)</span>
+<span class="go">(50.0, 79.99999999999997)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026 Andy Kee.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

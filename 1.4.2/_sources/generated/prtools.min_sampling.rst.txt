@@ -1,0 +1,6 @@
+﻿prtools.min\_sampling
+=====================
+
+.. currentmodule:: prtools
+
+.. autofunction:: min_sampling

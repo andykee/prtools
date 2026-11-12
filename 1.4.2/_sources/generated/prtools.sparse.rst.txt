@@ -1,0 +1,6 @@
+﻿prtools.sparse
+==============
+
+.. currentmodule:: prtools
+
+.. autofunction:: sparse

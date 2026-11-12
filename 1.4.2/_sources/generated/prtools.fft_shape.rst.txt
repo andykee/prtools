@@ -1,0 +1,6 @@
+﻿prtools.fft\_shape
+==================
+
+.. currentmodule:: prtools
+
+.. autofunction:: fft_shape

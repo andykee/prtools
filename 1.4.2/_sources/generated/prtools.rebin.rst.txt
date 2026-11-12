@@ -1,0 +1,6 @@
+﻿prtools.rebin
+=============
+
+.. currentmodule:: prtools
+
+.. autofunction:: rebin

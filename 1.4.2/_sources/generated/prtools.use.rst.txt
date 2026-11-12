@@ -1,0 +1,6 @@
+﻿prtools.use
+===========
+
+.. currentmodule:: prtools
+
+.. autofunction:: use

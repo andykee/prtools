@@ -1,0 +1,6 @@
+﻿prtools.index\_from\_mask
+=========================
+
+.. currentmodule:: prtools
+
+.. autofunction:: index_from_mask

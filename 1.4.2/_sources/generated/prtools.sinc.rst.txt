@@ -1,0 +1,6 @@
+﻿prtools.sinc
+============
+
+.. currentmodule:: prtools
+
+.. autofunction:: sinc

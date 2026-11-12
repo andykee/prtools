@@ -1,0 +1,6 @@
+﻿prtools.pixel\_kernel
+=====================
+
+.. currentmodule:: prtools
+
+.. autofunction:: pixel_kernel

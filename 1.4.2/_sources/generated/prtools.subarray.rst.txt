@@ -1,0 +1,6 @@
+﻿prtools.subarray
+================
+
+.. currentmodule:: prtools
+
+.. autofunction:: subarray

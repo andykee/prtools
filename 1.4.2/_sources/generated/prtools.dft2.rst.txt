@@ -1,0 +1,6 @@
+﻿prtools.dft2
+============
+
+.. currentmodule:: prtools
+
+.. autofunction:: dft2
