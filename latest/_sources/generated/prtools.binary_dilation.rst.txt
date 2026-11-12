@@ -1,0 +1,6 @@
+﻿prtools.binary\_dilation
+========================
+
+.. currentmodule:: prtools
+
+.. autofunction:: binary_dilation

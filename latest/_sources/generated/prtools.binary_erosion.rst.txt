@@ -1,0 +1,6 @@
+﻿prtools.binary\_erosion
+=======================
+
+.. currentmodule:: prtools
+
+.. autofunction:: binary_erosion

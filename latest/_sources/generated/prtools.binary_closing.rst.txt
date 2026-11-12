@@ -1,0 +1,6 @@
+﻿prtools.binary\_closing
+=======================
+
+.. currentmodule:: prtools
+
+.. autofunction:: binary_closing

@@ -1,0 +1,6 @@
+﻿prtools.teng
+============
+
+.. currentmodule:: prtools
+
+.. autofunction:: teng

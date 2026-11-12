@@ -1,0 +1,6 @@
+﻿prtools.calcpsf
+===============
+
+.. currentmodule:: prtools
+
+.. autofunction:: calcpsf

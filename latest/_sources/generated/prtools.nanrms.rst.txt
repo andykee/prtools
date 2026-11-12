@@ -1,0 +1,6 @@
+﻿prtools.nanrms
+==============
+
+.. currentmodule:: prtools
+
+.. autofunction:: nanrms

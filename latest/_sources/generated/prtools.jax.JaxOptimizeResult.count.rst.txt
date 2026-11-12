@@ -1,0 +1,6 @@
+prtools.jax.JaxOptimizeResult.count
+===================================
+
+.. currentmodule:: prtools.jax
+
+.. automethod:: JaxOptimizeResult.count

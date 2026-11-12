@@ -1,0 +1,6 @@
+﻿prtools.pad
+===========
+
+.. currentmodule:: prtools
+
+.. autofunction:: pad

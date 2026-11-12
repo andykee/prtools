@@ -1,0 +1,6 @@
+﻿prtools.waffle
+==============
+
+.. currentmodule:: prtools
+
+.. autofunction:: waffle
