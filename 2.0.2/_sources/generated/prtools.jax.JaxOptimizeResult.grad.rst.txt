@@ -1,0 +1,6 @@
+prtools.jax.JaxOptimizeResult.grad
+==================================
+
+.. currentmodule:: prtools.jax
+
+.. autoattribute:: JaxOptimizeResult.grad

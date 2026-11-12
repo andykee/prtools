@@ -1,0 +1,6 @@
+﻿prtools.sin
+===========
+
+.. currentmodule:: prtools
+
+.. autofunction:: sin

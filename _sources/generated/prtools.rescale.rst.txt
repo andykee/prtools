@@ -1,0 +1,6 @@
+﻿prtools.rescale
+===============
+
+.. currentmodule:: prtools
+
+.. autofunction:: rescale

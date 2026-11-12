@@ -1,0 +1,6 @@
+﻿prtools.jax.lbfgs
+=================
+
+.. currentmodule:: prtools.jax
+
+.. autofunction:: lbfgs

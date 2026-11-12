@@ -1,0 +1,6 @@
+﻿prtools.boundary
+================
+
+.. currentmodule:: prtools
+
+.. autofunction:: boundary

@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>prtools.misc &#8212; prtools 2.0.2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=4b1efdef" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
+
+    <script src="../../_static/documentation_options.js?v=c2377ec0"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/prtools/misc';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.2" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="light">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/logo.svg" class="logo__image only-light" alt="prtools 2.0.2 documentation - Home"/>
+    <img src="../../_static/logo.svg" class="logo__image only-dark pst-js-only" alt="prtools 2.0.2 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/andykee/prtools" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/andykee/prtools" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none"></div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for prtools.misc</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">prtools</span>
+
+
+<div class="viewcode-block" id="calcpsf">
+<a class="viewcode-back" href="../../generated/prtools.calcpsf.html#prtools.calcpsf">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calcpsf</span><span class="p">(</span><span class="n">amp</span><span class="p">,</span> <span class="n">opd</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">,</span> <span class="n">sampling</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">oversample</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">shift</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Calculate a point spread function using far-field diffraction.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    amp : array_like</span>
+<span class="sd">        Pupil amplitude</span>
+<span class="sd">    opd : array_like</span>
+<span class="sd">        Pupil OPD</span>
+<span class="sd">    wavelength : float or list_like</span>
+<span class="sd">        Propagation wavelength(s)</span>
+<span class="sd">    sampling : float or tuple of floats</span>
+<span class="sd">        Propagation sampling term defined as</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \mbox{sampling} = \frac{dx \ du}{z}</span>
+
+<span class="sd">        where *dx* is the pupil plane spatial sampling, *du* is the image</span>
+<span class="sd">        plane spatial sampling, and *z* is the propagation distance. If a</span>
+<span class="sd">        single value is supplied, the sampling is assumed to be uniform</span>
+<span class="sd">        in both row and column.</span>
+<span class="sd">    shape : int or tuple of ints</span>
+<span class="sd">        Native output shape. If a single value is supplied, the output will</span>
+<span class="sd">        have shape = (shape, shape). Note that the actual output shape is</span>
+<span class="sd">        floor(shape * oversample)</span>
+<span class="sd">    oversample : float</span>
+<span class="sd">        Number of times to oversample the output plane</span>
+<span class="sd">    shift : tuple of floats, optional</span>
+<span class="sd">        Shift from (0,0) in (r,c) of image plane. Default is (0,0).</span>
+<span class="sd">    offset : tuple of floats, optional</span>
+<span class="sd">        Offset from (0,0) in (r,c) of pupil plane. Default is (0,0).</span>
+<span class="sd">    weight : float or list_like</span>
+<span class="sd">        Weighting for each wavelength in ``wavelength``.</span>
+<span class="sd">    flatten : bool, optional</span>
+<span class="sd">        If True (default),the output is flattened along the spectral</span>
+<span class="sd">        dimension. Otherwise, a cube is returned with shape</span>
+<span class="sd">        (len(wavelength), shape[0]*oversample, shape[1]*oversample)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+<span class="sd">        :context: reset</span>
+<span class="sd">        :scale: 50</span>
+
+<span class="sd">        &gt;&gt;&gt; amp = prtools.circle(shape=(256, 256), radius=100)</span>
+<span class="sd">        &gt;&gt;&gt; coeffs = np.random.uniform(low=-1, high=1, size=8)*1e-7</span>
+<span class="sd">        &gt;&gt;&gt; opd = prtools.zernike_compose(amp, coeffs)</span>
+<span class="sd">        &gt;&gt;&gt; wave = 500e-9</span>
+<span class="sd">        &gt;&gt;&gt; dx = 1/200  # pupil diameter = 1m</span>
+<span class="sd">        &gt;&gt;&gt; du = 5e-6</span>
+<span class="sd">        &gt;&gt;&gt; focal_length = 10</span>
+<span class="sd">        &gt;&gt;&gt; sampling = (dx * du)/focal_length</span>
+<span class="sd">        &gt;&gt;&gt; shape = (64, 64)</span>
+<span class="sd">        &gt;&gt;&gt; oversample = 5</span>
+<span class="sd">        &gt;&gt;&gt; psf = prtools.calcpsf(amp, opd, wave, sampling, shape, oversample)</span>
+<span class="sd">        &gt;&gt;&gt; plt.imshow(psf, cmap='inferno', norm='log', vmin=10e-5)</span>
+
+<span class="sd">    """</span>
+    <span class="n">sampling</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">sampling</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
+    <span class="n">wavelength</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">wavelength</span><span class="p">)</span>
+    <span class="n">weight</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">wavelength</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">shift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">shift</span><span class="p">)</span>
+
+    <span class="n">shape_out</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">oversample</span><span class="p">,</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">oversample</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">wl</span><span class="p">,</span> <span class="n">wt</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">wavelength</span><span class="p">,</span> <span class="n">weight</span><span class="p">):</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">sampling</span><span class="o">/</span><span class="p">(</span><span class="n">wl</span><span class="o">*</span><span class="n">oversample</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">amp</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span><span class="o">/</span><span class="n">wl</span><span class="o">*</span><span class="n">opd</span><span class="p">)</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">prtools</span><span class="o">.</span><span class="n">dft2</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">shape_out</span><span class="p">,</span> <span class="n">shift</span><span class="o">*</span><span class="n">oversample</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">P</span> <span class="o">*</span> <span class="n">wt</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">flatten</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+
+<div class="viewcode-block" id="translation_defocus">
+<a class="viewcode-back" href="../../generated/prtools.translation_defocus.html#prtools.translation_defocus">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">translation_defocus</span><span class="p">(</span><span class="n">f_number</span><span class="p">,</span> <span class="n">dz</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Compute the peak-to-valley defocus imparted by a given translation</span>
+<span class="sd">    along the optical axis</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    f_number : float</span>
+<span class="sd">        Beam F/#</span>
+<span class="sd">    dz : float</span>
+<span class="sd">        Translation along optical axis</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">dz</span><span class="o">/</span><span class="p">(</span><span class="mi">8</span><span class="o">*</span><span class="n">f_number</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># function to convert between pv and rms defocus</span>
+
+<span class="c1"># function to convert between pv tip/tilt and focal plane position</span>
+
+<div class="viewcode-block" id="fft_shape">
+<a class="viewcode-back" href="../../generated/prtools.fft_shape.html#prtools.fft_shape">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fft_shape</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">du</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">,</span> <span class="n">oversample</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Compute FFT pad shape to satisfy sampling constraints</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dx : float or tuple of floats</span>
+<span class="sd">        Spatial sampling of pupil plane. If a single value is supplied,</span>
+<span class="sd">        the pupil is assumed to be uniformly sampled in both row and column.</span>
+<span class="sd">    du : float or tuple of floats</span>
+<span class="sd">        Spatial sampling of image plane. If a single value is supplied,</span>
+<span class="sd">        the image is assumed to be uniformly sampled in both row and column.</span>
+<span class="sd">    z : float</span>
+<span class="sd">        Propagation distance</span>
+<span class="sd">    wavelength : float</span>
+<span class="sd">        Propagation wavelength</span>
+<span class="sd">    oversample : float</span>
+<span class="sd">        Number of times to oversample the output plane</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    shape : tuple of ints</span>
+<span class="sd">        Required pad shape</span>
+<span class="sd">    wavelength : float</span>
+<span class="sd">        True wavelength represented by padded shape</span>
+
+<span class="sd">    """</span>
+    <span class="c1"># Compute pad shape to satisfy requested sampling. Propagation wavelength</span>
+    <span class="c1"># is recomputed to account for integer padding of input plane</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">_dft_alpha</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">du</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">,</span> <span class="n">oversample</span><span class="p">)</span>
+    <span class="n">fft_shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">reciprocal</span><span class="p">(</span><span class="n">alpha</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">prop_wavelength</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">((</span><span class="n">fft_shape</span><span class="o">/</span><span class="n">oversample</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">*</span> <span class="n">du</span><span class="p">)</span><span class="o">/</span><span class="n">z</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fft_shape</span><span class="p">,</span> <span class="n">prop_wavelength</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_dft_alpha</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">du</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">oversample</span><span class="p">):</span>
+    <span class="n">dx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
+    <span class="n">du</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">du</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">dx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">du</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">wavelength</span><span class="o">*</span><span class="n">z</span><span class="o">*</span><span class="n">oversample</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">dx</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">du</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">wavelength</span><span class="o">*</span><span class="n">z</span><span class="o">*</span><span class="n">oversample</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="min_sampling">
+<a class="viewcode-back" href="../../generated/prtools.min_sampling.html#prtools.min_sampling">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">min_sampling</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">du</span><span class="p">,</span> <span class="n">npix</span><span class="p">,</span> <span class="n">min_q</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Compute the minimum pupil plane sampling to satisfy given</span>
+<span class="sd">    constraints.</span>
+
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">wave</span><span class="p">)</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">min_q</span> <span class="o">*</span> <span class="n">du</span> <span class="o">*</span> <span class="n">npix</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="pixelscale_nyquist">
+<a class="viewcode-back" href="../../generated/prtools.pixelscale_nyquist.html#prtools.pixelscale_nyquist">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">pixelscale_nyquist</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="n">f_number</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Compute the output plane sampling that is Nyquist sampled for</span>
+<span class="sd">    intensity.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    wave : float</span>
+<span class="sd">        Wavelength</span>
+<span class="sd">    f_number : float</span>
+<span class="sd">        Optical system F/#</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">f_number</span> <span class="o">*</span> <span class="n">wave</span> <span class="o">/</span> <span class="mi">2</span></div>
+
+
+
+<div class="viewcode-block" id="find_wrapped">
+<a class="viewcode-back" href="../../generated/prtools.find_wrapped.html#prtools.find_wrapped">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_wrapped</span><span class="p">(</span><span class="n">opd</span><span class="p">,</span> <span class="n">grad_thresh</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Attempt to find phase wrapping using gradient edge detection while</span>
+<span class="sd">    automatically ignoring large gradients at mask edges.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    opd : array_like</span>
+<span class="sd">        OPD to detect wrapping in</span>
+<span class="sd">    grad_thresh : float</span>
+<span class="sd">        Threshold on magnitude of OPD gradient for determining wrapping</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    wrapped : ndarray</span>
+<span class="sd">        Map of wrapped pixels</span>
+<span class="sd">    grad : ndarray</span>
+<span class="sd">        Gradient amplitude</span>
+
+<span class="sd">    """</span>
+    <span class="n">opd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">opd</span><span class="p">)</span>
+
+    <span class="c1"># compute gradient magnitude</span>
+    <span class="n">gr</span><span class="p">,</span> <span class="n">gc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">opd</span><span class="p">)</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gr</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">gc</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># compute mask to ignore gradient boundary</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">opd</span><span class="p">)</span>
+    <span class="n">mask</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">opd</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">grm</span><span class="p">,</span> <span class="n">gcm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+    <span class="n">Gm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+    <span class="n">Gm</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">grm</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">gcm</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">grad</span> <span class="o">=</span> <span class="n">G</span> <span class="o">*</span> <span class="n">Gm</span>
+    <span class="n">wrapped</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">grad</span><span class="p">)</span>
+    <span class="n">wrapped</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">grad</span> <span class="o">&gt;</span> <span class="n">grad_thresh</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">wrapped</span><span class="p">,</span> <span class="n">grad</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026 Andy Kee.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

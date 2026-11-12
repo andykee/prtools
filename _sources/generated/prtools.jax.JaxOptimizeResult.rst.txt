@@ -1,0 +1,30 @@
+﻿prtools.jax.JaxOptimizeResult
+=============================
+
+.. currentmodule:: prtools.jax
+
+.. autoclass:: JaxOptimizeResult
+
+
+.. rubric:: Attributes
+
+.. autosummary::
+    :toctree:
+    
+    ~JaxOptimizeResult.grad
+    ~JaxOptimizeResult.n
+    ~JaxOptimizeResult.state
+    ~JaxOptimizeResult.value
+    ~JaxOptimizeResult.x
+
+
+
+
+.. rubric:: Methods
+
+.. autosummary::
+    :toctree:
+    
+    ~JaxOptimizeResult.count
+    ~JaxOptimizeResult.index
+

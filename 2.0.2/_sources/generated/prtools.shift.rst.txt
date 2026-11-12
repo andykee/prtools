@@ -1,0 +1,6 @@
+﻿prtools.shift
+=============
+
+.. currentmodule:: prtools
+
+.. autofunction:: shift

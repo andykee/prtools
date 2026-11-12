@@ -1,0 +1,209 @@
+**prtools** --- Utility functions for image-based phase retrieval
+=================================================================
+
+**Version**: |version|
+
+**Useful links**:
+`Source Repository <https://github.com/andykee/prtools>`_ |
+`Issue Tracker <https://github.com/andykee/prtools/issues>`_ |
+`Releases <https://github.com/andykee/prtools/releases>`_
+
+**Installation**: install :mod:`prtools` with pip
+
+.. code-block:: bash
+
+    pip install prtools
+
+The :mod:`prtools` library provides functionality and tools that may be
+useful when performing image-based phase retrieval including:
+
+* Image processing, reduction, and analysis
+* Creating, fitting, and removing Zernike polynomials
+* Drawing various shapes in arrays
+* Computing statistics and optical simulation parameters
+
+.. note::
+
+   Many :mod:`prtools` functions support both matrix (``ij``) and Cartesian 
+   (``xy``) indexing conventions via the ``indexing`` parameter. The default is
+   matrix (``indexing='ij'``) for all functions.
+
+
+   .. currentmodule:: prtools
+
+
+Array API support
+-----------------
+:mod:`prtools` supports the `Python array API standard 
+<https://data-apis.org/array-api/latest/index.html>`_. This means that 
+:mod:`prtools` functions should work seamlessly with any array API-compatible
+ararys like those provided by NumPy, CuPy, PyTorch, and JAX. 
+
+.. note::
+
+   Only NumPy and JAX interoperability is currently tested. Additional backend
+   libraries may be tested in the future.
+
+
+Array manipulation
+------------------
+.. autosummary::
+   :toctree: generated
+   :caption: Array manipulation
+   :nosignatures:
+   
+   centroid
+   pad
+   crop
+   boundary
+   sample
+   rebin
+   rescale
+   medfix
+   normpow
+   shift
+   register
+
+Array metrics
+-------------
+.. autosummary::
+   :toctree: generated
+   :caption: Array metrics
+   :nosignatures:
+   
+   rms
+   nanrms
+   pv
+   nanpv
+   radial_avg
+   ee
+   teng
+
+Shapes
+------
+.. autosummary::
+   :toctree: generated
+   :caption: Shapes
+   :nosignatures:
+
+   circle
+   rectangle
+   hexagon
+   hex_segments
+   ellipse
+   spider
+   sin
+   waffle
+   mesh
+
+Fourier transforms
+------------------
+.. autosummary::
+   :toctree: generated
+   :caption: Fourier transforms
+   :nosignatures:
+
+   dft2
+   idft2
+
+Convolution and filtering
+-------------------------
+.. autosummary::
+   :toctree: generated
+   :caption: Convolution and filtering
+   :nosignatures:
+
+   fftconv
+   gauss_blur
+   pixelate
+   gauss
+   sinc
+   gauss_kernel
+   pixel_kernel
+
+Morphology
+----------
+.. autosummary::
+   :toctree: generated
+   :caption: Morphology
+   :nosignatures:
+
+   binary_dilation
+   binary_erosion
+   binary_opening
+   binary_closing
+
+Sparse matrices
+---------------
+.. autosummary::
+   :toctree: generated
+   :caption: Sparse matrices
+   :nosignatures:
+
+   index
+   sparse
+   dense
+   index_from_mask
+   mask_from_index
+
+Zernike polynomials
+-------------------
+.. autosummary::
+   :toctree: generated
+   :caption: Zernike polynomials
+   :nosignatures:
+   
+   zernike
+   zernike_fit
+   zernike_remove
+   zernike_compose
+   zernike_basis
+   zernike_coordinates
+
+Cost functions
+--------------
+.. autosummary::
+   :toctree: generated
+   :caption: Cost functions
+   :nosignatures:
+
+   sserror
+
+Miscellaneous
+-------------
+.. autosummary::
+   :toctree: generated
+   :caption: Miscellaneous
+   :nosignatures:
+
+   calcpsf
+   pixelscale_nyquist
+   min_sampling
+   fft_shape
+   translation_defocus
+   find_wrapped
+
+``prtools.jax``
+---------------
+.. autosummary::
+   :toctree: generated
+   :caption: prtools.jax
+   :nosignatures:
+
+   jax.lbfgs
+   jax.JaxOptimizeResult
+
+
+.. note::
+
+   The ``jax`` module has the following additional dependencies:
+
+   * `JAX <https://docs.jax.dev/>`_
+   * `Optax <https://optax.readthedocs.io/en/latest/>`_
+
+   :mod:`prtools` can be installed with the additional ``jax``
+   dependencies with
+
+   .. code::
+
+      pip install prtools[jax]

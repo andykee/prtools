@@ -1,0 +1,6 @@
+prtools.jax.JaxOptimizeResult.state
+===================================
+
+.. currentmodule:: prtools.jax
+
+.. autoattribute:: JaxOptimizeResult.state

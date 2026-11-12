@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>prtools.stats &#8212; prtools 2.0.2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=4b1efdef" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
+
+    <script src="../../_static/documentation_options.js?v=c2377ec0"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/prtools/stats';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.2" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="light">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/logo.svg" class="logo__image only-light" alt="prtools 2.0.2 documentation - Home"/>
+    <img src="../../_static/logo.svg" class="logo__image only-dark pst-js-only" alt="prtools 2.0.2 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/andykee/prtools" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/andykee/prtools" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none"></div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for prtools.stats</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.ndimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">sobel</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">prtools</span>
+
+
+<div class="viewcode-block" id="ee">
+<a class="viewcode-back" href="../../generated/prtools.ee.html#prtools.ee">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">ee</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">energy</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Compute the encircled energy diameter for a given energy fraction.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a : array_like</span>
+<span class="sd">        Input array</span>
+<span class="sd">    energy : float or array_like, optional</span>
+<span class="sd">        Encircled energy fraction (0 &lt; energy &lt; 1). Default is 0.8. Can also</span>
+<span class="sd">        be a vector.</span>
+<span class="sd">    center : (2,) array_like or None</span>
+<span class="sd">        Coordinates of center of circle given as (row, col). If None</span>
+<span class="sd">        (default), the center coordinates are computed as the centroid of a.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    diam : float or ndarray</span>
+<span class="sd">        Diameter in pixels of circle enclosing specified energy fraction.</span>
+<span class="sd">    ee : float or ndarray</span>
+<span class="sd">        Encircled energy at computed diameter.</span>
+
+<span class="sd">    """</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">npix</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">npix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">prtools</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="p">(</span><span class="n">npix</span><span class="p">,</span> <span class="n">npix</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">center</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">yc</span><span class="p">,</span> <span class="n">xc</span> <span class="o">=</span> <span class="n">prtools</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">yc</span><span class="p">,</span> <span class="n">xc</span> <span class="o">=</span> <span class="n">center</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">npix</span><span class="p">)</span> <span class="o">-</span> <span class="n">xc</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">npix</span><span class="p">)</span> <span class="o">-</span> <span class="n">yc</span>
+
+    <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">xx</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">yy</span><span class="p">)</span>
+
+    <span class="c1"># initialize some variables</span>
+    <span class="n">ee_out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">d_out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">etot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+    <span class="n">energy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">energy</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">energy</span><span class="p">:</span>
+        <span class="n">rad</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ee</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ee0</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+        <span class="c1"># this seemingly bizarre bit of math establishes the evolution</span>
+        <span class="c1"># of the step size during the search</span>
+        <span class="c1">#     * dfactor is the factor dpix is reduced by when the step</span>
+        <span class="c1">#       size is updated</span>
+        <span class="c1">#     * dpix is the initial starting guess for the inner radius</span>
+        <span class="n">dfactor</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">dpix</span> <span class="o">=</span> <span class="n">dfactor</span><span class="o">**</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">npix</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">dfactor</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="n">ee</span> <span class="o">!=</span> <span class="n">ee0</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">ee</span> <span class="o">&lt;</span> <span class="n">e</span> <span class="ow">and</span> <span class="n">ee</span> <span class="o">!=</span> <span class="n">ee0</span><span class="p">:</span>
+                <span class="n">rad</span> <span class="o">=</span> <span class="n">rad</span> <span class="o">+</span> <span class="n">dpix</span>
+                <span class="n">emasked</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span> <span class="o">&lt;</span> <span class="n">rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">a</span>
+                <span class="n">ee0</span> <span class="o">=</span> <span class="n">ee</span>
+                <span class="n">ee</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">emasked</span><span class="p">)</span><span class="o">/</span><span class="n">etot</span>
+                <span class="c1"># print(f'Inner rad = {rad}, ee = {ee}')</span>
+
+            <span class="n">rad</span> <span class="o">=</span> <span class="n">rad</span> <span class="o">-</span> <span class="n">dpix</span>
+            <span class="n">dpix</span> <span class="o">=</span> <span class="n">dpix</span><span class="o">/</span><span class="n">dfactor</span>
+            <span class="n">rad</span> <span class="o">=</span> <span class="n">rad</span> <span class="o">+</span> <span class="n">dpix</span>
+            <span class="n">emasked</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span> <span class="o">&lt;</span> <span class="n">rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">a</span>
+            <span class="n">ee0</span> <span class="o">=</span> <span class="n">ee</span>
+            <span class="n">ee</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">emasked</span><span class="p">)</span><span class="o">/</span><span class="n">etot</span>
+            <span class="c1"># print(f'Outer rad = {rad}, ee = {ee}')</span>
+
+        <span class="n">ee_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ee</span><span class="p">)</span>
+        <span class="n">d_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">rad</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">energy</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">ee_out</span> <span class="o">=</span> <span class="n">ee_out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">d_out</span> <span class="o">=</span> <span class="n">d_out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">d_out</span><span class="p">,</span> <span class="n">ee_out</span></div>
+
+
+
+<div class="viewcode-block" id="pv">
+<a class="viewcode-back" href="../../generated/prtools.pv.html#prtools.pv">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">pv</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Compute range of values (max - min)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a : array_like</span>
+<span class="sd">        Input array</span>
+<span class="sd">    axis: None or int, optional</span>
+<span class="sd">        Axis or axes along which the peak-to-valley is computed. The</span>
+<span class="sd">        default is to compute the peak-to-valley of the flattened</span>
+<span class="sd">        array.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`nanpv`</span>
+
+<span class="sd">    """</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="rms">
+<a class="viewcode-back" href="../../generated/prtools.rms.html#prtools.rms">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">rms</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Compute the root-mean-square of the nonzero entries</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a : array_like</span>
+<span class="sd">        Input array</span>
+<span class="sd">    axis: None or int, optional</span>
+<span class="sd">        Axis or axes along which the standard deviation is computed. The</span>
+<span class="sd">        default is to compute the standard deviation of the flattened</span>
+<span class="sd">        array.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`nanrms`</span>
+
+<span class="sd">    """</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">a</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="nanpv">
+<a class="viewcode-back" href="../../generated/prtools.nanpv.html#prtools.nanpv">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">nanpv</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Compute range of values (max - min), ignoring any NaNs.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a : array_like</span>
+<span class="sd">        Input array</span>
+<span class="sd">    axis: None or int, optional</span>
+<span class="sd">        Axis or axes along which the peak-to-valley is computed. The</span>
+<span class="sd">        default is to compute the peak-to-valley of the flattened</span>
+<span class="sd">        array.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`pv`</span>
+
+<span class="sd">    """</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="nanrms">
+<a class="viewcode-back" href="../../generated/prtools.nanrms.html#prtools.nanrms">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">nanrms</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Compute the root-mean-square of the nonzero entries, ignoring any NaNs.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a : array_like</span>
+<span class="sd">        Input array</span>
+<span class="sd">    axis: None or int, optional</span>
+<span class="sd">        Axis or axes along which the standard deviation is computed. The</span>
+<span class="sd">        default is to compute the standard deviation of the flattened</span>
+<span class="sd">        array.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`rms`</span>
+
+<span class="sd">    """</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">a</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">a</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">rms</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="radial_avg">
+<a class="viewcode-back" href="../../generated/prtools.radial_avg.html#prtools.radial_avg">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">radial_avg</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Compute the average radial profile of the input</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a : array_like</span>
+<span class="sd">        Input array</span>
+<span class="sd">    center : (2,) array_like or None</span>
+<span class="sd">        Coordinates of center of ``a`` given as (row, col). If None (default),</span>
+<span class="sd">        the center coordinates are computed as the centroid of ``a``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    [1] https://stackoverflow.com/a/21242776</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+<span class="sd">        :context: reset</span>
+<span class="sd">        :scale: 50</span>
+
+<span class="sd">        &gt;&gt;&gt; amp = prtools.circle(shape=(256,256), radius=100)</span>
+<span class="sd">        &gt;&gt;&gt; psf = prtools.calcpsf(amp, 0, 500e-9, 1e-9, (64,64), 3)</span>
+<span class="sd">        &gt;&gt;&gt; psf /= np.max(psf)</span>
+<span class="sd">        &gt;&gt;&gt; ra = prtools.radial_avg(psf**0.1)</span>
+<span class="sd">        &gt;&gt;&gt; fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(5,2))</span>
+<span class="sd">        &gt;&gt;&gt; ax1.set_title('a')</span>
+<span class="sd">        &gt;&gt;&gt; ax1.imshow(psf**0.1)</span>
+<span class="sd">        &gt;&gt;&gt; ax2.set_title('radial_avg(a)')</span>
+<span class="sd">        &gt;&gt;&gt; ax2.plot(np.arange(ra.size), ra)</span>
+<span class="sd">        &gt;&gt;&gt; ax2.grid('on')</span>
+
+<span class="sd">    """</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">center</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">prtools</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">center</span>
+
+    <span class="n">rr</span><span class="p">,</span> <span class="n">cc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">indices</span><span class="p">((</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">rr</span><span class="o">-</span><span class="n">r</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">cc</span><span class="o">-</span><span class="n">c</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="n">tbin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">rho</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">a</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+    <span class="n">nr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">rho</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">tbin</span><span class="o">/</span><span class="n">nr</span></div>
+
+
+
+<div class="viewcode-block" id="teng">
+<a class="viewcode-back" href="../../generated/prtools.teng.html#prtools.teng">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">teng</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""The Tenengrad function computes image sharpness as the mean squared</span>
+<span class="sd">    Sobel gradient magnitude.</span>
+
+<span class="sd">    The Tenengrad function measures image sharpness by analyzing the magnitude</span>
+<span class="sd">    of the gradient at each pixel. Strong gradient magnitudes indicate sharper</span>
+<span class="sd">    edges while weaker magnitudes indicate blur, The total sharpness of the</span>
+<span class="sd">    image is calculated as the mean squared gradient magnitude of all pixels:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        T[g(i,j)] = {G_x}^2(i,j) + {G_y}^2(i,j)\\</span>
+<span class="sd">        \\</span>
+<span class="sd">        F_T = \frac{1}{MN} \sum_{m}\sum_{n} T[g(i,j)]</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    image : ndarray</span>
+<span class="sd">        2d image</span>
+<span class="sd">    normalize : bool, optional</span>
+<span class="sd">        If True (default), divide the Sobel responses by 8 to convert to units</span>
+<span class="sd">        of intensity change per pixel.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Mean of squared gradient magnitudes across all pixels.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Image must be 2D (grayscale)."</span><span class="p">)</span>
+
+    <span class="n">img</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="n">Gx</span> <span class="o">=</span> <span class="n">sobel</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">Gy</span> <span class="o">=</span> <span class="n">sobel</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+        <span class="n">Gx</span> <span class="o">/=</span> <span class="mf">8.0</span>
+        <span class="n">Gy</span> <span class="o">/=</span> <span class="mf">8.0</span>
+
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Gx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">Gy</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026 Andy Kee.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

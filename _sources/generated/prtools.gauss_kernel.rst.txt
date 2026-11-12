@@ -1,0 +1,6 @@
+﻿prtools.gauss\_kernel
+=====================
+
+.. currentmodule:: prtools
+
+.. autofunction:: gauss_kernel

@@ -1,0 +1,6 @@
+﻿prtools.sserror
+===============
+
+.. currentmodule:: prtools
+
+.. autofunction:: sserror

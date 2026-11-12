@@ -1,0 +1,6 @@
+prtools.jax.JaxOptimizeResult.index
+===================================
+
+.. currentmodule:: prtools.jax
+
+.. automethod:: JaxOptimizeResult.index

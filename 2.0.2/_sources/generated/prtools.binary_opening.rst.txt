@@ -1,0 +1,6 @@
+﻿prtools.binary\_opening
+=======================
+
+.. currentmodule:: prtools
+
+.. autofunction:: binary_opening

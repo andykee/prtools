@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" sizes="16x16" href="_static/favicon/favicon-16x16.png" type="image/png">
+    <link rel="icon" sizes="32x32" href="_static/favicon/favicon-32x32.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="_static/favicon/apple-touch-icon-180x180.png" color="#000000" type="image/png">
+    <title>prtools — Utility functions for image-based phase retrieval &#8212; prtools 2.0.2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=4b1efdef" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
+
+    <script src="_static/documentation_options.js?v=c2377ec0"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="prtools.centroid" href="generated/prtools.centroid.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.2" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="light">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="#">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="_static/logo.svg" class="logo__image only-light" alt="prtools 2.0.2 documentation - Home"/>
+    <img src="_static/logo.svg" class="logo__image only-dark pst-js-only" alt="prtools 2.0.2 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/andykee/prtools" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/andykee/prtools" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Section navigation">
+  <!--<p class="bd-links__title" role="heading" aria-level="1">
+    Site Navigation
+  </p>-->
+  <div class="bd-toc-item navbar-nav">
+    <p aria-level="2" class="caption" role="heading"><span class="caption-text">Array manipulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.centroid.html">prtools.centroid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.pad.html">prtools.pad</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.crop.html">prtools.crop</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.boundary.html">prtools.boundary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.sample.html">prtools.sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.rebin.html">prtools.rebin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.rescale.html">prtools.rescale</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.medfix.html">prtools.medfix</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.normpow.html">prtools.normpow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.shift.html">prtools.shift</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.register.html">prtools.register</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Array metrics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.rms.html">prtools.rms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.nanrms.html">prtools.nanrms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.pv.html">prtools.pv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.nanpv.html">prtools.nanpv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.radial_avg.html">prtools.radial_avg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.ee.html">prtools.ee</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.teng.html">prtools.teng</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Shapes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.circle.html">prtools.circle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.rectangle.html">prtools.rectangle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.hexagon.html">prtools.hexagon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.hex_segments.html">prtools.hex_segments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.ellipse.html">prtools.ellipse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.spider.html">prtools.spider</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.sin.html">prtools.sin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.waffle.html">prtools.waffle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.mesh.html">prtools.mesh</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Fourier transforms</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.dft2.html">prtools.dft2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.idft2.html">prtools.idft2</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Convolution and filtering</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.fftconv.html">prtools.fftconv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.gauss_blur.html">prtools.gauss_blur</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.pixelate.html">prtools.pixelate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.gauss.html">prtools.gauss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.sinc.html">prtools.sinc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.gauss_kernel.html">prtools.gauss_kernel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.pixel_kernel.html">prtools.pixel_kernel</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Morphology</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.binary_dilation.html">prtools.binary_dilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.binary_erosion.html">prtools.binary_erosion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.binary_opening.html">prtools.binary_opening</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.binary_closing.html">prtools.binary_closing</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sparse matrices</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.index.html">prtools.index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.sparse.html">prtools.sparse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.dense.html">prtools.dense</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.index_from_mask.html">prtools.index_from_mask</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.mask_from_index.html">prtools.mask_from_index</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Zernike polynomials</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.zernike.html">prtools.zernike</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.zernike_fit.html">prtools.zernike_fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.zernike_remove.html">prtools.zernike_remove</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.zernike_compose.html">prtools.zernike_compose</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.zernike_basis.html">prtools.zernike_basis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.zernike_coordinates.html">prtools.zernike_coordinates</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cost functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.sserror.html">prtools.sserror</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.calcpsf.html">prtools.calcpsf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.pixelscale_nyquist.html">prtools.pixelscale_nyquist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.min_sampling.html">prtools.min_sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.fft_shape.html">prtools.fft_shape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.translation_defocus.html">prtools.translation_defocus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.find_wrapped.html">prtools.find_wrapped</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">prtools.jax</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="generated/prtools.jax.lbfgs.html">prtools.jax.lbfgs</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="generated/prtools.jax.JaxOptimizeResult.html">prtools.jax.JaxOptimizeResult</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/prtools.jax.JaxOptimizeResult.count.html">prtools.jax.JaxOptimizeResult.count</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/prtools.jax.JaxOptimizeResult.index.html">prtools.jax.JaxOptimizeResult.index</a></li>
+</ul>
+</details></li>
+</ul>
+
+  </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none"></div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="prtools-utility-functions-for-image-based-phase-retrieval">
+<h1><strong>prtools</strong> — Utility functions for image-based phase retrieval<a class="headerlink" href="#prtools-utility-functions-for-image-based-phase-retrieval" title="Link to this heading">#</a></h1>
+<p><strong>Version</strong>: 2.0.2</p>
+<p><strong>Useful links</strong>:
+<a class="reference external" href="https://github.com/andykee/prtools">Source Repository</a> |
+<a class="reference external" href="https://github.com/andykee/prtools/issues">Issue Tracker</a> |
+<a class="reference external" href="https://github.com/andykee/prtools/releases">Releases</a></p>
+<p><strong>Installation</strong>: install <code class="xref py py-mod docutils literal notranslate"><span class="pre">prtools</span></code> with pip</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>prtools
+</pre></div>
+</div>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">prtools</span></code> library provides functionality and tools that may be
+useful when performing image-based phase retrieval including:</p>
+<ul class="simple">
+<li><p>Image processing, reduction, and analysis</p></li>
+<li><p>Creating, fitting, and removing Zernike polynomials</p></li>
+<li><p>Drawing various shapes in arrays</p></li>
+<li><p>Computing statistics and optical simulation parameters</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Many <code class="xref py py-mod docutils literal notranslate"><span class="pre">prtools</span></code> functions support both matrix (<code class="docutils literal notranslate"><span class="pre">ij</span></code>) and Cartesian
+(<code class="docutils literal notranslate"><span class="pre">xy</span></code>) indexing conventions via the <code class="docutils literal notranslate"><span class="pre">indexing</span></code> parameter. The default is
+matrix (<code class="docutils literal notranslate"><span class="pre">indexing='ij'</span></code>) for all functions.</p>
+</div>
+<section id="array-api-support">
+<h2>Array API support<a class="headerlink" href="#array-api-support" title="Link to this heading">#</a></h2>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">prtools</span></code> supports the <a class="reference external" href="https://data-apis.org/array-api/latest/index.html">Python array API standard</a>. This means that
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">prtools</span></code> functions should work seamlessly with any array API-compatible
+ararys like those provided by NumPy, CuPy, PyTorch, and JAX.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only NumPy and JAX interoperability is currently tested. Additional backend
+libraries may be tested in the future.</p>
+</div>
+</section>
+<section id="array-manipulation">
+<h2>Array manipulation<a class="headerlink" href="#array-manipulation" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.centroid.html#prtools.centroid" title="prtools.centroid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">centroid</span></code></a></p></td>
+<td><p>Compute array centroid location.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.pad.html#prtools.pad" title="prtools.pad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pad</span></code></a></p></td>
+<td><p>Zero-pad an array.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.crop.html#prtools.crop" title="prtools.crop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crop</span></code></a></p></td>
+<td><p>Extract a contiguous subarray from a larger array.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.boundary.html#prtools.boundary" title="prtools.boundary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">boundary</span></code></a></p></td>
+<td><p>Find bounding row and column indices of data within an array.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.sample.html#prtools.sample" title="prtools.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a></p></td>
+<td><p>Extract samples from an oversampled array.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.rebin.html#prtools.rebin" title="prtools.rebin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rebin</span></code></a></p></td>
+<td><p>Rebin an array by an integer factor.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.rescale.html#prtools.rescale" title="prtools.rescale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rescale</span></code></a></p></td>
+<td><p>Rescale an image by interpolation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.medfix.html#prtools.medfix" title="prtools.medfix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">medfix</span></code></a></p></td>
+<td><p>Fix masked entries in a 2-dimensional array via median filtering.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.normpow.html#prtools.normpow" title="prtools.normpow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normpow</span></code></a></p></td>
+<td><p>Normalizie the power in an array.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.shift.html#prtools.shift" title="prtools.shift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift</span></code></a></p></td>
+<td><p>Shift an array via FFT.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.register.html#prtools.register" title="prtools.register"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register</span></code></a></p></td>
+<td><p>Compute the subpixel image translation to register the input array <code class="docutils literal notranslate"><span class="pre">x1</span></code> to a reference array <code class="docutils literal notranslate"><span class="pre">x2</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="array-metrics">
+<h2>Array metrics<a class="headerlink" href="#array-metrics" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.rms.html#prtools.rms" title="prtools.rms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rms</span></code></a></p></td>
+<td><p>Compute the root-mean-square of the nonzero entries</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.nanrms.html#prtools.nanrms" title="prtools.nanrms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nanrms</span></code></a></p></td>
+<td><p>Compute the root-mean-square of the nonzero entries, ignoring any NaNs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.pv.html#prtools.pv" title="prtools.pv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pv</span></code></a></p></td>
+<td><p>Compute range of values (max - min)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.nanpv.html#prtools.nanpv" title="prtools.nanpv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nanpv</span></code></a></p></td>
+<td><p>Compute range of values (max - min), ignoring any NaNs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.radial_avg.html#prtools.radial_avg" title="prtools.radial_avg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radial_avg</span></code></a></p></td>
+<td><p>Compute the average radial profile of the input</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.ee.html#prtools.ee" title="prtools.ee"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ee</span></code></a></p></td>
+<td><p>Compute the encircled energy diameter for a given energy fraction.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.teng.html#prtools.teng" title="prtools.teng"><code class="xref py py-obj docutils literal notranslate"><span class="pre">teng</span></code></a></p></td>
+<td><p>The Tenengrad function computes image sharpness as the mean squared Sobel gradient magnitude.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="shapes">
+<h2>Shapes<a class="headerlink" href="#shapes" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.circle.html#prtools.circle" title="prtools.circle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">circle</span></code></a></p></td>
+<td><p>Draw a circle</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.rectangle.html#prtools.rectangle" title="prtools.rectangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rectangle</span></code></a></p></td>
+<td><p>Draw a rectangle</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.hexagon.html#prtools.hexagon" title="prtools.hexagon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hexagon</span></code></a></p></td>
+<td><p>Draw a hexagon</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.hex_segments.html#prtools.hex_segments" title="prtools.hex_segments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hex_segments</span></code></a></p></td>
+<td><p>Draw a segmented aperture made up of hexagonal segments</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.ellipse.html#prtools.ellipse" title="prtools.ellipse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ellipse</span></code></a></p></td>
+<td><p>Draw an ellipse</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.spider.html#prtools.spider" title="prtools.spider"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spider</span></code></a></p></td>
+<td><p>Draw a spider</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.sin.html#prtools.sin" title="prtools.sin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sin</span></code></a></p></td>
+<td><p>Generate a 2D sine function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.waffle.html#prtools.waffle" title="prtools.waffle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">waffle</span></code></a></p></td>
+<td><p>Generate a 2D waffle function.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.mesh.html#prtools.mesh" title="prtools.mesh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mesh</span></code></a></p></td>
+<td><p>Generate a standard mesh.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="fourier-transforms">
+<h2>Fourier transforms<a class="headerlink" href="#fourier-transforms" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.dft2.html#prtools.dft2" title="prtools.dft2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dft2</span></code></a></p></td>
+<td><p>Compute the 2-dimensional discrete Fourier Transform.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.idft2.html#prtools.idft2" title="prtools.idft2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">idft2</span></code></a></p></td>
+<td><p>Compute the 2-dimensional inverse discrete Fourier Transform.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="convolution-and-filtering">
+<h2>Convolution and filtering<a class="headerlink" href="#convolution-and-filtering" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.fftconv.html#prtools.fftconv" title="prtools.fftconv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fftconv</span></code></a></p></td>
+<td><p>Convolve an array with a kernel using the FFT.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.gauss_blur.html#prtools.gauss_blur" title="prtools.gauss_blur"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gauss_blur</span></code></a></p></td>
+<td><p>Blur an image using a Gaussian filter using the FFT.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.pixelate.html#prtools.pixelate" title="prtools.pixelate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pixelate</span></code></a></p></td>
+<td><p>Apply the aperture effects of an idealized square pixel using the FFT.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.gauss.html#prtools.gauss" title="prtools.gauss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gauss</span></code></a></p></td>
+<td><p>2D Gaussian function</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.sinc.html#prtools.sinc" title="prtools.sinc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sinc</span></code></a></p></td>
+<td><p>2D sinc function</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.gauss_kernel.html#prtools.gauss_kernel" title="prtools.gauss_kernel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gauss_kernel</span></code></a></p></td>
+<td><p>2D Gaussian filter kernel</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.pixel_kernel.html#prtools.pixel_kernel" title="prtools.pixel_kernel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pixel_kernel</span></code></a></p></td>
+<td><p>2D pixel MTF filter kernel</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="morphology">
+<h2>Morphology<a class="headerlink" href="#morphology" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.binary_dilation.html#prtools.binary_dilation" title="prtools.binary_dilation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">binary_dilation</span></code></a></p></td>
+<td><p>Binary dilation using the given structure element.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.binary_erosion.html#prtools.binary_erosion" title="prtools.binary_erosion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">binary_erosion</span></code></a></p></td>
+<td><p>Binary erosion using the given structure element.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.binary_opening.html#prtools.binary_opening" title="prtools.binary_opening"><code class="xref py py-obj docutils literal notranslate"><span class="pre">binary_opening</span></code></a></p></td>
+<td><p>Binary opening using the given structure element.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.binary_closing.html#prtools.binary_closing" title="prtools.binary_closing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">binary_closing</span></code></a></p></td>
+<td><p>Binary closing using the given structure element.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="sparse-matrices">
+<h2>Sparse matrices<a class="headerlink" href="#sparse-matrices" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.index.html#prtools.index" title="prtools.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a></p></td>
+<td><p>Sparse coordinate list (COO) index</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.sparse.html#prtools.sparse" title="prtools.sparse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparse</span></code></a></p></td>
+<td><p>Create a sparse array from a dense matrix</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.dense.html#prtools.dense" title="prtools.dense"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dense</span></code></a></p></td>
+<td><p>Create a dense matrix from a sparse array</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.index_from_mask.html#prtools.index_from_mask" title="prtools.index_from_mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index_from_mask</span></code></a></p></td>
+<td><p>Create a sparse coordinate list (COO) index object from a mask.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.mask_from_index.html#prtools.mask_from_index" title="prtools.mask_from_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mask_from_index</span></code></a></p></td>
+<td><p>Create a mask from a sparse coordinate list (COO) index.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="zernike-polynomials">
+<h2>Zernike polynomials<a class="headerlink" href="#zernike-polynomials" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.zernike.html#prtools.zernike" title="prtools.zernike"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zernike</span></code></a></p></td>
+<td><p>Compute the circular Zernike polynomial for a given mask.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.zernike_fit.html#prtools.zernike_fit" title="prtools.zernike_fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zernike_fit</span></code></a></p></td>
+<td><p>Fit a Zernike basis set to an OPD.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.zernike_remove.html#prtools.zernike_remove" title="prtools.zernike_remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zernike_remove</span></code></a></p></td>
+<td><p>Fit and remove a Zernike basis set from an OPD.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.zernike_compose.html#prtools.zernike_compose" title="prtools.zernike_compose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zernike_compose</span></code></a></p></td>
+<td><p>Create an OPD based on the supplied Zernike coefficients.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.zernike_basis.html#prtools.zernike_basis" title="prtools.zernike_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zernike_basis</span></code></a></p></td>
+<td><p>Compute a Zernike basis set for a given mask.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.zernike_coordinates.html#prtools.zernike_coordinates" title="prtools.zernike_coordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zernike_coordinates</span></code></a></p></td>
+<td><p>Compute the Zernike coordinate system for a given mask.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="cost-functions">
+<h2>Cost functions<a class="headerlink" href="#cost-functions" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.sserror.html#prtools.sserror" title="prtools.sserror"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sserror</span></code></a></p></td>
+<td><p>Compute the normalized sum squared error between two arrays.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="miscellaneous">
+<h2>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.calcpsf.html#prtools.calcpsf" title="prtools.calcpsf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calcpsf</span></code></a></p></td>
+<td><p>Calculate a point spread function using far-field diffraction.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.pixelscale_nyquist.html#prtools.pixelscale_nyquist" title="prtools.pixelscale_nyquist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pixelscale_nyquist</span></code></a></p></td>
+<td><p>Compute the output plane sampling that is Nyquist sampled for intensity.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.min_sampling.html#prtools.min_sampling" title="prtools.min_sampling"><code class="xref py py-obj docutils literal notranslate"><span class="pre">min_sampling</span></code></a></p></td>
+<td><p>Compute the minimum pupil plane sampling to satisfy given constraints.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.fft_shape.html#prtools.fft_shape" title="prtools.fft_shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fft_shape</span></code></a></p></td>
+<td><p>Compute FFT pad shape to satisfy sampling constraints</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.translation_defocus.html#prtools.translation_defocus" title="prtools.translation_defocus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translation_defocus</span></code></a></p></td>
+<td><p>Compute the peak-to-valley defocus imparted by a given translation along the optical axis</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.find_wrapped.html#prtools.find_wrapped" title="prtools.find_wrapped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_wrapped</span></code></a></p></td>
+<td><p>Attempt to find phase wrapping using gradient edge detection while automatically ignoring large gradients at mask edges.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="prtools-jax">
+<h2><code class="docutils literal notranslate"><span class="pre">prtools.jax</span></code><a class="headerlink" href="#prtools-jax" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/prtools.jax.lbfgs.html#prtools.jax.lbfgs" title="prtools.jax.lbfgs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jax.lbfgs</span></code></a></p></td>
+<td><p>Minimize a scalar function of one or more variables using the L-BFGS algorithm</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/prtools.jax.JaxOptimizeResult.html#prtools.jax.JaxOptimizeResult" title="prtools.jax.JaxOptimizeResult"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jax.JaxOptimizeResult</span></code></a></p></td>
+<td><p>Represents the optimization result.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">jax</span></code> module has the following additional dependencies:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.jax.dev/">JAX</a></p></li>
+<li><p><a class="reference external" href="https://optax.readthedocs.io/en/latest/">Optax</a></p></li>
+</ul>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">prtools</span></code> can be installed with the additional <code class="docutils literal notranslate"><span class="pre">jax</span></code>
+dependencies with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">prtools</span><span class="p">[</span><span class="n">jax</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026 Andy Kee.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

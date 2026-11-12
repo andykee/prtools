@@ -1,0 +1,6 @@
+﻿prtools.gauss
+=============
+
+.. currentmodule:: prtools
+
+.. autofunction:: gauss

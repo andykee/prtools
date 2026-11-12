@@ -1,0 +1,6 @@
+﻿prtools.crop
+============
+
+.. currentmodule:: prtools
+
+.. autofunction:: crop

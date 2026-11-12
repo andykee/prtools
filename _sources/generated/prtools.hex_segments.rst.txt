@@ -1,0 +1,6 @@
+﻿prtools.hex\_segments
+=====================
+
+.. currentmodule:: prtools
+
+.. autofunction:: hex_segments

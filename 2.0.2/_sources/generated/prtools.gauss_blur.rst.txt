@@ -1,0 +1,6 @@
+﻿prtools.gauss\_blur
+===================
+
+.. currentmodule:: prtools
+
+.. autofunction:: gauss_blur

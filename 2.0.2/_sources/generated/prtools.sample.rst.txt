@@ -1,0 +1,6 @@
+﻿prtools.sample
+==============
+
+.. currentmodule:: prtools
+
+.. autofunction:: sample

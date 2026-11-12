@@ -1,0 +1,6 @@
+﻿prtools.rms
+===========
+
+.. currentmodule:: prtools
+
+.. autofunction:: rms

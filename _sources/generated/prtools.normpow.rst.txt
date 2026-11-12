@@ -1,0 +1,6 @@
+﻿prtools.normpow
+===============
+
+.. currentmodule:: prtools
+
+.. autofunction:: normpow
