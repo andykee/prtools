@@ -9,7 +9,7 @@
     <link rel="icon" sizes="16x16" href="../_static/favicon/favicon-16x16.png" type="image/png">
     <link rel="icon" sizes="32x32" href="../_static/favicon/favicon-32x32.png" type="image/png">
     <link rel="apple-touch-icon" sizes="180x180" href="../_static/favicon/apple-touch-icon-180x180.png" color="#000000" type="image/png">
-    <title>prtools.hexagon &#8212; prtools 2.0.2 documentation</title>
+    <title>prtools.hexagon &#8212; prtools 2.1.0 documentation</title>
   
   
   
@@ -41,10 +41,17 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=c2377ec0"></script>
+    <script src="../_static/documentation_options.js?v=20623aea"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'generated/prtools.hexagon';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.24.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://andykee.github.io/prtools/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -53,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.2" />
+  <meta name="docsearch:version" content="2.1.0" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -123,8 +130,8 @@
     
     
     
-    <img src="../_static/logo.svg" class="logo__image only-light" alt="prtools 2.0.2 documentation - Home"/>
-    <img src="../_static/logo.svg" class="logo__image only-dark pst-js-only" alt="prtools 2.0.2 documentation - Home"/>
+    <img src="../_static/logo.svg" class="logo__image only-light" alt="prtools 2.1.0 documentation - Home"/>
+    <img src="../_static/logo.svg" class="logo__image only-dark pst-js-only" alt="prtools 2.1.0 documentation - Home"/>
   
   
 </a></div>
@@ -157,6 +164,26 @@
 </button>
         </div>
       
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
       
         <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -224,6 +251,26 @@
     
     
       <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
         
           <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -324,6 +371,7 @@
 <li class="toctree-l1"><a class="reference internal" href="prtools.zernike_compose.html">prtools.zernike_compose</a></li>
 <li class="toctree-l1"><a class="reference internal" href="prtools.zernike_basis.html">prtools.zernike_basis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="prtools.zernike_coordinates.html">prtools.zernike_coordinates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.zernike_coeff_legacy.html">prtools.zernike_coeff_legacy</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Cost functions</span></p>
 <ul class="nav bd-sidenav">
@@ -384,7 +432,7 @@
 <h1>prtools.hexagon<a class="headerlink" href="#prtools-hexagon" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="prtools.hexagon">
-<span class="sig-name descname"><span class="pre">hexagon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antialias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/prtools/shape.html#hexagon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#prtools.hexagon" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">hexagon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antialias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indexing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ij'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/prtools/shape.html#hexagon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#prtools.hexagon" title="Link to this definition">#</a></dt>
 <dd><p>Draw a hexagon</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -392,10 +440,11 @@
 <li><p><strong>shape</strong> (<em>array_like</em>) – Size of output in pixels (nrows, ncols)</p></li>
 <li><p><strong>radius</strong> (<em>float</em>) – Radius of outscribing circle (which also equals the side length) in
 pixels.</p></li>
-<li><p><strong>shift</strong> (<em>tuple</em><em> of </em><em>floats</em><em>, </em><em>optional</em>) – How far to shift center in (rows, cols). Default is (0, 0).</p></li>
-<li><p><strong>rotate</strong> (<em>bool</em><em>, </em><em>optional</em>) – Rotate mask so that flat sides are aligned with the Y direction instead
-of the default orientation which is aligned with the X direction.</p></li>
+<li><p><strong>shift</strong> (<em>tuple</em><em> of </em><em>floats</em><em>, </em><em>optional</em>) – How far to shift center. Default is (0, 0).</p></li>
+<li><p><strong>rotate</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True (default), the mask is rotated so that the flat sides are
+aligned with the horizontal direction.</p></li>
 <li><p><strong>antialias</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True (default), the shape edges are antialiased.</p></li>
+<li><p><strong>indexing</strong> (<em>{'ij'</em><em>, </em><em>'xy'}</em><em>, </em><em>optional</em>) – Matrix (‘ij’, default) or cartesian (‘xy’) indexing of <code class="docutils literal notranslate"><span class="pre">shift</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -410,7 +459,7 @@ of the default orientation which is aligned with the X direction.</p></li>
 <figure class="align-default">
 <img alt="../_images/prtools-hexagon-1.png" class="plot-directive" height="333" src="../_images/prtools-hexagon-1.png" width="344" />
 </figure>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">hex</span> <span class="o">=</span> <span class="n">prtools</span><span class="o">.</span><span class="n">hexagon</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span><span class="mi">256</span><span class="p">),</span> <span class="n">radius</span><span class="o">=</span><span class="mi">75</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">hex</span> <span class="o">=</span> <span class="n">prtools</span><span class="o">.</span><span class="n">hexagon</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span><span class="mi">256</span><span class="p">),</span> <span class="n">radius</span><span class="o">=</span><span class="mi">75</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="nb">hex</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">)</span>
 </pre></div>
 </div>

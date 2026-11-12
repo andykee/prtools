@@ -1,0 +1,6 @@
+﻿prtools.pixelscale\_nyquist
+===========================
+
+.. currentmodule:: prtools
+
+.. autofunction:: pixelscale_nyquist

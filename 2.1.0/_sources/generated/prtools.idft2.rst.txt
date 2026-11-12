@@ -1,0 +1,6 @@
+﻿prtools.idft2
+=============
+
+.. currentmodule:: prtools
+
+.. autofunction:: idft2

@@ -1,0 +1,6 @@
+﻿prtools.centroid
+================
+
+.. currentmodule:: prtools
+
+.. autofunction:: centroid

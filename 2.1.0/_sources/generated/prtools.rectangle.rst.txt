@@ -1,0 +1,6 @@
+﻿prtools.rectangle
+=================
+
+.. currentmodule:: prtools
+
+.. autofunction:: rectangle

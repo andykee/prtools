@@ -1,0 +1,6 @@
+﻿prtools.hexagon
+===============
+
+.. currentmodule:: prtools
+
+.. autofunction:: hexagon

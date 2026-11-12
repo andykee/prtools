@@ -9,7 +9,7 @@
     <link rel="icon" sizes="16x16" href="../_static/favicon/favicon-16x16.png" type="image/png">
     <link rel="icon" sizes="32x32" href="../_static/favicon/favicon-32x32.png" type="image/png">
     <link rel="apple-touch-icon" sizes="180x180" href="../_static/favicon/apple-touch-icon-180x180.png" color="#000000" type="image/png">
-    <title>prtools.sserror &#8212; prtools 2.0.2 documentation</title>
+    <title>prtools.sserror &#8212; prtools 2.1.0 documentation</title>
   
   
   
@@ -41,20 +41,27 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=c2377ec0"></script>
+    <script src="../_static/documentation_options.js?v=20623aea"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'generated/prtools.sserror';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.24.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://andykee.github.io/prtools/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="prtools.calcpsf" href="prtools.calcpsf.html" />
-    <link rel="prev" title="prtools.zernike_coordinates" href="prtools.zernike_coordinates.html" />
+    <link rel="prev" title="prtools.zernike_coeff_legacy" href="prtools.zernike_coeff_legacy.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.2" />
+  <meta name="docsearch:version" content="2.1.0" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -124,8 +131,8 @@
     
     
     
-    <img src="../_static/logo.svg" class="logo__image only-light" alt="prtools 2.0.2 documentation - Home"/>
-    <img src="../_static/logo.svg" class="logo__image only-dark pst-js-only" alt="prtools 2.0.2 documentation - Home"/>
+    <img src="../_static/logo.svg" class="logo__image only-light" alt="prtools 2.1.0 documentation - Home"/>
+    <img src="../_static/logo.svg" class="logo__image only-dark pst-js-only" alt="prtools 2.1.0 documentation - Home"/>
   
   
 </a></div>
@@ -158,6 +165,26 @@
 </button>
         </div>
       
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
       
         <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -225,6 +252,26 @@
     
     
       <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
         
           <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -325,6 +372,7 @@
 <li class="toctree-l1"><a class="reference internal" href="prtools.zernike_compose.html">prtools.zernike_compose</a></li>
 <li class="toctree-l1"><a class="reference internal" href="prtools.zernike_basis.html">prtools.zernike_basis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="prtools.zernike_coordinates.html">prtools.zernike_coordinates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prtools.zernike_coeff_legacy.html">prtools.zernike_coeff_legacy</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Cost functions</span></p>
 <ul class="current nav bd-sidenav">
@@ -387,30 +435,48 @@
 <dt class="sig sig-object py" id="prtools.sserror">
 <span class="sig-name descname"><span class="pre">sserror</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">est</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gain_bias_invariant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ghat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/prtools/cost.html#sserror"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#prtools.sserror" title="Link to this definition">#</a></dt>
 <dd><p>Compute the normalized sum squared error between two arrays.</p>
-<p>The normalized sum squared error between ideal data <cite>f</cite> and estimated data
-<cite>g</cite> is given by</p>
+<p>The error between measured data <span class="math notranslate nohighlight">\(\tilde{s}\)</span> and estimated data
+<span class="math notranslate nohighlight">\(\hat{s}\)</span> is computed as the gain invariant error metric</p>
 <div class="math notranslate nohighlight">
-\[\mbox{error} = \frac{1}{N}\sum_n \frac{\sum{\left|g(n,x,y)-f(n,x,y)\right|^2}}{\sum{\left|f(n,x,y)\right|^2}}\]</div>
-<p>for <span class="math notranslate nohighlight">\(n = 1, 2, ... N\)</span> independent measurements.</p>
-<p>If <cite>gain_bias_invariant</cite> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, the error metric is computed such
-that the result is independent of relative scaling (gain) and offset
-(bias) differences between <cite>f</cite> and  <cite>g</cite> [1].</p>
+\[\Phi = \frac{1}{K}\sum_k
+\frac{\sum_{x,y} w(x,y,k)\left[\alpha_k\hat{s}(x,y,k) -
+\tilde{s}(x,y,k)\right]^2}{\sum_{x,y} w(x,y,k)\tilde{s}^2(x,y,k)}\]</div>
+<p>for <span class="math notranslate nohighlight">\(k = 1, 2, ... K\)</span> independent measurements, where
+<span class="math notranslate nohighlight">\(w\)</span> is a weighting function given by <cite>mask</cite> and each
+<span class="math notranslate nohighlight">\(\alpha_k\)</span> is chosen to minimize the error. The result is
+independent of any relative scaling (gain) difference between the inputs.</p>
+<p>If <cite>gain_bias_invariant</cite> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, the gain and bias invariant error
+metric is computed instead</p>
+<div class="math notranslate nohighlight">
+\[\Phi = \frac{1}{K}\sum_k
+\frac{\sum_{x,y} w(x,y,k)\left[\alpha_k\hat{g}(x,y,k) -
+\tilde{g}(x,y,k)\right]^2}{\sum_{x,y} w(x,y,k)\tilde{s}^2(x,y,k)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\hat{g}\)</span> and <span class="math notranslate nohighlight">\(\tilde{g}\)</span> are <span class="math notranslate nohighlight">\(\hat{s}\)</span> and
+<span class="math notranslate nohighlight">\(\tilde{s}\)</span> with their weighted means subtracted and each
+<span class="math notranslate nohighlight">\(\alpha_k\)</span> is chosen to minimize the error. The result is
+independent of any relative scaling (gain) and offset (bias) differences
+between the inputs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>array_like</em>) – Ideal or measured data</p></li>
-<li><p><strong>est</strong> (<em>array_like</em>) – Estimated or modeled data</p></li>
-<li><p><strong>mask</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Mask applied to the inputs where a True value indicates that the
-corresponding element of the array is invalid. Mask must either have
-the same shape as the inputs or be broadcastable to the same shape and
-contain entries that are castable to bool. If None (default), the
-inputs are not masked.</p></li>
-<li><p><strong>gain_bias_invariant</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the error is computed to be independent of any
-gain or bias differences between the inputs. Default is False.</p></li>
+<li><p><strong>data</strong> (<em>array_like</em>) – Ideal or measured data with shape (M, N) or (K, M, N)</p></li>
+<li><p><strong>est</strong> (<em>array_like</em>) – Estimated or modeled data with the same shape as <cite>data</cite></p></li>
+<li><p><strong>mask</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Weighting function <span class="math notranslate nohighlight">\(w\)</span> applied to the inputs. Entries equal to
+1 (or True) are fully included in the error computation and entries
+equal to 0 (or False) are ignored. Intermediate values partially
+weight the corresponding elements. Mask must either have the same
+shape as the inputs or be broadcastable to the same shape. If None
+(default), all elements are equally weighted.</p></li>
+<li><p><strong>gain_bias_invariant</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the error is computed to be independent of any gain or bias
+differences between the inputs. If False (default), the error is
+computed to be independent of any gain differences between the inputs.</p></li>
+<li><p><strong>ghat</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Precomputed bias-subtracted estimate <span class="math notranslate nohighlight">\(\hat{g}\)</span>. Only used if
+<cite>gain_bias_invariant</cite> is True. If None (default), <span class="math notranslate nohighlight">\(\hat{g}\)</span>
+is computed from <cite>est</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>error</strong> – Normalized root mean squared error</p>
+<dd class="field-even"><p><strong>error</strong> – Normalized sum squared error</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>

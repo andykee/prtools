@@ -1,0 +1,6 @@
+﻿prtools.dense
+=============
+
+.. currentmodule:: prtools
+
+.. autofunction:: dense

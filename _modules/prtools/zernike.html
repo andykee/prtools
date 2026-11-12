@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>prtools.zernike &#8212; prtools 2.0.2 documentation</title>
+    <title>prtools.zernike &#8212; prtools 2.1.0 documentation</title>
   
   
   
@@ -38,17 +38,24 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=c2377ec0"></script>
+    <script src="../../_static/documentation_options.js?v=20623aea"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/prtools/zernike';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.24.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://andykee.github.io/prtools/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.2" />
+  <meta name="docsearch:version" content="2.1.0" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -118,8 +125,8 @@
     
     
     
-    <img src="../../_static/logo.svg" class="logo__image only-light" alt="prtools 2.0.2 documentation - Home"/>
-    <img src="../../_static/logo.svg" class="logo__image only-dark pst-js-only" alt="prtools 2.0.2 documentation - Home"/>
+    <img src="../../_static/logo.svg" class="logo__image only-light" alt="prtools 2.1.0 documentation - Home"/>
+    <img src="../../_static/logo.svg" class="logo__image only-dark pst-js-only" alt="prtools 2.1.0 documentation - Home"/>
   
   
 </a></div>
@@ -152,6 +159,26 @@
 </button>
         </div>
       
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
       
         <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -222,6 +249,26 @@
     
       <div class="sidebar-header-items__end">
         
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
           <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
         <li class="nav-item">
@@ -271,15 +318,30 @@
                   
   <h1>Source code for prtools.zernike</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">factorial</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">prtools</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_warn_legacy</span><span class="p">(</span><span class="n">legacy</span><span class="p">):</span>
+    <span class="c1"># Called once at the top of each public function. stacklevel=3 skips this</span>
+    <span class="c1"># helper and the public function so the warning points at the caller.</span>
+    <span class="k">if</span> <span class="n">legacy</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s1">'legacy=True reproduces the Zernike orientation convention of '</span>
+            <span class="s1">'prtools 2.0.2 and earlier. Support for it may be removed in a '</span>
+            <span class="s1">'future release.'</span><span class="p">,</span>
+            <span class="ne">FutureWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span>
+        <span class="p">)</span>
+
+
 <div class="viewcode-block" id="zernike">
 <a class="viewcode-back" href="../../generated/prtools.zernike.html#prtools.zernike">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">zernike</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">'noll'</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">zernike</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">'noll'</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">legacy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Compute the circular Zernike polynomial for a given mask.</span>
 
 <span class="sd">    Parameters</span>
@@ -299,10 +361,22 @@
 <span class="sd">        origin and 1 at the edge of the circle.</span>
 <span class="sd">    theta : array_like, optional</span>
 <span class="sd">        Angular coordinates of the mask array in radians.</span>
+<span class="sd">    legacy : bool, optional</span>
+<span class="sd">        If True, reproduce the Zernike convention of prtools 2.0.2 and</span>
+<span class="sd">        earlier. Default is False. See the warning below for details.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ndarray</span>
+
+<span class="sd">    Warnings</span>
+<span class="sd">    --------</span>
+<span class="sd">    prtools 2.0.2 and earlier computed Zernike polynomials in a coordinate</span>
+<span class="sd">    system mirrored top-to-bottom (y -&gt; -y). This results in modes with</span>
+<span class="sd">    negative azimuthal order (sine terms: y tilt, 45 degree astigmatism, y</span>
+<span class="sd">    coma, ...) having a flipped sign. Modes with zero or positive azimuthal</span>
+<span class="sd">    order are unaffected. The :func:`zernike_coeff_legacy` function converts</span>
+<span class="sd">    between current and legacy conventions.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -320,26 +394,35 @@
 <span class="sd">    [1] Noll, RJ. Zernike polynomials and atmospheric turbulence. J Opt Soc Am 66, 207-211  (1976).</span>
 
 <span class="sd">    """</span>
-    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+    <span class="n">_warn_legacy</span><span class="p">(</span><span class="n">legacy</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_zernike</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">normalize</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">legacy</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_zernike</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">normalize</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">legacy</span><span class="p">):</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="s1">'noll'</span><span class="p">:</span>
         <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">noll_to_nm</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="s1">'fringe'</span><span class="p">:</span>
         <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">fringe_to_nm</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span><span class="s1">'ansi'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="s1">'ansi'</span><span class="p">:</span>
         <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">ansi_to_nm</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Unknown order'</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span>
-    
+
     <span class="k">if</span> <span class="n">rho</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">zernike_coordinates</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">legacy</span><span class="p">:</span>
+            <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">_zernike_coordinates_legacy</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">zernike_coordinates</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Both rho and theta must be specified"</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">m</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">Z</span> <span class="o">=</span> <span class="n">mask</span>
+            <span class="n">Z</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
                 <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">R</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">rho</span><span class="p">)</span> <span class="o">*</span> <span class="n">mask</span>
@@ -353,14 +436,18 @@
             <span class="n">Z</span> <span class="o">=</span> <span class="n">R</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">rho</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">m</span><span class="o">*</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">mask</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
-            <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">R</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">rho</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">m</span><span class="o">*</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">mask</span>
+        <span class="k">if</span> <span class="n">legacy</span><span class="p">:</span>
+            <span class="n">sin_m_theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">m</span><span class="o">*</span><span class="n">theta</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">Z</span> <span class="o">=</span> <span class="n">R</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">rho</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">m</span><span class="o">*</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">mask</span>
+            <span class="n">sin_m_theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">*</span><span class="n">theta</span><span class="p">)</span>
 
-    <span class="c1">#out[mask_slice] = Z</span>
+        <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+            <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">R</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">rho</span><span class="p">)</span> <span class="o">*</span> <span class="n">sin_m_theta</span> <span class="o">*</span> <span class="n">mask</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Z</span> <span class="o">=</span> <span class="n">R</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">rho</span><span class="p">)</span> <span class="o">*</span> <span class="n">sin_m_theta</span> <span class="o">*</span> <span class="n">mask</span>
+
     <span class="n">out</span> <span class="o">=</span> <span class="n">Z</span>
-    <span class="k">return</span> <span class="n">out</span></div>
+    <span class="k">return</span> <span class="n">out</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">R</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">rho</span><span class="p">):</span>
@@ -377,11 +464,12 @@
                   <span class="p">(</span><span class="n">factorial</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="n">factorial</span><span class="p">((</span><span class="n">n</span><span class="o">+</span><span class="n">m</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="n">factorial</span><span class="p">((</span><span class="n">n</span><span class="o">-</span><span class="n">m</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="n">k</span><span class="p">)))</span>
             <span class="n">R</span> <span class="o">+=</span> <span class="n">Rk</span> <span class="o">*</span> <span class="n">rho</span> <span class="o">**</span> <span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">k</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">R</span>
-    
+
 
 <div class="viewcode-block" id="zernike_compose">
 <a class="viewcode-back" href="../../generated/prtools.zernike_compose.html#prtools.zernike_compose">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">zernike_compose</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">'noll'</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">zernike_compose</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">'noll'</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">legacy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Create an OPD based on the supplied Zernike coefficients.</span>
 
 <span class="sd">    Parameters</span>
@@ -401,10 +489,22 @@
 <span class="sd">        origin and 1 at the edge of the circle.</span>
 <span class="sd">    theta : array_like, optional</span>
 <span class="sd">        Angular coordinates of the mask array in radians.</span>
+<span class="sd">    legacy : bool, optional</span>
+<span class="sd">        If True, reproduce the Zernike convention of prtools 2.0.2 and</span>
+<span class="sd">        earlier. Default is False. See the warning below for details.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ndarray</span>
+
+<span class="sd">    Warnings</span>
+<span class="sd">    --------</span>
+<span class="sd">    prtools 2.0.2 and earlier computed Zernike polynomials in a coordinate</span>
+<span class="sd">    system mirrored top-to-bottom (y -&gt; -y). This results in modes with</span>
+<span class="sd">    negative azimuthal order (sine terms: y tilt, 45 degree astigmatism, y</span>
+<span class="sd">    coma, ...) having a flipped sign. Modes with zero or positive azimuthal</span>
+<span class="sd">    order are unaffected. The :func:`zernike_coeff_legacy` function converts</span>
+<span class="sd">    between current and legacy conventions.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -436,20 +536,27 @@
 <span class="sd">    [1] Noll, RJ. Zernike polynomials and atmospheric turbulence. J Opt Soc Am 66, 207-211  (1976).</span>
 
 <span class="sd">    """</span>
+    <span class="n">_warn_legacy</span><span class="p">(</span><span class="n">legacy</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_zernike_compose</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">normalize</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">legacy</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_zernike_compose</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">normalize</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">legacy</span><span class="p">):</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
     <span class="n">coeffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span>
     <span class="n">opd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">coeffs</span><span class="p">):</span>
-        <span class="n">opd</span> <span class="o">+=</span> <span class="n">coeff</span> <span class="o">*</span> <span class="n">zernike</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">normalize</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
+        <span class="n">opd</span> <span class="o">+=</span> <span class="n">coeff</span> <span class="o">*</span> <span class="n">_zernike</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">normalize</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span>
+                                <span class="n">legacy</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">opd</span></div>
+    <span class="k">return</span> <span class="n">opd</span>
 
 
 <div class="viewcode-block" id="zernike_basis">
 <a class="viewcode-back" href="../../generated/prtools.zernike_basis.html#prtools.zernike_basis">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">zernike_basis</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">modes</span><span class="p">,</span> <span class="n">vectorize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">'noll'</span><span class="p">,</span>
-                  <span class="n">rho</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                  <span class="n">rho</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">legacy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Compute a Zernike basis set for a given mask.</span>
 
 <span class="sd">    Parameters</span>
@@ -473,16 +580,36 @@
 <span class="sd">        origin and 1 at the edge of the circle.</span>
 <span class="sd">    theta : array_like, optional</span>
 <span class="sd">        Angular coordinates of the mask array in radians.</span>
+<span class="sd">    legacy : bool, optional</span>
+<span class="sd">        If True, reproduce the Zernike convention of prtools 2.0.2 and</span>
+<span class="sd">        earlier. Default is False. See the warning below for details.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ndarray</span>
+
+<span class="sd">    Warnings</span>
+<span class="sd">    --------</span>
+<span class="sd">    prtools 2.0.2 and earlier computed Zernike polynomials in a coordinate</span>
+<span class="sd">    system mirrored top-to-bottom (y -&gt; -y). This results in modes with</span>
+<span class="sd">    negative azimuthal order (sine terms: y tilt, 45 degree astigmatism, y</span>
+<span class="sd">    coma, ...) having a flipped sign. Modes with zero or positive azimuthal</span>
+<span class="sd">    order are unaffected. The :func:`zernike_coeff_legacy` function converts</span>
+<span class="sd">    between current and legacy conventions.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    [1] Noll, RJ. Zernike polynomials and atmospheric turbulence. J Opt Soc Am 66, 207-211  (1976).</span>
 
 <span class="sd">    """</span>
+    <span class="n">_warn_legacy</span><span class="p">(</span><span class="n">legacy</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_zernike_basis</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">modes</span><span class="p">,</span> <span class="n">vectorize</span><span class="p">,</span> <span class="n">normalize</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span>
+                          <span class="n">legacy</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_zernike_basis</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">modes</span><span class="p">,</span> <span class="n">vectorize</span><span class="p">,</span> <span class="n">normalize</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span>
+                   <span class="n">legacy</span><span class="p">):</span>
     <span class="n">modes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">modes</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">modes</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">():</span>
         <span class="n">modes</span> <span class="o">=</span> <span class="n">modes</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
@@ -491,21 +618,21 @@
 
     <span class="n">basis</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">mode</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">modes</span><span class="p">):</span>
-        <span class="n">basis</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">zernike</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">normalize</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span><span class="p">))</span>
+        <span class="n">basis</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_zernike</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">normalize</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span>
+                              <span class="n">legacy</span><span class="p">))</span>
     <span class="n">basis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">vectorize</span><span class="p">:</span>
         <span class="c1"># reshape basis from cube to matrix</span>
         <span class="k">return</span> <span class="n">basis</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">basis</span></div>
-
+        <span class="k">return</span> <span class="n">basis</span>
 
 
 <div class="viewcode-block" id="zernike_fit">
 <a class="viewcode-back" href="../../generated/prtools.zernike_fit.html#prtools.zernike_fit">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">zernike_fit</span><span class="p">(</span><span class="n">opd</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">modes</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">'noll'</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">legacy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Fit a Zernike basis set to an OPD.</span>
 
 <span class="sd">    Parameters</span>
@@ -526,10 +653,22 @@
 <span class="sd">        origin and 1 at the edge of the circle.</span>
 <span class="sd">    theta : array_like, optional</span>
 <span class="sd">        Angular coordinates of the mask array in radians.</span>
+<span class="sd">    legacy : bool, optional</span>
+<span class="sd">        If True, reproduce the Zernike convention of prtools 2.0.2 and</span>
+<span class="sd">        earlier. Default is False. See the warning below for details.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ndarray</span>
+
+<span class="sd">    Warnings</span>
+<span class="sd">    --------</span>
+<span class="sd">    prtools 2.0.2 and earlier computed Zernike polynomials in a coordinate</span>
+<span class="sd">    system mirrored top-to-bottom (y -&gt; -y). This results in modes with</span>
+<span class="sd">    negative azimuthal order (sine terms: y tilt, 45 degree astigmatism, y</span>
+<span class="sd">    coma, ...) having a flipped sign. Modes with zero or positive azimuthal</span>
+<span class="sd">    order are unaffected. The :func:`zernike_coeff_legacy` function converts</span>
+<span class="sd">    between current and legacy conventions.</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -554,22 +693,29 @@
 <span class="sd">    [1] Noll, RJ. Zernike polynomials and atmospheric turbulence. J Opt Soc Am 66, 207-211  (1976).</span>
 
 <span class="sd">    """</span>
+    <span class="n">_warn_legacy</span><span class="p">(</span><span class="n">legacy</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_zernike_fit</span><span class="p">(</span><span class="n">opd</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">modes</span><span class="p">,</span> <span class="n">normalize</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">legacy</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_zernike_fit</span><span class="p">(</span><span class="n">opd</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">modes</span><span class="p">,</span> <span class="n">normalize</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">legacy</span><span class="p">):</span>
     <span class="n">opd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">opd</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
-    <span class="n">basis</span> <span class="o">=</span> <span class="n">zernike_basis</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">modes</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">normalize</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
-    
+    <span class="n">basis</span> <span class="o">=</span> <span class="n">_zernike_basis</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">modes</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">normalize</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span>
+                           <span class="n">legacy</span><span class="p">)</span>
+
     <span class="c1"># valid data includes all non-NaN values inside the mask</span>
     <span class="n">valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">opd</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
-    
+
     <span class="n">coeff</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">basis</span><span class="p">[:,</span> <span class="n">valid</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">opd</span><span class="p">[</span><span class="n">valid</span><span class="p">],</span> <span class="n">rcond</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">coeff</span></div>
-
+    <span class="k">return</span> <span class="n">coeff</span>
 
 
 <div class="viewcode-block" id="zernike_remove">
 <a class="viewcode-back" href="../../generated/prtools.zernike_remove.html#prtools.zernike_remove">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">zernike_remove</span><span class="p">(</span><span class="n">opd</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">modes</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">'noll'</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">zernike_remove</span><span class="p">(</span><span class="n">opd</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">modes</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">'noll'</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">legacy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Fit and remove a Zernike basis set from an OPD.</span>
 
 <span class="sd">    Parameters</span>
@@ -587,10 +733,22 @@
 <span class="sd">        origin and 1 at the edge of the circle.</span>
 <span class="sd">    theta : array_like, optional</span>
 <span class="sd">        Angular coordinates of the mask array in radians.</span>
+<span class="sd">    legacy : bool, optional</span>
+<span class="sd">        If True, reproduce the Zernike convention of prtools 2.0.2 and</span>
+<span class="sd">        earlier. Default is False. See the warning below for details.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ndarray</span>
+
+<span class="sd">    Warnings</span>
+<span class="sd">    --------</span>
+<span class="sd">    prtools 2.0.2 and earlier computed Zernike polynomials in a coordinate</span>
+<span class="sd">    system mirrored top-to-bottom (y -&gt; -y). This results in modes with</span>
+<span class="sd">    negative azimuthal order (sine terms: y tilt, 45 degree astigmatism, y</span>
+<span class="sd">    coma, ...) having a flipped sign. Modes with zero or positive azimuthal</span>
+<span class="sd">    order are unaffected. The :func:`zernike_coeff_legacy` function converts</span>
+<span class="sd">    between current and legacy conventions.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -601,11 +759,12 @@
 <span class="sd">    [1] Noll, RJ. Zernike polynomials and atmospheric turbulence. J Opt Soc Am 66, 207-211  (1976).</span>
 
 <span class="sd">    """</span>
+    <span class="n">_warn_legacy</span><span class="p">(</span><span class="n">legacy</span><span class="p">)</span>
     <span class="n">opd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">opd</span><span class="p">)</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
 
-    <span class="n">coeffs</span> <span class="o">=</span> <span class="n">zernike_fit</span><span class="p">(</span><span class="n">opd</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">modes</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
-    <span class="n">fit_opd</span> <span class="o">=</span> <span class="n">zernike_compose</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
+    <span class="n">coeffs</span> <span class="o">=</span> <span class="n">_zernike_fit</span><span class="p">(</span><span class="n">opd</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">modes</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">legacy</span><span class="p">)</span>
+    <span class="n">fit_opd</span> <span class="o">=</span> <span class="n">_zernike_compose</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">legacy</span><span class="p">)</span>
 
     <span class="n">residual</span> <span class="o">=</span> <span class="n">opd</span> <span class="o">-</span> <span class="n">fit_opd</span>
 
@@ -676,7 +835,7 @@
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'ANSI index must be zero or larger'</span><span class="p">)</span>
-    
+
     <span class="c1"># https://en.wikipedia.org/wiki/Zernike_polynomials</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">8</span> <span class="o">*</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">m</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">j</span> <span class="o">-</span> <span class="n">n</span><span class="o">*</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
@@ -700,7 +859,7 @@
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Fringe index must be greater than zero'</span><span class="p">)</span>
-    
+
     <span class="c1"># https://github.com/arielmission-space/PAOS/blob/main/paos/classes/zernike.py</span>
     <span class="n">m_n</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">j</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">g_s</span> <span class="o">=</span> <span class="p">(</span><span class="n">m_n</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
@@ -713,44 +872,151 @@
 <a class="viewcode-back" href="../../generated/prtools.zernike_coordinates.html#prtools.zernike_coordinates">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">zernike_coordinates</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">'ij'</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Compute the Zernike coordinate system for a given mask.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    mask : array_like</span>
-<span class="sd">        Binary mask defining the extent to compute the Zernike polynomial </span>
-<span class="sd">        over.</span>
+<span class="sd">        Binary mask defining the extent to compute the Zernike polynomial</span>
+<span class="sd">        over. Nonzero values are treated as inside the mask.</span>
 <span class="sd">    shift : (2,) array_like, optional</span>
-<span class="sd">        How far to shift center in float (rows, cols). If None (default),</span>
-<span class="sd">        shift is computed automatically to locate the origin at the mask</span>
-<span class="sd">        centroid.</span>
+<span class="sd">        How far to shift the origin from the center of the array. If None</span>
+<span class="sd">        (default), shift is computed automatically to locate the origin at the</span>
+<span class="sd">        mask centroid.</span>
 <span class="sd">    angle: float, optional</span>
-<span class="sd">        Angle to rotate coordinate system by in degrees. rotate is specified </span>
-<span class="sd">        relative to the x-axis. Default is 0.</span>
+<span class="sd">        Angle to rotate coordinate system by in degrees, from the +x axis</span>
+<span class="sd">        toward the +y axis. Default is 0.</span>
 <span class="sd">    indexing : {'ij', 'xy'}, optional</span>
-<span class="sd">        Matrix ('ij', default) or cartesian ('xy') indexing of output.</span>
-<span class="sd">    </span>
+<span class="sd">        Matrix ('ij', default) or cartesian ('xy') indexing of ``shift``.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    rho, theta : ndarrays</span>
-<span class="sd">    </span>
+<span class="sd">        Normalized radius and angle. theta is measured from +x (increasing</span>
+<span class="sd">        column) toward +y (increasing row).</span>
+
 <span class="sd">    """</span>
-    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">shift</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
-        <span class="n">centroid</span> <span class="o">=</span> <span class="n">prtools</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
-        <span class="n">shift</span> <span class="o">=</span> <span class="p">(</span><span class="n">centroid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">centroid</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">shift</span> <span class="o">=</span> <span class="n">prtools</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'center'</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">'xy'</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">indexing</span> <span class="o">==</span> <span class="s1">'ij'</span><span class="p">:</span>
+        <span class="n">shift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">shift</span><span class="p">)</span>
 
-    <span class="n">yy</span><span class="p">,</span> <span class="n">xx</span> <span class="o">=</span> <span class="n">prtools</span><span class="o">.</span><span class="n">mesh</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="n">shift</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">angle</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="n">indexing</span><span class="p">)</span>
+    <span class="c1"># an xy rotation from +x toward +y is a negative ij rotation</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">prtools</span><span class="o">.</span><span class="n">mesh</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="n">shift</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">angle</span><span class="p">,</span>
+                          <span class="n">indexing</span><span class="o">=</span><span class="s1">'xy'</span><span class="p">)</span>
 
-    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">xx</span><span class="o">+</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">yy</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
     <span class="n">rho</span> <span class="o">=</span> <span class="n">r</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="n">mask</span><span class="p">)</span>  <span class="c1"># rho is defined to be 1 on the edge of the aperture</span>
-    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">xx</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">yy</span><span class="p">)</span>
-    
-    <span class="n">rho</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">rho</span><span class="o">==</span><span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1e-99</span>
-    <span class="n">theta</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">theta</span><span class="o">==</span><span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1e-99</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">x1</span><span class="p">)</span>
+
+    <span class="n">rho</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">rho</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1e-99</span>
+    <span class="n">theta</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">theta</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1e-99</span>
 
     <span class="k">return</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_zernike_coordinates_legacy</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
+    <span class="c1"># Reproduces zernike_coordinates(mask) from prtools 2.0.2 and earlier:</span>
+    <span class="c1"># +y toward decreasing row (theta is measured toward increasing row and</span>
+    <span class="c1"># paired with sin(m*theta) for m &lt; 0), and the origin measured from</span>
+    <span class="c1"># shape/2 rather than the mesh origin at floor(shape/2)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">centroid</span> <span class="o">=</span> <span class="n">prtools</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+    <span class="n">shift</span> <span class="o">=</span> <span class="p">(</span><span class="n">centroid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">centroid</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">rr</span><span class="p">,</span> <span class="n">cc</span> <span class="o">=</span> <span class="n">prtools</span><span class="o">.</span><span class="n">mesh</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="n">shift</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">'ij'</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">cc</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">rr</span><span class="p">)</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="n">r</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="n">mask</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">cc</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">rr</span><span class="p">)</span>
+    <span class="n">rho</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">rho</span><span class="o">==</span><span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1e-99</span>
+    <span class="n">theta</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">theta</span><span class="o">==</span><span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1e-99</span>
+    <span class="k">return</span> <span class="n">rho</span><span class="p">,</span> <span class="n">theta</span>
+
+
+<div class="viewcode-block" id="zernike_coeff_legacy">
+<a class="viewcode-back" href="../../generated/prtools.zernike_coeff_legacy.html#prtools.zernike_coeff_legacy">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">zernike_coeff_legacy</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">'noll'</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Convert Zernike coefficients between legacy and current</span>
+<span class="sd">    orientation conventions.</span>
+
+<span class="sd">    prtools 2.0.2 and earlier computed Zernike polynomials in a coordinate</span>
+<span class="sd">    system mirrored top-to-bottom (y -&gt; -y). This results in modes with</span>
+<span class="sd">    negative azimuthal order (sine terms: y tilt, 45 degree astigmatism, y</span>
+<span class="sd">    coma, ...) having a flipped sign. Modes with zero or positive azimuthal</span>
+<span class="sd">    order are unaffected.</span>
+
+<span class="sd">    This conversion is involutory so it converts legacy coefficients to the</span>
+<span class="sd">    current convention and current coefficients to the legacy convention.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coeffs : array_like</span>
+<span class="sd">        Zernike coefficients. The last axis indexes Zernike modes, so a</span>
+<span class="sd">        stack of coefficient vectors (e.g. a time series) can be converted</span>
+<span class="sd">        in a single call.</span>
+<span class="sd">    modes : array_like, optional</span>
+<span class="sd">        Zernike mode indices corresponding to the last axis of ``coeffs``,</span>
+<span class="sd">        e.g. the ``modes`` passed to :func:`zernike_fit`. If None</span>
+<span class="sd">        (default), ``coeffs[..., k]`` is taken to be the coefficient for</span>
+<span class="sd">        mode index ``k + 1``, matching :func:`zernike_compose`.</span>
+<span class="sd">    order : {'noll', 'fringe', 'ansi'}, optional</span>
+<span class="sd">        Zernike ordering scheme. Default is 'noll'.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        Converted coefficients with the same shape as ``coeffs``.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The conversion is exact for masks with an even number of pixels in each</span>
+<span class="sd">    dimension. Along any dimension with an odd number of pixels, the legacy</span>
+<span class="sd">    coordinate origin was also offset half a pixel from the mask centroid.</span>
+<span class="sd">    The effect of that offset on fitted coefficients is small but is not a</span>
+<span class="sd">    sign change, so it cannot be undone by this function.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Convert tip, tilt, and focus coefficients fit with prtools 2.0.2:</span>
+
+<span class="sd">    .. code:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; prtools.zernike_coeff_legacy([1e-8, 2e-8, 3e-8], modes=[2, 3, 4])</span>
+<span class="sd">        array([ 1.e-08, -2.e-08,  3.e-08])</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`zernike_compose`</span>
+<span class="sd">    :func:`zernike_fit`</span>
+
+<span class="sd">    """</span>
+    <span class="n">coeffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">coeffs</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'coeffs must have at least one dimension'</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="s1">'noll'</span><span class="p">:</span>
+        <span class="n">to_nm</span> <span class="o">=</span> <span class="n">noll_to_nm</span>
+    <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="s1">'fringe'</span><span class="p">:</span>
+        <span class="n">to_nm</span> <span class="o">=</span> <span class="n">fringe_to_nm</span>
+    <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="s1">'ansi'</span><span class="p">:</span>
+        <span class="n">to_nm</span> <span class="o">=</span> <span class="n">ansi_to_nm</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Unknown order'</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">modes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">modes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">coeffs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">modes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">modes</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">modes</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">modes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">coeffs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'modes has </span><span class="si">{</span><span class="n">modes</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s1"> entries but the last axis of '</span>
+                <span class="sa">f</span><span class="s1">'coeffs has length </span><span class="si">{</span><span class="n">coeffs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+
+    <span class="n">sign</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">to_nm</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">j</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">modes</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">coeffs</span> <span class="o">*</span> <span class="n">sign</span></div>
 
 </pre></div>
 

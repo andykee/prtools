@@ -1,0 +1,6 @@
+﻿prtools.nanpv
+=============
+
+.. currentmodule:: prtools
+
+.. autofunction:: nanpv

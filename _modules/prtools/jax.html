@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>prtools.jax &#8212; prtools 2.0.2 documentation</title>
+    <title>prtools.jax &#8212; prtools 2.1.0 documentation</title>
   
   
   
@@ -38,17 +38,24 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=c2377ec0"></script>
+    <script src="../../_static/documentation_options.js?v=20623aea"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/prtools/jax';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.24.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://andykee.github.io/prtools/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.2" />
+  <meta name="docsearch:version" content="2.1.0" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -118,8 +125,8 @@
     
     
     
-    <img src="../../_static/logo.svg" class="logo__image only-light" alt="prtools 2.0.2 documentation - Home"/>
-    <img src="../../_static/logo.svg" class="logo__image only-dark pst-js-only" alt="prtools 2.0.2 documentation - Home"/>
+    <img src="../../_static/logo.svg" class="logo__image only-light" alt="prtools 2.1.0 documentation - Home"/>
+    <img src="../../_static/logo.svg" class="logo__image only-dark pst-js-only" alt="prtools 2.1.0 documentation - Home"/>
   
   
 </a></div>
@@ -152,6 +159,26 @@
 </button>
         </div>
       
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
       
         <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -221,6 +248,26 @@
     
     
       <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
         
           <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -364,7 +411,7 @@
         <span class="n">_</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="n">carry</span>
         <span class="n">iter_num</span> <span class="o">=</span> <span class="n">otu</span><span class="o">.</span><span class="n">tree_get</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="s1">'count'</span><span class="p">)</span>
         <span class="n">grad</span> <span class="o">=</span> <span class="n">otu</span><span class="o">.</span><span class="n">tree_get</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="s1">'grad'</span><span class="p">)</span>
-        <span class="n">grad_norm</span> <span class="o">=</span> <span class="n">otu</span><span class="o">.</span><span class="n">tree_l2_norm</span><span class="p">(</span><span class="n">grad</span><span class="p">)</span>
+        <span class="n">grad_norm</span> <span class="o">=</span> <span class="n">otu</span><span class="o">.</span><span class="n">tree_norm</span><span class="p">(</span><span class="n">grad</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">iter_num</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="p">((</span><span class="n">iter_num</span> <span class="o">&lt;</span> <span class="n">maxiter</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">grad_norm</span> <span class="o">&gt;=</span> <span class="n">gtol</span><span class="p">))</span>
 
     <span class="n">init_carry</span> <span class="o">=</span> <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">x0</span><span class="p">))</span>

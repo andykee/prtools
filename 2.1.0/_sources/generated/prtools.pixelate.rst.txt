@@ -1,0 +1,6 @@
+﻿prtools.pixelate
+================
+
+.. currentmodule:: prtools
+
+.. autofunction:: pixelate

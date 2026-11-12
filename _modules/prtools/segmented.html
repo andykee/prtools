@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>prtools.segmented &#8212; prtools 2.0.2 documentation</title>
+    <title>prtools.segmented &#8212; prtools 2.1.0 documentation</title>
   
   
   
@@ -38,17 +38,24 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=c2377ec0"></script>
+    <script src="../../_static/documentation_options.js?v=20623aea"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/prtools/segmented';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.24.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://andykee.github.io/prtools/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.2" />
+  <meta name="docsearch:version" content="2.1.0" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -118,8 +125,8 @@
     
     
     
-    <img src="../../_static/logo.svg" class="logo__image only-light" alt="prtools 2.0.2 documentation - Home"/>
-    <img src="../../_static/logo.svg" class="logo__image only-dark pst-js-only" alt="prtools 2.0.2 documentation - Home"/>
+    <img src="../../_static/logo.svg" class="logo__image only-light" alt="prtools 2.1.0 documentation - Home"/>
+    <img src="../../_static/logo.svg" class="logo__image only-dark pst-js-only" alt="prtools 2.1.0 documentation - Home"/>
   
   
 </a></div>
@@ -152,6 +159,26 @@
 </button>
         </div>
       
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
       
         <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -222,6 +249,26 @@
     
       <div class="sidebar-header-items__end">
         
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
           <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
         <li class="nav-item">
@@ -279,7 +326,7 @@
 
 <div class="viewcode-block" id="hex_segments">
 <a class="viewcode-back" href="../../generated/prtools.hex_segments.html#prtools.hex_segments">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">hex_segments</span><span class="p">(</span><span class="n">rings</span><span class="p">,</span> <span class="n">seg_radius</span><span class="p">,</span> <span class="n">seg_gap</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">antialias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hex_segments</span><span class="p">(</span><span class="n">rings</span><span class="p">,</span> <span class="n">seg_radius</span><span class="p">,</span> <span class="n">seg_gap</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">antialias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">flatten</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
 <span class="w">    </span><span class="sd">"""Draw a segmented aperture made up of hexagonal segments</span>
 
@@ -292,9 +339,8 @@
 <span class="sd">    seg_gap : float</span>
 <span class="sd">        Spacing between adjacent segments in pixels</span>
 <span class="sd">    rotate : bool, optional</span>
-<span class="sd">        Rotate segments so that flat sides are aligned with the Y direction </span>
-<span class="sd">        instead of the default orientation which is aligned with the X </span>
-<span class="sd">        direction.</span>
+<span class="sd">        If True (default), the segment mask is rotated so that flat sides are</span>
+<span class="sd">        aligned with the X direction instead of the Y direction.</span>
 <span class="sd">    antialias : bool, optional</span>
 <span class="sd">        If True (default), the segment edges are antialiased.</span>
 <span class="sd">    flatten : bool, optional</span>
@@ -303,8 +349,8 @@
 <span class="sd">    pad : int, optional</span>
 <span class="sd">        Number of additional pixels to zero-pad output by. Default is 2.</span>
 <span class="sd">    drop : list_like, optional</span>
-<span class="sd">        Segments to exclude from output. 0 represents the central segment. </span>
-<span class="sd">    </span>
+<span class="sd">        Segments to exclude from output. 0 represents the central segment.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ndarray</span>
@@ -337,20 +383,24 @@
     <span class="n">mask</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">if</span> <span class="mi">0</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">drop</span><span class="p">:</span>
-        <span class="n">mask</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prtools</span><span class="o">.</span><span class="n">hexagon</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">seg_radius</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">antialias</span><span class="o">=</span><span class="n">antialias</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="n">rotate</span><span class="p">))</span>
+        <span class="n">mask</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prtools</span><span class="o">.</span><span class="n">hexagon</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">seg_radius</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                                    <span class="n">antialias</span><span class="o">=</span><span class="n">antialias</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="n">rotate</span><span class="p">,</span>
+                                    <span class="n">indexing</span><span class="o">=</span><span class="s1">'ij'</span><span class="p">))</span>
 
     <span class="n">seg</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">for</span> <span class="n">ring</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">rings</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hex_ring</span><span class="p">(</span><span class="n">ring</span><span class="p">):</span>
             <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">hex_to_rc</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">seg_radius</span> <span class="o">+</span> <span class="n">seg_gap</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">rotate</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">seg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">drop</span><span class="p">:</span>
-                <span class="n">mask</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prtools</span><span class="o">.</span><span class="n">hexagon</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">seg_radius</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">),</span> <span class="n">antialias</span><span class="o">=</span><span class="n">antialias</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="n">rotate</span><span class="p">))</span>
+                <span class="n">mask</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prtools</span><span class="o">.</span><span class="n">hexagon</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">seg_radius</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">),</span>
+                                            <span class="n">antialias</span><span class="o">=</span><span class="n">antialias</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="n">rotate</span><span class="p">,</span>
+                                            <span class="n">indexing</span><span class="o">=</span><span class="s1">'ij'</span><span class="p">))</span>
             <span class="n">seg</span> <span class="o">+=</span> <span class="mi">1</span>
-    
+
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">flatten</span><span class="p">:</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    
+
     <span class="k">return</span> <span class="n">mask</span></div>
 
 
@@ -359,6 +409,8 @@
 <span class="c1"># exactly from http://www.redblobgames.com/grids/hexagons/</span>
 
 <span class="n">_Hex</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s2">"Hex"</span><span class="p">,</span> <span class="p">[</span><span class="s2">"q"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="s2">"s"</span><span class="p">])</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">Hex</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
     <span class="k">assert</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">q</span> <span class="o">+</span> <span class="n">r</span> <span class="o">+</span> <span class="n">s</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">"q + r + s must be 0"</span>
     <span class="k">return</span> <span class="n">_Hex</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
@@ -368,7 +420,7 @@
     <span class="k">return</span> <span class="n">Hex</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">q</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="n">q</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">r</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">s</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
 
 
-<span class="n">hex_directions</span> <span class="o">=</span> <span class="p">[</span><span class="n">Hex</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">Hex</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Hex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> 
+<span class="n">hex_directions</span> <span class="o">=</span> <span class="p">[</span><span class="n">Hex</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">Hex</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Hex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
                   <span class="n">Hex</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Hex</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Hex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
 
 
@@ -392,13 +444,13 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">hex_to_xy</span><span class="p">(</span><span class="nb">hex</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">rotate</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">rotate</span><span class="p">:</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">radius</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="nb">hex</span><span class="o">.</span><span class="n">q</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">hex</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">radius</span> <span class="o">*</span> <span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">hex</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">radius</span> <span class="o">*</span> <span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">hex</span><span class="o">.</span><span class="n">q</span><span class="p">)</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">radius</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">hex</span><span class="o">.</span><span class="n">q</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="nb">hex</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
-        
+
     <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
 
 
