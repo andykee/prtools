@@ -46,6 +46,12 @@ jobs:
           path: meta
           fetch-depth: 0
 
+      # The theme fetches the published versions.json at build time, so a
+      # broken copy on gh-pages breaks every later build. Catch it here
+      # before it gets deployed.
+      - name: Validate versions.json
+        run: python3 -m json.tool meta/docs/versions.json > /dev/null
+
       - name: Determine target
         id: target
         working-directory: meta
